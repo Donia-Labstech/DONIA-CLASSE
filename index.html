@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>نظام توزيع التلاميذ 2027 — معالجة حتمية 100%</title>
-<meta name="description" content="نظام إدارة وتوزيع التلاميذ على الأفواج — خوارزمية حتمية مع لوحة تدقيق">
+<title>نظام توزيع التلاميذ 2027 — مع تثبيت وتوجيه يدوي</title>
+<meta name="description" content="نظام إدارة وتوزيع التلاميذ — خوارزمية حتمية + تثبيت يدوي + نقل جماعي">
 
 <script>
 /* ================================================================
@@ -45,13 +45,13 @@
 </script>
 
 <style>
-/* ============== أساسيات ============== */
 :root{
   --pri:#1e5aa8; --pri2:#2e7dd1; --pri-d:#17497f;
   --ok:#059669; --warn:#d97706; --err:#dc2626;
   --bg:#eef2f7; --card:#fff; --border:#e2e8f0;
   --txt:#1f2937; --muted:#64748b;
   --male:#2563eb; --female:#db2777; --unk:#d97706;
+  --lock:#7c3aed;
   --sh:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
   --sh2:0 4px 12px rgba(0,0,0,.08);
 }
@@ -63,6 +63,8 @@ button:hover{background:#f1f5f9;border-color:#94a3b8}
 button:active{transform:translateY(1px)}
 button.pri{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;border:none;box-shadow:0 2px 4px rgba(30,90,168,.25)}
 button.pri:hover{background:linear-gradient(135deg,var(--pri-d),var(--pri))}
+button.lock{background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;border:none;box-shadow:0 2px 4px rgba(124,58,237,.25)}
+button.lock:hover{background:linear-gradient(135deg,#6d28d9,#5b21b6)}
 button.danger{color:var(--err);border-color:#fecaca;background:#fef2f2}
 button.danger:hover{background:#fee2e2}
 button.sm{padding:4px 9px;font-size:12px;font-weight:700}
@@ -122,16 +124,16 @@ body.lib-ready #libStatus{transform:translateY(-100%)}
 .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
 .kpi{background:linear-gradient(135deg,#f8fafc,#f1f5f9);border:1px solid var(--border);border-radius:12px;padding:12px 14px;text-align:center;position:relative;overflow:hidden}
 .kpi::before{content:"";position:absolute;top:0;right:0;width:4px;height:100%;background:var(--pri)}
-.kpi.p-m::before{background:var(--male)} .kpi.p-f::before{background:var(--female)} .kpi.p-r::before{background:var(--warn)} .kpi.p-ok::before{background:var(--ok)}
+.kpi.p-m::before{background:var(--male)} .kpi.p-f::before{background:var(--female)} .kpi.p-r::before{background:var(--warn)} .kpi.p-ok::before{background:var(--ok)} .kpi.p-lock::before{background:var(--lock)}
 .kpi .v{font-size:22px;font-weight:800;color:var(--pri);line-height:1.2}
-.kpi.p-m .v{color:var(--male)} .kpi.p-f .v{color:var(--female)} .kpi.p-r .v{color:var(--warn)} .kpi.p-ok .v{color:var(--ok)}
+.kpi.p-m .v{color:var(--male)} .kpi.p-f .v{color:var(--female)} .kpi.p-r .v{color:var(--warn)} .kpi.p-ok .v{color:var(--ok)} .kpi.p-lock .v{color:var(--lock)}
 .kpi .l{font-size:11.5px;color:var(--muted);font-weight:600;margin-top:2px}
 
-.section-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:16px}
+.section-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:16px}
 @media(max-width:820px){.section-grid{grid-template-columns:1fr}}
-.section-card{background:#fff;border-radius:12px;border:1px solid var(--border);box-shadow:var(--sh);overflow:hidden;display:flex;flex-direction:column;cursor:pointer;transition:.2s}
-.section-card:hover{box-shadow:var(--sh2);transform:translateY(-2px)}
-.sc-head{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.section-card{background:#fff;border-radius:12px;border:1px solid var(--border);box-shadow:var(--sh);overflow:hidden;display:flex;flex-direction:column;transition:.2s}
+.section-card:hover{box-shadow:var(--sh2)}
+.sc-head{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer}
 .sc-head .num{font-size:17px;font-weight:800}
 .sc-head .num small{font-weight:600;opacity:.85;font-size:12px;margin-inline-start:6px}
 .sc-head .total{background:rgba(255,255,255,.22);padding:3px 12px;border-radius:20px;font-size:12.5px;font-weight:700}
@@ -140,16 +142,26 @@ body.lib-ready #libStatus{transform:translateY(-100%)}
 .sc-stats{display:flex;background:#f8fafc;border-bottom:1px solid var(--border);font-size:12px}
 .sc-stats .st{flex:1;padding:8px 4px;text-align:center;border-inline-end:1px solid var(--border);font-weight:700}
 .sc-stats .st:last-child{border-inline-end:none}
-.sc-stats .st.m{color:var(--male)} .sc-stats .st.f{color:var(--female)} .sc-stats .st.r{color:var(--warn)} .sc-stats .st.u{color:var(--muted)}
+.sc-stats .st.m{color:var(--male)} .sc-stats .st.f{color:var(--female)} .sc-stats .st.r{color:var(--warn)} .sc-stats .st.u{color:var(--muted)} .sc-stats .st.lk{color:var(--lock)}
 .sc-stats .st b{display:block;font-size:15px;font-weight:800;line-height:1.1}
 .sc-stats .st span{font-size:10.5px;opacity:.85;font-weight:600}
+
+.sc-toolbar{display:flex;gap:6px;padding:6px 10px;background:#f1f5f9;border-bottom:1px solid var(--border);align-items:center;font-size:11.5px}
+.sc-toolbar label{display:flex;gap:5px;align-items:center;cursor:pointer;font-weight:700;color:#475569}
+.sc-toolbar input[type=checkbox]{width:14px;height:14px;accent-color:var(--pri);cursor:pointer}
+.sc-toolbar .sel-count{background:var(--pri);color:#fff;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:700}
+
 .sc-list{flex:1;overflow-y:auto;max-height:560px;padding:4px 0}
 .sc-list::-webkit-scrollbar{width:8px}
 .sc-list::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
-
-.student-row{display:flex;align-items:flex-start;gap:8px;padding:7px 12px;border-bottom:1px solid #f1f5f9;font-size:12.5px;transition:.1s}
+.student-row{display:flex;align-items:flex-start;gap:8px;padding:7px 12px;border-bottom:1px solid #f1f5f9;font-size:12.5px;transition:.1s;position:relative}
 .student-row:hover{background:#f8fafc}
+.student-row.selected{background:#fef3c7!important}
+.student-row.selected::before{content:"";position:absolute;right:0;top:0;bottom:0;width:3px;background:var(--warn)}
+.student-row.locked{background:linear-gradient(90deg,#faf5ff,#fff)!important}
+.student-row.locked::before{content:"";position:absolute;right:0;top:0;bottom:0;width:3px;background:var(--lock)}
 .student-row:last-child{border-bottom:none}
+.sr-check{flex:0 0 18px;height:18px;cursor:pointer;accent-color:var(--pri)}
 .sr-num{flex:0 0 24px;height:24px;line-height:24px;text-align:center;background:#f1f5f9;color:#475569;border-radius:6px;font-weight:700;font-size:11.5px}
 .sr-main{flex:1;min-width:0}
 .sr-name{font-weight:700;color:#1e293b;word-break:break-word;line-height:1.3}
@@ -158,6 +170,7 @@ body.lib-ready #libStatus{transform:translateY(-100%)}
 .tag-mini.moved{background:#fee2e2;color:#991b1b}
 .tag-mini.rep{background:#fef3c7;color:#92400e}
 .tag-mini.new{background:#ede9fe;color:#5b21b6}
+.tag-mini.lock{background:#f3e8ff;color:#6b21a8;border:1px solid #c4b5fd}
 .sr-meta{display:flex;gap:6px;align-items:center;margin-top:2px;font-size:10.5px;color:var(--muted);flex-wrap:wrap}
 .sr-meta .dot{width:3px;height:3px;background:#cbd5e1;border-radius:50%}
 .sr-actions{display:flex;gap:3px;align-items:center;flex-shrink:0}
@@ -165,6 +178,8 @@ body.lib-ready #libStatus{transform:translateY(-100%)}
 .sr-act:hover{background:#f1f5f9}
 .sr-act.del:hover{background:#fef2f2;border-color:#fecaca;color:var(--err)}
 .sr-act.mv:hover{background:#eff6ff;border-color:#bfdbfe;color:var(--pri)}
+.sr-act.lk{color:var(--lock)}
+.sr-act.lk:hover{background:#f3e8ff;border-color:#c4b5fd}
 .sr-gender{flex:0 0 26px;height:22px;line-height:22px;text-align:center;border-radius:6px;font-weight:800;font-size:11.5px;cursor:pointer;user-select:none}
 .sr-gender.m{background:#dbeafe;color:var(--male)}
 .sr-gender.f{background:#fce7f3;color:var(--female)}
@@ -173,48 +188,34 @@ body.lib-ready #libStatus{transform:translateY(-100%)}
 .warnbox{background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1px solid #fde68a;border-radius:10px;padding:12px 16px;font-size:12.5px;color:#92400e;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start}
 .warnbox .ico{flex:0 0 20px;font-size:16px}
 
-/* ============ شاشة التدقيق ============ */
-.audit-panel{border-radius:12px;padding:18px 22px;margin-bottom:18px;border:2px solid}
-.audit-panel.pass{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#10b981;color:#065f46}
-.audit-panel.fail{background:linear-gradient(135deg,#fef2f2,#fee2e2);border-color:#dc2626;color:#991b1b}
-.audit-panel h3{margin:0 0 12px;font-size:17px;display:flex;align-items:center;gap:10px;font-weight:800}
-.audit-panel .icon{width:32px;height:32px;line-height:32px;text-align:center;border-radius:50%;font-size:20px;font-weight:900;color:#fff;flex-shrink:0}
-.audit-panel.pass .icon{background:#10b981}
-.audit-panel.fail .icon{background:#dc2626}
-.audit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:12px}
-.audit-item{background:rgba(255,255,255,.7);border-radius:8px;padding:10px 14px;font-size:13px}
-.audit-item .lbl{font-size:11.5px;font-weight:700;opacity:.85;margin-bottom:3px}
-.audit-item .val{font-size:15px;font-weight:800}
-.audit-item.ok .val{color:#047857}
-.audit-item.bad .val{color:#b91c1c}
-.audit-table{width:100%;border-collapse:collapse;margin-top:14px;font-size:13px;background:#fff;border-radius:8px;overflow:hidden}
-.audit-table th{background:#f1f5f9;color:#334155;padding:10px;text-align:center;font-weight:700;border-bottom:2px solid #e2e8f0;font-size:12px}
-.audit-table td{padding:9px 10px;text-align:center;border-bottom:1px solid #f1f5f9;font-weight:600}
-.audit-table tr:last-child td{border-bottom:none}
-.audit-table .ok{color:#047857}
-.audit-table .bad{color:#b91c1c;background:#fef2f2}
-.audit-table .total{background:#f8fafc;font-weight:800;color:#1e5aa8}
+/* شريط العمليات الجماعية العائم */
+#bulkBar{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(135deg,#1e3a8a,#1e5aa8);color:#fff;padding:14px 24px;box-shadow:0 -4px 16px rgba(0,0,0,.2);z-index:8000;display:none;align-items:center;gap:16px;flex-wrap:wrap}
+#bulkBar.on{display:flex}
+#bulkBar .info{font-size:13.5px;font-weight:700}
+#bulkBar .info b{background:rgba(255,255,255,.22);padding:2px 10px;border-radius:12px;margin-inline-start:6px}
+#bulkBar .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-inline-start:auto}
+#bulkBar select{padding:6px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:#fff;font-weight:700;font-size:13px;width:auto;min-width:130px}
+#bulkBar select option{color:#1e293b;background:#fff}
+#bulkBar button{background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3)}
+#bulkBar button:hover{background:rgba(255,255,255,.32)}
+#bulkBar button.pri{background:#fff;color:var(--pri);border:none}
+#bulkBar button.pri:hover{background:#f1f5f9}
+#bulkBar button.warn{background:#f59e0b;color:#fff;border-color:#d97706}
+#bulkBar button.lock{background:linear-gradient(135deg,#a855f7,#7c3aed);border-color:#6d28d9}
+#bulkBar button.lock:hover{background:linear-gradient(135deg,#9333ea,#6d28d9)}
+#bulkBar button.danger{background:#dc2626;color:#fff;border-color:#b91c1c}
+#bulkBar button.danger:hover{background:#b91c1c}
 
-.dup-list{margin-top:10px;background:#fff;border-radius:8px;padding:10px 14px;font-size:12.5px;max-height:220px;overflow-y:auto}
-.dup-list .dup-row{padding:6px 0;border-bottom:1px dashed #fecaca;color:#991b1b}
-.dup-list .dup-row:last-child{border-bottom:none}
+/* لوحة التثبيت */
+.locked-panel{background:linear-gradient(135deg,#faf5ff,#f3e8ff);border:1px solid #d8b4fe;border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:13px;color:#6b21a8}
+.locked-panel h4{margin:0 0 8px;font-size:13.5px;display:flex;align-items:center;gap:8px}
+.locked-panel .items{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.locked-panel .item{background:#fff;border:1px solid #c4b5fd;padding:3px 10px;border-radius:20px;font-size:12px;display:flex;align-items:center;gap:6px;font-weight:600}
+.locked-panel .item button{background:transparent;border:none;padding:0;color:#dc2626;font-weight:800;cursor:pointer;font-size:14px;line-height:1}
 
-.settings-table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;margin-bottom:10px}
-.settings-table th{background:#f8fafc;color:#334155;font-weight:700;padding:10px 12px;text-align:center;border-bottom:2px solid var(--border);font-size:12px}
-.settings-table td{padding:10px 12px;text-align:center;border-bottom:1px solid #f1f5f9}
-.settings-table tr:hover{background:#f8fafc}
-.settings-table input[type=number]{width:70px;padding:5px;border:1px solid #cbd5e1;border-radius:6px;text-align:center;font-weight:700;color:var(--pri)}
-.settings-table .prom{color:#0369a1;font-weight:700}
-.settings-table .rep{color:#b45309;font-weight:700}
-.settings-table .new{color:#7c3aed;font-weight:700}
-.ctrl-bar{display:flex;gap:14px;flex-wrap:wrap;align-items:center;padding:12px 0;margin-top:8px;border-top:1px solid var(--border)}
-.ctrl-bar label{display:flex;gap:7px;align-items:center;cursor:pointer;font-size:13px;font-weight:600;color:#334155}
-.ctrl-bar input[type=checkbox]{width:16px;height:16px;accent-color:var(--pri);cursor:pointer}
-.hint{font-size:12px;color:var(--muted);margin-top:6px}
-
-/* ============ النافذة المنبثقة للنموذج ============ */
+/* modal-bg reused */
 .modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.65);z-index:9000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)}
-.modal-box{background:#fff;border-radius:14px;max-width:520px;width:100%;padding:24px;box-shadow:0 25px 60px rgba(0,0,0,.35);max-height:88vh;overflow-y:auto}
+.modal-box{background:#fff;border-radius:14px;max-width:560px;width:100%;padding:24px;box-shadow:0 25px 60px rgba(0,0,0,.35);max-height:88vh;overflow-y:auto}
 .modal-box h3{margin:0 0 16px;color:var(--pri);font-size:17px;font-weight:800;display:flex;align-items:center;gap:8px}
 .form-row{margin-bottom:12px}
 .form-row label{display:block;font-size:12px;font-weight:700;color:#475569;margin-bottom:4px}
@@ -222,7 +223,6 @@ body.lib-ready #libStatus{transform:translateY(-100%)}
 @media(max-width:520px){.form-grid{grid-template-columns:1fr}}
 .modal-actions{margin-top:18px;display:flex;gap:10px;justify-content:flex-end}
 
-/* ============ العرض بملء الشاشة ============ */
 #fullscreen{position:fixed;inset:0;background:#f1f5f9;z-index:9500;display:flex;flex-direction:column}
 #fullscreen .fs-head{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:var(--sh2)}
 #fullscreen .fs-head h3{margin:0;font-size:18px;font-weight:800}
@@ -237,10 +237,10 @@ body.lib-ready #libStatus{transform:translateY(-100%)}
 #fullscreen table.fs-tbl tr:hover td{background:#eff6ff}
 #fullscreen .fs-footer{padding:12px 22px;background:#fff;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--muted)}
 
-/* ============ الطباعة ============ */
 #printContainer{display:none}
 @media print{
   body>*{display:none!important}
+  #bulkBar{display:none!important}
   #printContainer{display:block!important;background:#fff}
   @page{size:A4 portrait;margin:10mm 8mm}
   .pr-doc{font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:#000}
@@ -274,13 +274,13 @@ body.lib-ready #libStatus{transform:translateY(-100%)}
 </div>
 
 <header>
-  <h1>📚 نظام توزيع التلاميذ — معالجة حتمية 100%</h1>
+  <h1>📚 نظام توزيع التلاميذ — معالجة حتمية 100% + تثبيت يدوي</h1>
   <p>متوسطة بوضريسة محمد الأمين — المسيلة · السنة الدراسية 2026 / 2027</p>
   <div class="badges">
     <span>🏫 الخريطة: أولى 12 · ثانية 8 · ثالثة 5 · رابعة 6</span>
     <span>🔒 صفر فقدان بيانات</span>
-    <span>🎯 مطابقة صارمة برقم التعريف</span>
-    <span>✏️ إضافة / حذف / نقل</span>
+    <span>📌 تثبيت يدوي وتوجيه مستهدف</span>
+    <span>🔀 نقل جماعي</span>
     <span>✅ تدقيق تلقائي</span>
   </div>
 </header>
@@ -316,15 +316,21 @@ body.lib-ready #libStatus{transform:translateY(-100%)}
     <button id="btnAddStudent" class="pri">➕ إضافة تلميذ يدوياً</button>
     <button id="btnRun">🔄 تشغيل التوزيع</button>
   </div>
+  <div class="hint">💡 حدّد تلاميذ بخانات التحديد ثم اضغط «تثبيت في الفوج» أسفل الشاشة — سيُحترم التثبيت في كل عملية توزيع.</div>
+</section>
+
+<section class="card hidden" id="lockedCard">
+  <h2>③ قائمة التثبيت اليدوي (Locked Assignments)</h2>
+  <div id="lockedBody"></div>
 </section>
 
 <section class="card hidden" id="auditCard">
-  <h2>③ لوحة التدقيق والتحقق (Validation Dashboard)</h2>
+  <h2>④ لوحة التدقيق والتحقق (Validation Dashboard)</h2>
   <div id="auditBody"></div>
 </section>
 
 <section class="card hidden" id="resultCard">
-  <h2>④ القوائم النهائية حسب المستوى والفوج</h2>
+  <h2>⑤ القوائم النهائية حسب المستوى والفوج</h2>
   <div class="tabs" id="tabs"></div>
   <div id="levelView"></div>
 </section>
@@ -332,6 +338,20 @@ body.lib-ready #libStatus{transform:translateY(-100%)}
 </main>
 
 <div id="printContainer"></div>
+
+<!-- شريط العمليات الجماعية العائم -->
+<div id="bulkBar">
+  <div class="info">📌 محدد: <b id="bulkCount">0</b> تلميذ</div>
+  <div class="actions">
+    <select id="bulkTargetLevel" title="اختر المستوى"></select>
+    <select id="bulkTargetGroup" title="اختر الفوج"></select>
+    <button class="lock" onclick="lockSelected()">📌 تثبيت في الفوج</button>
+    <button class="pri" onclick="transferSelected()">🔀 نقل المحددين</button>
+    <button class="warn" onclick="unlockSelected()">🔓 فك التثبيت</button>
+    <button class="danger" onclick="deleteSelected()">🗑️ حذف المحددين</button>
+    <button onclick="clearSelection()">✕ إلغاء التحديد</button>
+  </div>
+</div>
 
 <script>
 /* =====================================================================
@@ -412,7 +432,10 @@ const STATE={
   audit:null,
   activeLevel:null,
   loadedCur:false, loadedOld:false,
-  manualAdditions:[]
+  // ✨ جديد: التثبيت اليدوي (رقم التعريف → { level, group })
+  locks: new Map(),
+  // ✨ جديد: التحديد الجماعي (Set من أرقام التعريف)
+  selection: new Set()
 };
 const $=id=>document.getElementById(id);
 
@@ -516,7 +539,6 @@ function enrich(){
     s.gender=g;
 
     if(s.manual){
-      // التلاميذ المُضافون يدوياً لا يُطبَّق عليهم منطق المسار
       if(s.origin!=='manual') s.origin='manual';
       if(!s.system) s.system='غير محدد';
       return;
@@ -542,13 +564,14 @@ function enrich(){
 }
 
 /* =====================================================================
-   القسم 8: الخوارزمية الحتمية
+   القسم 8: الخوارزمية الحتمية (مع مراعاة التثبيتات اليدوية)
    ===================================================================== */
 function addTo(g,s){
   g.list.push(s);
   if(s.gender==='M')g.m++; else if(s.gender==='F')g.f++; else g.u++;
   if(s.origin==='repeater')g.reps++;
   if(s.origin==='promoted')g.prom++;
+  if(STATE.locks.has(s.id)) g.locked=(g.locked||0)+1;
   g.sys[s.system]=(g.sys[s.system]||0)+1;
 }
 function removeFrom(g,s){
@@ -556,6 +579,7 @@ function removeFrom(g,s){
   if(s.gender==='M')g.m--; else if(s.gender==='F')g.f--; else g.u--;
   if(s.origin==='repeater')g.reps--;
   if(s.origin==='promoted')g.prom--;
+  if(STATE.locks.has(s.id)) g.locked=(g.locked||0)-1;
   g.sys[s.system]=(g.sys[s.system]||0)-1;
 }
 function scoreGroup(g,s,ctx){
@@ -582,7 +606,7 @@ function deterministicSort(arr){
 
 function distribute(students,G,opts){
   const groups=[];
-  for(let i=0;i<G;i++)groups.push({num:i+1,list:[],m:0,f:0,u:0,reps:0,prom:0,sys:{}});
+  for(let i=0;i<G;i++)groups.push({num:i+1,list:[],m:0,f:0,u:0,reps:0,prom:0,locked:0,sys:{}});
 
   const total=students.length;
   const totM=students.filter(s=>s.gender==='M').length;
@@ -598,8 +622,27 @@ function distribute(students,G,opts){
   };
   sysKeys.forEach(k=>ctx.sysTarget[k]=sysTot[k]/G);
 
-  const pKeep=[],pFree=[],rKeep=[],rFree=[],newbies=[];
+  // ============ المرحلة صفر: التثبيتات اليدوية (أولوية قصوى) ============
+  // ✅ حجز أماكن التلاميذ المُثبَّتين أولاً واستبعادهم من التوزيع التلقائي
+  const lockedStudents = [];
+  const freeStudents = [];
   students.forEach(s=>{
+    const lock = STATE.locks.get(s.id);
+    if(lock && lock.level === s.level && lock.group >= 1 && lock.group <= G){
+      lockedStudents.push(s);
+    }else{
+      freeStudents.push(s);
+    }
+  });
+  // ترتيب حتمي قبل الإضافة
+  deterministicSort(lockedStudents).forEach(s=>{
+    const lock = STATE.locks.get(s.id);
+    addTo(groups[lock.group-1], s);
+  });
+
+  // ============ المرحلة 1: المُرقّون (استبعاد المُثبَّتين) ============
+  const pKeep=[],pFree=[],rKeep=[],rFree=[],newbies=[];
+  freeStudents.forEach(s=>{
     if(s.origin==='promoted'&&s.trackGroup){
       (s.trackGroup>=1&&s.trackGroup<=G?pKeep:pFree).push(s);
     }else if(s.origin==='repeater'&&s.trackGroup){
@@ -610,6 +653,7 @@ function distribute(students,G,opts){
   deterministicSort(pKeep).forEach(s=>addTo(groups[s.trackGroup-1],s));
   deterministicSort(rKeep).forEach(s=>addTo(groups[s.trackGroup-1],s));
 
+  // ============ المرحلة 2: القائمة الحرة ============
   const freePool=[];
   deterministicSort(rFree).forEach(s=>freePool.push(s));
   deterministicSort(newbies).forEach(s=>freePool.push(s));
@@ -643,6 +687,7 @@ function distribute(students,G,opts){
     addTo(best,s);
   });
 
+  // ============ المرحلة 3: الموازنة النهائية (تستثني المُثبَّتين) ============
   if(!opts.strict){
     let guard=0;
     while(guard++<5000){
@@ -652,7 +697,8 @@ function distribute(students,G,opts){
         if(g.list.length<mnG.list.length)mnG=g;
       }
       if(mxG.list.length-mnG.list.length<=1)break;
-      const candidates=mxG.list.filter(s=>!s.trackGroup)
+      // 🔒 لا ننقل أي تلميذ مُثبَّت
+      const candidates=mxG.list.filter(s=>!s.trackGroup && !STATE.locks.has(s.id))
         .sort((a,b)=>a.name.localeCompare(b.name,'ar'));
       if(!candidates.length)break;
       const s=candidates[0];
@@ -664,6 +710,7 @@ function distribute(students,G,opts){
   const stats={
     total,G, avg:(total/G).toFixed(1),
     m:totM, f:totF, u:total-totM-totF, rep:totRep,
+    locked: lockedStudents.length,
     min:Math.min(...groups.map(g=>g.list.length)),
     max:Math.max(...groups.map(g=>g.list.length))
   };
@@ -676,7 +723,8 @@ function distribute(students,G,opts){
 function runAudit(){
   const audit={
     pass:true, totals:{}, perLevel:{},
-    duplicates:[], missing:[], mismatched:[], groupCountIssues:[]
+    duplicates:[], missing:[], mismatched:[], groupCountIssues:[],
+    lockIssues:[] // ✨ التحقق من التثبيتات
   };
   audit.totals.input=STATE.cur.length;
 
@@ -707,6 +755,17 @@ function runAudit(){
             });
           }else{
             seenIds.set(s.id,{level:lv,group:g.num});
+          }
+          // ✨ التحقق من أن المُثبَّت في فوجه المطلوب
+          const lock = STATE.locks.get(s.id);
+          if(lock){
+            if(s.level!==lock.level || g.num!==lock.group){
+              audit.lockIssues.push({
+                id: s.id, name: s.name,
+                expected: { level: lock.level, group: lock.group },
+                actual: { level: lv, group: g.num }
+              });
+            }
           }
         });
       });
@@ -742,7 +801,7 @@ function runAudit(){
       });
     });
   });
-  if(audit.duplicates.length||audit.missing.length||audit.mismatched.length)
+  if(audit.duplicates.length||audit.missing.length||audit.mismatched.length||audit.lockIssues.length)
     audit.pass=false;
   return audit;
 }
@@ -770,11 +829,92 @@ function runDistribution(){
   });
   STATE.audit=runAudit();
   renderAudit();
+  renderLockedPanel();
   renderResults();
+  renderBulkBar();
 }
 
 /* =====================================================================
-   القسم 11: عرض لوحة التدقيق
+   القسم 11: عرض لوحة التثبيت
+   ===================================================================== */
+function renderLockedPanel(){
+  const hasAny = STATE.locks.size>0;
+  $('lockedCard').classList.toggle('hidden', !hasAny);
+  if(!hasAny)return;
+
+  // تجميع التثبيتات حسب (مستوى، فوج)
+  const grouped = new Map();
+  STATE.locks.forEach((lock, id)=>{
+    const key = `${lock.level}|${lock.group}`;
+    if(!grouped.has(key)) grouped.set(key, { level: lock.level, group: lock.group, ids: [] });
+    grouped.get(key).ids.push(id);
+  });
+
+  let html = `<div class="locked-panel">
+    <h4>📌 تم تثبيت <b>${STATE.locks.size}</b> تلميذ يدوياً على أفواج محددة — هؤلاء محجوزون ولن تُغيّرهم الخوارزمية:</h4>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">`;
+
+  const sortedKeys = [...grouped.keys()].sort();
+  sortedKeys.forEach(key=>{
+    const g = grouped.get(key);
+    const studs = g.ids.map(id=>STATE.cur.find(s=>s.id===id)).filter(Boolean);
+    html += `<div style="background:rgba(255,255,255,.6);border-radius:8px;padding:8px 12px">
+      <div style="font-weight:800;color:#6b21a8;margin-bottom:6px">
+        📁 ${LEVEL_SHORT[g.level]}${g.group} — ${LEVEL_LABEL[g.level]} (${studs.length} تلميذ)
+      </div>
+      <div class="items">`;
+    studs.forEach(s=>{
+      html += `<span class="item">
+        ${esc(s.name)}
+        <button onclick="unlockOne('${esc(s.id)}')" title="فك التثبيت">✕</button>
+      </span>`;
+    });
+    html += `</div></div>`;
+  });
+
+  html += `</div>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="danger" onclick="unlockAll()">🔓 فك تثبيت الكل</button>
+      <button onclick="exportLocks()">⬇️ تصدير قائمة التثبيت</button>
+    </div>
+  </div>`;
+  $('lockedBody').innerHTML = html;
+}
+
+function unlockOne(id){
+  STATE.locks.delete(id);
+  runDistribution();
+}
+function unlockAll(){
+  if(!confirm('هل تريد فك تثبيت جميع التلاميذ ('+STATE.locks.size+')؟'))return;
+  STATE.locks.clear();
+  runDistribution();
+}
+function exportLocks(){
+  if(!STATE.locks.size){alert('لا توجد تثبيتات لتصديرها');return;}
+  const rows=[];
+  STATE.locks.forEach((lock,id)=>{
+    const s=STATE.cur.find(x=>x.id===id);
+    if(!s)return;
+    rows.push({
+      'رقم التعريف': s.id,
+      'اللقب والاسم': s.name,
+      'المستوى': LEVEL_LABEL[s.level],
+      'الفوج المُثبَّت': `${LEVEL_SHORT[lock.level]}${lock.group}`,
+      'تاريخ الميلاد': s.birth,
+      'النظام': s.system,
+      'رقم التسجيل': s.reg
+    });
+  });
+  const wb=XLSX.utils.book_new();
+  const ws=XLSX.utils.json_to_sheet(rows);
+  ws['!cols']=[{wch:18},{wch:28},{wch:15},{wch:12},{wch:13},{wch:13},{wch:11}];
+  XLSX.utils.book_append_sheet(wb,ws,'التثبيت');
+  XLSX.writeFile(wb,'قائمة_التثبيت_اليدوي.xlsx');
+}
+
+/* =====================================================================
+   القسم 12: عرض لوحة التدقيق
    ===================================================================== */
 function renderAudit(){
   $('auditCard').classList.remove('hidden');
@@ -793,6 +933,7 @@ function renderAudit(){
         <li>✅ إجمالي المدخلات = إجمالي المخرجات (${a.totals.input} تلميذ)</li>
         <li>✅ لا يوجد أي تكرار في أرقام التعريف</li>
         <li>✅ جميع الأسماء وتواريخ الميلاد وأرقام التسجيل مطابقة للأصل حرفياً</li>
+        <li>✅ ${STATE.locks.size>0?`جميع التلاميذ المُثبَّتين (${STATE.locks.size}) في أفواجهم المطلوبة`:'لا توجد تثبيتات يدوية'}</li>
         <li>✅ عدد الأفواج مطابق للخريطة المدرسية الرسمية</li>
       </ul>
     </div>`;
@@ -816,8 +957,14 @@ function renderAudit(){
     <div class="audit-item ${a.mismatched.length===0?'ok':'bad'}">
       <div class="lbl">اختلافات بيانات</div><div class="val">${a.mismatched.length}</div>
     </div>
+    <div class="audit-item ${a.lockIssues.length===0?'ok':'bad'}">
+      <div class="lbl">مشاكل التثبيت اليدوي</div><div class="val">${a.lockIssues.length}</div>
+    </div>
     <div class="audit-item ${a.groupCountIssues.length===0?'ok':'bad'}">
       <div class="lbl">مشاكل الخريطة</div><div class="val">${a.groupCountIssues.length}</div>
+    </div>
+    <div class="audit-item ok">
+      <div class="lbl">تلاميذ مُثبَّتون يدوياً</div><div class="val">${STATE.locks.size}</div>
     </div>
   </div>`;
 
@@ -870,6 +1017,14 @@ function renderAudit(){
     });
     html+=`</div></div>`;
   }
+  if(a.lockIssues.length){
+    html+=`<div style="margin-top:16px"><h4 style="margin:0 0 8px;color:#b91c1c">🔴 مشاكل التثبيت اليدوي (${a.lockIssues.length})</h4><div class="dup-list">`;
+    a.lockIssues.forEach(m=>{
+      html+=`<div class="dup-row"><b>${esc(m.name)}</b> — <code>${esc(m.id)}</code>
+        — متوقع: <b>${LEVEL_SHORT[m.expected.level]}${m.expected.group}</b>، فعلي: <b>${LEVEL_SHORT[m.actual.level]}${m.actual.group}</b></div>`;
+    });
+    html+=`</div></div>`;
+  }
   if(a.groupCountIssues.length){
     html+=`<div style="margin-top:16px"><h4 style="margin:0 0 8px;color:#b91c1c">⚠️ مشاكل الخريطة المدرسية</h4><div class="dup-list">`;
     a.groupCountIssues.forEach(g=>{
@@ -882,7 +1037,7 @@ function renderAudit(){
 }
 
 /* =====================================================================
-   القسم 12: الإعدادات
+   القسم 13: الإعدادات
    ===================================================================== */
 function renderSettings(){
   $('settingsCard').classList.remove('hidden');
@@ -895,13 +1050,14 @@ function renderSettings(){
 
   let html=`<table class="settings-table"><thead><tr>
     <th>المستوى</th><th>عدد التلاميذ</th><th>عدد الأفواج</th><th>المعدل/فوج</th>
-    <th>مُرقّون</th><th>معيدون</th><th>جدد + حر</th><th>أفواج سابقة</th>
+    <th>مُرقّون</th><th>معيدون</th><th>جدد + حر</th><th>📌 مُثبَّتون</th><th>أفواج سابقة</th>
   </tr></thead><tbody>`;
   LEVELS.forEach(lv=>{
     const list=STATE.cur.filter(s=>s.level===lv);
     const G=STATE.groupCount[lv]||1;
     const prom=list.filter(s=>s.origin==='promoted'&&s.trackGroup).length;
     const rep=list.filter(s=>s.origin==='repeater'&&s.trackGroup).length;
+    const locked=list.filter(s=>STATE.locks.has(s.id)).length;
     const free=list.length-prom-rep;
     const oldLvl=LEVELS[LEVEL_N[lv]-2];
     const oldG=oldLvl?new Set(Object.values(STATE.oldMap).filter(o=>o.level===oldLvl&&o.group).map(o=>o.group)).size:0;
@@ -911,6 +1067,7 @@ function renderSettings(){
       <td><input type="number" min="1" max="30" value="${G}" data-lvl="${lv}" class="gInput"></td>
       <td>${list.length?(list.length/G).toFixed(1):'—'}</td>
       <td class="prom">${prom}</td><td class="rep">${rep}</td><td class="new">${free}</td>
+      <td style="color:#7c3aed;font-weight:800">${locked||'—'}</td>
       <td>${oldG||'—'}</td>
     </tr>`;
   });
@@ -926,7 +1083,7 @@ function renderSettings(){
 }
 
 /* =====================================================================
-   القسم 13: عرض النتائج
+   القسم 14: عرض النتائج
    ===================================================================== */
 function renderResults(){
   $('resultCard').classList.remove('hidden');
@@ -956,6 +1113,7 @@ function renderLevelView(lv){
       <div class="kpi p-m"><div class="v">${r.stats.m}</div><div class="l">ذكور</div></div>
       <div class="kpi p-f"><div class="v">${r.stats.f}</div><div class="l">إناث</div></div>
       <div class="kpi p-r"><div class="v">${r.stats.rep}</div><div class="l">معيدون</div></div>
+      ${r.stats.locked>0?`<div class="kpi p-lock"><div class="v">${r.stats.locked}</div><div class="l">📌 مُثبَّتون</div></div>`:''}
       <div class="kpi p-ok"><div class="v">${r.stats.min}–${r.stats.max}</div><div class="l">الأدنى/الأعلى</div></div>
     </div>`;
 
@@ -978,12 +1136,14 @@ function renderLevelView(lv){
   r.groups.forEach(g=>{
     const total=g.list.length;
     const over=total>r.stats.avg*1.2?' style="outline:2px solid #fbbf24;outline-offset:-2px"':'';
+    const groupSelected = g.list.filter(s=>STATE.selection.has(s.id)).length;
+
     cards+=`
       <div class="section-card"${over} data-num="${g.num}">
         <div class="sc-head">
           <div class="num">${LEVEL_SHORT[lv]}${g.num}<small>— الفوج ${g.num}</small></div>
           <div style="display:flex;gap:6px;align-items:center">
-            <div class="total">${total} تلميذ</div>
+            <div class="total">${total} تلميذ${g.locked>0?` · 📌${g.locked}`:''}</div>
             <button class="expand" onclick="event.stopPropagation();openFullscreen('${lv}',${g.num})">⛶ تكبير</button>
           </div>
         </div>
@@ -992,14 +1152,27 @@ function renderLevelView(lv){
           <div class="st f"><b>${g.f}</b><span>إناث</span></div>
           <div class="st u"><b>${g.u}</b><span>؟</span></div>
           <div class="st r"><b>${g.reps}</b><span>معيدون</span></div>
+          ${g.locked>0?`<div class="st lk"><b>${g.locked}</b><span>📌 مُثبَّت</span></div>`:''}
+        </div>
+        <div class="sc-toolbar">
+          <label>
+            <input type="checkbox" class="grp-check" data-lvl="${lv}" data-grp="${g.num}">
+            تحديد كل الفوج
+          </label>
+          ${groupSelected>0?`<span class="sel-count">${groupSelected} محدد</span>`:''}
         </div>
         <div class="sc-list">`;
 
     g.list.forEach((s,idx)=>{
       const gCls=s.gender==='M'?'m':(s.gender==='F'?'f':'u');
       const gTxt=s.gender==='M'?'ذ':(s.gender==='F'?'أ':'؟');
+      const isLocked=STATE.locks.has(s.id);
+      const isSelected=STATE.selection.has(s.id);
       let tag='';
-      if(s.origin==='promoted'){
+      if(isLocked){
+        const lock=STATE.locks.get(s.id);
+        tag=`<span class="tag-mini lock">📌 مُثبَّت على ${LEVEL_SHORT[lock.level]}${lock.group}</span>`;
+      }else if(s.origin==='promoted'){
         tag=s.trackGroup
           ? `<span class="tag-mini keep">مسار ${s.oldLevel} ${s.trackGroup}</span>`
           : `<span class="tag-mini moved">أُعيد توزيعه</span>`;
@@ -1014,7 +1187,8 @@ function renderLevelView(lv){
       }
       const sysBadge=s.system?`<span>${esc(s.system)}</span>`:'';
       cards+=`
-        <div class="student-row" data-search="${esc((s.name+' '+s.id).toLowerCase())}">
+        <div class="student-row${isSelected?' selected':''}${isLocked?' locked':''}" data-search="${esc((s.name+' '+s.id).toLowerCase())}" data-id="${esc(s.id)}">
+          <input type="checkbox" class="sr-check" data-id="${esc(s.id)}" ${isSelected?'checked':''}>
           <div class="sr-num">${idx+1}</div>
           <div class="sr-main">
             <div class="sr-name">${esc(s.name)}${tag}</div>
@@ -1025,6 +1199,8 @@ function renderLevelView(lv){
             </div>
           </div>
           <div class="sr-actions">
+            <button class="sr-act lk" title="${isLocked?'فك التثبيت':'تثبيت في هذا الفوج'}"
+              onclick="event.stopPropagation();toggleLock('${esc(s.id)}','${lv}',${g.num})">📌</button>
             <button class="sr-act mv" title="نقل إلى فوج آخر"
               onclick="event.stopPropagation();moveStudent('${esc(s.id)}')">↔</button>
             <button class="sr-act del" title="حذف التلميذ"
@@ -1053,10 +1229,235 @@ function renderLevelView(lv){
       });
     });
   }
+
+  // ربط تحديد التلاميذ
+  box.querySelectorAll('.sr-check').forEach(cb=>{
+    cb.addEventListener('change', e=>{
+      const id = e.target.dataset.id;
+      if(e.target.checked) STATE.selection.add(id);
+      else STATE.selection.delete(id);
+      const row = e.target.closest('.student-row');
+      if(row) row.classList.toggle('selected', e.target.checked);
+      // تحديث عدّاد التحديد في كل بطاقة
+      updateGroupSelectionCounters();
+      renderBulkBar();
+    });
+  });
+
+  // ربط "تحديد كل الفوج"
+  box.querySelectorAll('.grp-check').forEach(cb=>{
+    cb.addEventListener('change', e=>{
+      const lvSel = e.target.dataset.lvl;
+      const grpNum = parseInt(e.target.dataset.grp);
+      const r = STATE.results[lvSel];
+      if(!r) return;
+      const g = r.groups.find(x=>x.num===grpNum);
+      if(!g) return;
+      if(e.target.checked){
+        g.list.forEach(s=>STATE.selection.add(s.id));
+      }else{
+        g.list.forEach(s=>STATE.selection.delete(s.id));
+      }
+      // تحديث كل الواجهة
+      renderLevelView(STATE.activeLevel);
+    });
+  });
+}
+
+function updateGroupSelectionCounters(){
+  // إعادة الرسم فقط عندما يكون التحديد في نفس المستوى
+  renderBulkBar();
 }
 
 /* =====================================================================
-   القسم 14: أدوات التعديل التفاعلي
+   القسم 15: شريط العمليات الجماعية
+   ===================================================================== */
+function renderBulkBar(){
+  const bar = $('bulkBar');
+  const count = STATE.selection.size;
+  if(count===0){
+    bar.classList.remove('on');
+    return;
+  }
+  bar.classList.add('on');
+  $('bulkCount').textContent = count;
+
+  // تحديث قائمة المستويات المتاحة (من التلاميذ المحددين)
+  const selStudents = [...STATE.selection].map(id=>STATE.cur.find(s=>s.id===id)).filter(Boolean);
+  const levels = [...new Set(selStudents.map(s=>s.level))];
+  const lvSelect = $('bulkTargetLevel');
+  const grpSelect = $('bulkTargetGroup');
+  const prevLv = lvSelect.value;
+  const prevGrp = grpSelect.value;
+
+  // إذا كان كل المحددين من نفس المستوى، استخدم هذا المستوى تلقائياً
+  const singleLevel = levels.length===1 ? levels[0] : null;
+
+  lvSelect.innerHTML = levels.map(lv=>
+    `<option value="${lv}" ${(singleLevel===lv||prevLv===lv)?'selected':''}>${LEVEL_LABEL[lv]}</option>`
+  ).join('');
+
+  const activeLv = lvSelect.value;
+  const G = STATE.groupCount[activeLv]||OFFICIAL_GROUPS[activeLv]||1;
+  grpSelect.innerHTML = '';
+  for(let i=1;i<=G;i++){
+    grpSelect.innerHTML += `<option value="${i}" ${String(i)===prevGrp?'selected':''}>${LEVEL_SHORT[activeLv]}${i}</option>`;
+  }
+
+  // تحديث الأفواج عند تغيير المستوى
+  lvSelect.onchange = ()=>{
+    const lv = lvSelect.value;
+    const G2 = STATE.groupCount[lv]||OFFICIAL_GROUPS[lv]||1;
+    grpSelect.innerHTML = '';
+    for(let i=1;i<=G2;i++){
+      grpSelect.innerHTML += `<option value="${i}">${LEVEL_SHORT[lv]}${i}</option>`;
+    }
+  };
+}
+
+function clearSelection(){
+  STATE.selection.clear();
+  // إعادة الرسم
+  renderLevelView(STATE.activeLevel);
+  renderBulkBar();
+}
+
+/* =====================================================================
+   القسم 16: التثبيت اليدوي
+   ===================================================================== */
+function toggleLock(id, level, group){
+  if(STATE.locks.has(id)){
+    STATE.locks.delete(id);
+  }else{
+    STATE.locks.set(id, { level, group });
+  }
+  runDistribution();
+}
+
+function lockSelected(){
+  if(STATE.selection.size===0)return;
+  const lvSelect = $('bulkTargetLevel').value;
+  const grpNum = parseInt($('bulkTargetGroup').value);
+
+  // التحقق: يجب أن يكون كل المحددين في نفس المستوى
+  const selStudents = [...STATE.selection].map(id=>STATE.cur.find(s=>s.id===id)).filter(Boolean);
+  const levels = [...new Set(selStudents.map(s=>s.level))];
+  if(levels.length>1){
+    alert('⚠️ لا يمكن تثبيت تلاميذ من مستويات مختلفة في فوج واحد.\nاختر مجموعة من نفس المستوى.');
+    return;
+  }
+  if(levels[0]!==lvSelect){
+    alert(`⚠️ التلاميذ المحددون من مستوى «${LEVEL_LABEL[levels[0]]}» وليس «${LEVEL_LABEL[lvSelect]}».\nسيتم استخدام المستوى الصحيح تلقائياً.`);
+  }
+  const actualLv = levels[0];
+  const G = STATE.groupCount[actualLv]||OFFICIAL_GROUPS[actualLv];
+  if(grpNum<1 || grpNum>G){
+    alert(`⚠️ الفوج ${grpNum} خارج نطاق المستوى (1-${G}).`);
+    return;
+  }
+
+  if(!confirm(`📌 تثبيت ${selStudents.length} تلميذ في الفوج ${LEVEL_SHORT[actualLv]}${grpNum}?\n\nسيُحترم هذا التثبيت في كل عملية توزيع.`))return;
+
+  selStudents.forEach(s=>{
+    STATE.locks.set(s.id, { level: actualLv, group: grpNum });
+  });
+  STATE.selection.clear();
+  runDistribution();
+}
+
+function unlockSelected(){
+  if(STATE.selection.size===0)return;
+  let unlocked=0;
+  STATE.selection.forEach(id=>{
+    if(STATE.locks.has(id)){ STATE.locks.delete(id); unlocked++; }
+  });
+  if(unlocked===0){
+    alert('لا يوجد تلاميذ مُثبَّتون ضمن المحددين.');
+    return;
+  }
+  STATE.selection.clear();
+  runDistribution();
+}
+
+/* =====================================================================
+   القسم 17: النقل الجماعي
+   ===================================================================== */
+function transferSelected(){
+  if(STATE.selection.size===0)return;
+  const lvSelect = $('bulkTargetLevel').value;
+  const grpNum = parseInt($('bulkTargetGroup').value);
+
+  const selStudents = [...STATE.selection].map(id=>STATE.cur.find(s=>s.id===id)).filter(Boolean);
+  const levels = [...new Set(selStudents.map(s=>s.level))];
+  if(levels.length>1){
+    alert('⚠️ لا يمكن النقل الجماعي عبر مستويات مختلفة.\nاختر مجموعة من نفس المستوى.');
+    return;
+  }
+  const actualLv = levels[0];
+  if(actualLv!==lvSelect){
+    alert(`⚠️ اختر نفس مستوى التلاميذ المحددين: «${LEVEL_LABEL[actualLv]}».`);
+    return;
+  }
+  const G = STATE.groupCount[actualLv]||OFFICIAL_GROUPS[actualLv];
+  if(grpNum<1 || grpNum>G){
+    alert(`⚠️ الفوج ${grpNum} خارج النطاق (1-${G}).`);
+    return;
+  }
+
+  if(!confirm(`🔀 نقل ${selStudents.length} تلميذ إلى الفوج ${LEVEL_SHORT[actualLv]}${grpNum}?\n\nسيتم تثبيتهم على الفوج الجديد.`))return;
+
+  const r = STATE.results[actualLv];
+  if(!r)return;
+
+  const targetG = r.groups.find(g=>g.num===grpNum);
+  if(!targetG)return;
+
+  selStudents.forEach(s=>{
+    // إخراج من فوجه الحالي
+    for(const g of r.groups){
+      const found = g.list.find(x=>x.id===s.id);
+      if(found){ removeFrom(g, found); break; }
+    }
+    // إضافته إلى الفوج الجديد
+    addTo(targetG, s);
+    // تثبيته على الفوج الجديد
+    STATE.locks.set(s.id, { level: actualLv, group: grpNum });
+  });
+
+  // إعادة ترتيب كل الأفواج
+  r.groups.forEach(g=>g.list.sort((a,b)=>a.name.localeCompare(b.name,'ar')));
+  // إعادة حساب الإحصاءات
+  r.stats.min = Math.min(...r.groups.map(g=>g.list.length));
+  r.stats.max = Math.max(...r.groups.map(g=>g.list.length));
+  r.stats.avg = (r.stats.total/r.stats.G).toFixed(1);
+
+  STATE.selection.clear();
+  STATE.audit = runAudit();
+  renderAudit();
+  renderLockedPanel();
+  renderResults();
+  renderBulkBar();
+}
+
+/* =====================================================================
+   القسم 18: الحذف الجماعي
+   ===================================================================== */
+function deleteSelected(){
+  if(STATE.selection.size===0)return;
+  const count = STATE.selection.size;
+  if(!confirm(`🗑️ حذف ${count} تلميذ نهائياً؟\n\nلا يمكن التراجع عن هذه العملية.`))return;
+  STATE.selection.forEach(id=>{
+    const idx = STATE.cur.findIndex(x=>x.id===id);
+    if(idx>=0)STATE.cur.splice(idx,1);
+    delete STATE.overrides[id];
+    STATE.locks.delete(id);
+  });
+  STATE.selection.clear();
+  tryRun();
+}
+
+/* =====================================================================
+   القسم 19: أدوات التعديل الفردي (كما هي + إضافة التثبيت)
    ===================================================================== */
 function toggleGender(id){
   const st=STATE.cur.find(x=>x.id===id); if(!st)return;
@@ -1069,7 +1470,6 @@ function moveStudent(id){
   const st=STATE.cur.find(x=>x.id===id); if(!st)return;
   const lv=st.level;
   const G=STATE.groupCount[lv]||OFFICIAL_GROUPS[lv];
-  // البحث عن الفوج الحالي
   let currentGroup=0;
   const r=STATE.results[lv];
   if(r){
@@ -1097,6 +1497,9 @@ function moveStudent(id){
         <label>الفوج الجديد</label>
         <select id="moveTarget">${options.join('')}</select>
       </div>
+      <div class="form-row">
+        <label><input type="checkbox" id="moveLock" style="width:auto;margin-inline-end:6px"> 📌 تثبيت في الفوج الجديد</label>
+      </div>
       <div class="modal-actions">
         <button onclick="this.closest('.modal-bg').remove()">إلغاء</button>
         <button class="pri" onclick="applyMove('${esc(id)}', this)">تأكيد النقل</button>
@@ -1107,37 +1510,36 @@ function moveStudent(id){
 
 function applyMove(id, btn){
   const sel=btn.closest('.modal-box').querySelector('#moveTarget');
+  const lockCb=btn.closest('.modal-box').querySelector('#moveLock');
   const targetNum=parseInt(sel.value);
+  const doLock=lockCb.checked;
   const st=STATE.cur.find(x=>x.id===id); if(!st)return;
 
-  // نُجبر التلميذ على الذهاب إلى الفوج المطلوب بتثبيت مساره
   const r=STATE.results[st.level]; if(!r){btn.closest('.modal-bg').remove();return;}
 
-  // إخراج التلميذ من فوجه الحالي
   for(const g of r.groups){
     const found=g.list.find(x=>x.id===id);
-    if(found){
-      removeFrom(g, found);
-      break;
-    }
+    if(found){ removeFrom(g, found); break; }
   }
-  // إدخاله في الفوج الجديد
   const targetG=r.groups.find(g=>g.num===targetNum);
   if(targetG){
     addTo(targetG, st);
     targetG.list.sort((a,b)=>a.name.localeCompare(b.name,'ar'));
   }
-  // إعادة ترتيب الفوج القديم أيضاً
   r.groups.forEach(g=>g.list.sort((a,b)=>a.name.localeCompare(b.name,'ar')));
-
-  // إعادة حساب الإحصائيات
   r.stats.min=Math.min(...r.groups.map(g=>g.list.length));
   r.stats.max=Math.max(...r.groups.map(g=>g.list.length));
   r.stats.avg=(r.stats.total/r.stats.G).toFixed(1);
 
+  // تثبيت إن طُلب
+  if(doLock){
+    STATE.locks.set(id, { level: st.level, group: targetNum });
+  }
+
   btn.closest('.modal-bg').remove();
   STATE.audit=runAudit();
   renderAudit();
+  renderLockedPanel();
   renderResults();
 }
 
@@ -1154,7 +1556,7 @@ function deleteStudent(id){
         <span style="font-size:12px;color:#94a3b8">ID: ${esc(st.id)}</span>
       </p>
       <p style="font-size:12.5px;background:#fef2f2;padding:10px;border-radius:8px;color:#991b1b">
-        سيتم حذف التلميذ نهائياً من جميع القوائم، وسيُعاد توزيع باقي التلاميذ.
+        سيتم حذف التلميذ نهائياً، وسيُعاد توزيع باقي التلاميذ.
       </p>
       <div class="modal-actions">
         <button onclick="this.closest('.modal-bg').remove()">إلغاء</button>
@@ -1167,15 +1569,15 @@ function deleteStudent(id){
 function applyDelete(id, btn){
   const idx=STATE.cur.findIndex(x=>x.id===id);
   if(idx>=0)STATE.cur.splice(idx,1);
-  // حذف من التجاوزات
   delete STATE.overrides[id];
+  STATE.locks.delete(id);
+  STATE.selection.delete(id);
   btn.closest('.modal-bg').remove();
-  // إعادة التوزيع
   tryRun();
 }
 
 /* =====================================================================
-   القسم 15: إضافة تلميذ يدوياً
+   القسم 20: إضافة تلميذ يدوياً
    ===================================================================== */
 $('btnAddStudent').onclick=function(){
   const div=document.createElement('div');
@@ -1227,6 +1629,18 @@ $('btnAddStudent').onclick=function(){
           <input type="text" id="addReg">
         </div>
       </div>
+      <div class="form-row">
+        <label>📌 تثبيت مباشر في الفوج (اختياري)</label>
+        <select id="addLockGroup">
+          <option value="">— بدون تثبيت (توزيع تلقائي) —</option>
+          ${LEVELS.map(lv=>{
+            const G=STATE.groupCount[lv]||OFFICIAL_GROUPS[lv];
+            const opts=[];
+            for(let i=1;i<=G;i++) opts.push(`<option value="${lv}|${i}">${LEVEL_SHORT[lv]}${i}</option>`);
+            return opts.join('');
+          }).join('')}
+        </select>
+      </div>
       <div id="addError" style="color:#dc2626;font-size:12.5px;font-weight:700;margin-top:8px"></div>
       <div class="modal-actions">
         <button onclick="this.closest('.modal-bg').remove()">إلغاء</button>
@@ -1244,10 +1658,10 @@ function applyAddStudent(btn){
   const gender=$('addGender').value;
   const system=$('addSystem').value;
   const reg=$('addReg').value.trim();
+  const lockVal=$('addLockGroup').value;
   const err=$('addError');
   err.textContent='';
 
-  // التحقق
   if(!id){err.textContent='❌ رقم التعريف مطلوب'; return;}
   if(!name){err.textContent='❌ اللقب والاسم مطلوب'; return;}
   if(STATE.cur.find(x=>x.id===id)){err.textContent='❌ رقم التعريف موجود مسبقاً'; return;}
@@ -1258,13 +1672,19 @@ function applyAddStudent(btn){
     gender, origin:'manual', trackGroup:null, moved:false, manual:true
   };
   STATE.cur.push(newStudent);
-  STATE.manualAdditions.push(newStudent);
+
+  // تثبيت إن اختير
+  if(lockVal){
+    const [lockLv, lockGrp] = lockVal.split('|');
+    STATE.locks.set(id, { level: lockLv, group: parseInt(lockGrp) });
+  }
+
   btn.closest('.modal-bg').remove();
   tryRun();
 }
 
 /* =====================================================================
-   القسم 16: العرض بملء الشاشة
+   القسم 21: العرض بملء الشاشة
    ===================================================================== */
 function openFullscreen(lv, groupNum){
   const r=STATE.results[lv]; if(!r)return;
@@ -1272,12 +1692,14 @@ function openFullscreen(lv, groupNum){
 
   const rows=g.list.map((s,i)=>{
     const gTxt=s.gender==='M'?'ذكر':(s.gender==='F'?'أنثى':'—');
+    const isLocked=STATE.locks.has(s.id);
     let status='';
-    if(s.origin==='promoted')status=s.trackGroup?`مُرقّى · مسار ${s.oldLevel} ${s.trackGroup}`:'مُرقّى · أُعيد توزيعه';
+    if(isLocked) status=`📌 مُثبَّت`;
+    else if(s.origin==='promoted')status=s.trackGroup?`مُرقّى · مسار ${s.oldLevel} ${s.trackGroup}`:'مُرقّى · أُعيد توزيعه';
     else if(s.origin==='repeater')status=s.trackGroup?`معيد · مسار ${s.oldLevel} ${s.trackGroup}`:'معيد';
     else if(s.origin==='manual')status='مُضاف يدوياً';
     else status='جديد';
-    return `<tr>
+    return `<tr${isLocked?' style="background:#faf5ff"':''}>
       <td>${i+1}</td>
       <td style="font-family:monospace;font-size:12px">${esc(s.id)}</td>
       <td class="name">${esc(s.name)}</td>
@@ -1299,6 +1721,7 @@ function openFullscreen(lv, groupNum){
         <span>ذكور <b>${g.m}</b></span>
         <span>إناث <b>${g.f}</b></span>
         <span>معيدون <b>${g.reps}</b></span>
+        ${g.locked>0?`<span>📌 مُثبَّت <b>${g.locked}</b></span>`:''}
       </div>
       <div style="display:flex;gap:8px">
         <button class="pri" onclick="printFullscreen()">🖨️ طباعة</button>
@@ -1325,11 +1748,10 @@ function openFullscreen(lv, groupNum){
       <span>معاينة الفوج ${LEVEL_SHORT[lv]}${groupNum}</span>
     </div>`;
 
-  // إغلاق بضغط Escape
-  document.addEventListener('keydown',function esc(e){
+  document.addEventListener('keydown',function escHandler(e){
     if(e.key==='Escape'){
       const fs=document.getElementById('fullscreen');
-      if(fs){fs.remove(); document.removeEventListener('keydown',esc);}
+      if(fs){fs.remove(); document.removeEventListener('keydown',escHandler);}
     }
   });
 
@@ -1339,7 +1761,6 @@ function openFullscreen(lv, groupNum){
 function printFullscreen(){
   const fs=document.getElementById('fullscreen');
   if(!fs)return;
-  // إعادة بناء نفس الجدول في حاوية الطباعة
   const head=fs.querySelector('.fs-head h3').textContent;
   const rows=fs.querySelectorAll('.fs-tbl tbody tr');
   const info=fs.querySelector('.fs-head .info').innerHTML;
@@ -1380,7 +1801,7 @@ function printFullscreen(){
         <div class="r4">السنة الدراسية: ${SCHOOL.year} &nbsp;·&nbsp; تاريخ الطباعة: ${dateStr}</div>
       </div>
       <div class="pr-title">${head}</div>
-      <div class="pr-summary">${info.replace(/<b>/g,'<b>').replace(/<\/b>/g,'</b>')}</div>
+      <div class="pr-summary">${info}</div>
       <div class="pr-sec">${tbl}
         <div class="pr-sign">
           <div>الأستاذ الرئيسي<div class="line"></div></div>
@@ -1392,7 +1813,7 @@ function printFullscreen(){
 }
 
 /* =====================================================================
-   القسم 17: الطباعة والتصدير
+   القسم 22: الطباعة والتصدير
    ===================================================================== */
 function buildPrintHTML(levels){
   const now=new Date();
@@ -1417,6 +1838,7 @@ function buildPrintHTML(levels){
         <span>ذكور: <b>${r.stats.m}</b></span>
         <span>إناث: <b>${r.stats.f}</b></span>
         <span>معيدون: <b>${r.stats.rep}</b></span>
+        ${r.stats.locked>0?`<span>مُثبَّتون: <b>${r.stats.locked}</b></span>`:''}
       </div>`;
     r.groups.forEach(g=>{
       html+=`
@@ -1426,6 +1848,7 @@ function buildPrintHTML(levels){
             <span class="l">
               <span>العدد: ${g.list.length}</span><span>ذ: ${g.m}</span>
               <span>أ: ${g.f}</span><span>معيدون: ${g.reps}</span>
+              ${g.locked>0?`<span>📌 ${g.locked}</span>`:''}
             </span>
           </div>
           <table class="pr-tbl">
@@ -1440,10 +1863,11 @@ function buildPrintHTML(levels){
             </tr></thead><tbody>`;
       g.list.forEach((s,i)=>{
         const gTxt=s.gender==='M'?'ذ':(s.gender==='F'?'أ':'؟');
+        const lockMark = STATE.locks.has(s.id) ? ' 📌' : '';
         html+=`<tr>
           <td>${i+1}</td>
           <td style="font-family:monospace;font-size:9.5px">${esc(s.id)}</td>
-          <td class="name">${esc(s.name)}</td>
+          <td class="name">${esc(s.name)}${lockMark}</td>
           <td>${esc(s.birth||'')}</td>
           <td>${gTxt}</td>
           <td>${esc(s.system||'')}</td>
@@ -1472,7 +1896,7 @@ function printAll(){
 }
 
 /* =====================================================================
-   القسم 18: التصدير إلى Excel
+   القسم 23: التصدير إلى Excel
    ===================================================================== */
 function exportLevel(lv){
   const r=STATE.results[lv]; if(!r)return;
@@ -1488,13 +1912,14 @@ function exportLevel(lv){
         'الجنس':s.gender==='M'?'ذكر':(s.gender==='F'?'أنثى':'غير محدد'),
         'النظام':s.system,'رقم التسجيل':s.reg,
         'الحالة':s.origin==='promoted'?'مُرقّى':(s.origin==='repeater'?'معيد':(s.origin==='manual'?'مُضاف':'جديد')),
-        'المسار السابق':s.trackGroup?`${s.oldLevel||''} ${s.trackGroup}`:'—'
+        'المسار السابق':s.trackGroup?`${s.oldLevel||''} ${s.trackGroup}`:'—',
+        '📌 مُثبَّت': STATE.locks.has(s.id)?'نعم':'—'
       });
     });
     rows.push({});
   });
   const ws=XLSX.utils.json_to_sheet(rows);
-  ws['!cols']=[{wch:5},{wch:10},{wch:18},{wch:28},{wch:13},{wch:9},{wch:13},{wch:11},{wch:9},{wch:14}];
+  ws['!cols']=[{wch:5},{wch:10},{wch:18},{wch:28},{wch:13},{wch:9},{wch:13},{wch:11},{wch:9},{wch:14},{wch:9}];
   XLSX.utils.book_append_sheet(wb,ws,LEVEL_SHORT[lv]);
   XLSX.writeFile(wb,`قوائم_${LEVEL_SHORT[lv]}_2027.xlsx`);
 }
@@ -1507,13 +1932,13 @@ function exportAll(){
       sum.push({
         'المستوى':LEVEL_LABEL[lv],'الفوج':`${LEVEL_SHORT[lv]}${g.num}`,
         'العدد':g.list.length,'ذكور':g.m,'إناث':g.f,'غير محدد':g.u,
-        'معيدون':g.reps,'مُرقّون':g.prom,
+        'معيدون':g.reps,'مُرقّون':g.prom,'📌 مُثبَّتون':g.locked||0,
         'نصف داخلي':g.sys['نصف داخلي']||0,'خارجي':g.sys['خارجي']||0
       });
     });
   });
   const wsSum=XLSX.utils.json_to_sheet(sum);
-  wsSum['!cols']=[{wch:15},{wch:10},{wch:8},{wch:8},{wch:8},{wch:10},{wch:9},{wch:9},{wch:12},{wch:10}];
+  wsSum['!cols']=[{wch:15},{wch:10},{wch:8},{wch:8},{wch:8},{wch:10},{wch:9},{wch:9},{wch:11},{wch:12},{wch:10}];
   XLSX.utils.book_append_sheet(wb,wsSum,'إحصاء');
 
   LEVELS.forEach(lv=>{
@@ -1529,20 +1954,21 @@ function exportAll(){
           'الجنس':s.gender==='M'?'ذكر':(s.gender==='F'?'أنثى':'غير محدد'),
           'النظام':s.system,'رقم التسجيل':s.reg,
           'الحالة':s.origin==='promoted'?'مُرقّى':(s.origin==='repeater'?'معيد':(s.origin==='manual'?'مُضاف':'جديد')),
-          'المسار السابق':s.trackGroup?`${s.oldLevel||''} ${s.trackGroup}`:'—'
+          'المسار السابق':s.trackGroup?`${s.oldLevel||''} ${s.trackGroup}`:'—',
+          '📌 مُثبَّت': STATE.locks.has(s.id)?'نعم':'—'
         });
       });
       rows.push({});
     });
     const ws=XLSX.utils.json_to_sheet(rows);
-    ws['!cols']=[{wch:5},{wch:10},{wch:18},{wch:28},{wch:13},{wch:9},{wch:13},{wch:11},{wch:9},{wch:14}];
+    ws['!cols']=[{wch:5},{wch:10},{wch:18},{wch:28},{wch:13},{wch:9},{wch:13},{wch:11},{wch:9},{wch:14},{wch:9}];
     XLSX.utils.book_append_sheet(wb,ws,LEVEL_SHORT[lv]);
   });
   XLSX.writeFile(wb,'توزيع_الأفواج_2027.xlsx');
 }
 
 /* =====================================================================
-   القسم 19: أحداث الرفع والتشغيل
+   القسم 24: أحداث الرفع والتشغيل
    ===================================================================== */
 window.addEventListener('xlsx-ready',initApp);
 window.addEventListener('xlsx-failed',function(){
