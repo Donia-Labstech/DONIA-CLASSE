@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>DONIA-CLASSE — نظام توزيع التلاميذ 2027</title>
-<meta name="description" content="نظام إدارة وتوزيع التلاميذ — مختبر الأفكار الذكية | DONIALABSTECH">
+<meta name="description" content="نظام إدارة وتوزيع التلاميذ — مختبر الأفكار الذكية والتكنولوجيا المتقدمة | DONIALABSTECH">
 <meta name="author" content="DONIALABSTECH">
 
 <script>
@@ -53,7 +53,12 @@
   --txt:#1f2937; --muted:#64748b;
   --male:#2563eb; --female:#db2777; --unk:#d97706;
   --lock:#7c3aed;
-  --brand:#8b5cf6;
+  /* ألوان الشعار */
+  --brand-gold:#d4a017;
+  --brand-gold2:#f5c518;
+  --brand-blue:#0066ff;
+  --brand-blue2:#0a1f44;
+  --brand-black:#000000;
   --sh:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
   --sh2:0 4px 12px rgba(0,0,0,.08);
 }
@@ -77,33 +82,262 @@ input[type=text],input[type=number],input[type=date],input[type=password],select
 input:focus,select:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(30,90,168,.1)}
 .hidden{display:none!important}
 
-/* ============== الهيدر مع العلامة التجارية ============== */
-header{background:linear-gradient(135deg,#1e3a8a,#1e5aa8 40%,#2e7dd1);color:#fff;padding:18px 24px;box-shadow:var(--sh2);position:relative;overflow:hidden}
-header::after{content:"";position:absolute;top:-50%;left:-10%;width:60%;height:200%;background:radial-gradient(circle,rgba(255,255,255,.08),transparent 60%);pointer-events:none}
-header h1{margin:0;font-size:20px;font-weight:800}
-header p{margin:5px 0 0;font-size:13px;opacity:.92}
-header .badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-header .badges span{background:rgba(255,255,255,.18);padding:3px 12px;border-radius:20px;font-size:12px}
-.brand-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:10px 24px;background:rgba(255,255,255,.1);border-top:1px solid rgba(255,255,255,.15);margin-top:12px;border-radius:8px}
-.brand-bar .brand-info{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700}
-.brand-bar .brand-info .logo{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#a78bfa,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:16px}
-.brand-bar .brand-info .name{color:#fff}
-.brand-bar .brand-info .name small{display:block;font-size:11px;font-weight:500;opacity:.85;margin-top:1px}
-.brand-bar a{color:#fff;text-decoration:none;background:rgba(255,255,255,.15);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;transition:.15s;display:flex;align-items:center;gap:6px}
-.brand-bar a:hover{background:rgba(255,255,255,.28)}
+/* ============================================================
+   الشريط الأفقي العلوي (Sticky Navbar) — Sticky Top Bar
+   ============================================================ */
+.top-bar{
+  position:sticky;
+  top:0;
+  z-index:9000;
+  background:linear-gradient(135deg,#0a1f44 0%,#0f2a5f 40%,#051530 100%);
+  color:#fff;
+  box-shadow:0 4px 20px rgba(0,0,0,.35);
+  border-bottom:2px solid var(--brand-gold);
+  padding:0;
+  transition:box-shadow .3s;
+}
+.top-bar-inner{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:10px 20px;
+  flex-wrap:wrap;
+  max-width:1800px;
+  margin:0 auto;
+}
+
+/* ---- الشعار ---- */
+.brand-zone{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex-shrink:0;
+  padding-inline-end:14px;
+  border-inline-end:1px solid rgba(212,160,23,.3);
+}
+.brand-logo{
+  width:48px;
+  height:48px;
+  object-fit:contain;
+  border-radius:50%;
+  cursor:zoom-in;
+  transition:transform .25s, box-shadow .25s;
+  background:radial-gradient(circle, rgba(212,160,23,.15), transparent 70%);
+  padding:2px;
+  box-shadow:0 0 0 1px rgba(212,160,23,.4), 0 2px 8px rgba(0,0,0,.4);
+}
+.brand-logo:hover{
+  transform:scale(1.08);
+  box-shadow:0 0 0 2px var(--brand-gold), 0 4px 16px rgba(212,160,23,.6);
+}
+.brand-text{
+  display:flex;
+  flex-direction:column;
+  line-height:1.15;
+  min-width:0;
+}
+.brand-text .t1{
+  font-size:14.5px;
+  font-weight:900;
+  letter-spacing:.3px;
+  background:linear-gradient(135deg,#fff 30%, var(--brand-gold2) 70%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  color:var(--brand-gold);
+  white-space:nowrap;
+}
+.brand-text .t2{
+  font-size:10.5px;
+  font-weight:700;
+  color:var(--brand-gold);
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+  margin-top:1px;
+}
+.brand-text .t3{
+  font-size:9.5px;
+  color:rgba(255,255,255,.65);
+  font-weight:500;
+  margin-top:2px;
+  white-space:nowrap;
+}
+.brand-text a{
+  color:var(--brand-gold2);
+  text-decoration:none;
+  font-weight:700;
+  font-size:10.5px;
+  margin-top:3px;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:2px 8px;
+  background:rgba(212,160,23,.12);
+  border:1px solid rgba(212,160,23,.3);
+  border-radius:12px;
+  align-self:flex-start;
+  transition:.15s;
+}
+.brand-text a:hover{
+  background:rgba(212,160,23,.25);
+  color:#fff;
+}
+
+/* ---- أزرار العمليات الأفقية ---- */
+.actions-zone{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  align-items:center;
+  flex:1;
+  min-width:0;
+}
+.h-act{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:8px 14px;
+  font-size:12.5px;
+  font-weight:700;
+  border-radius:10px;
+  border:1px solid rgba(212,160,23,.35);
+  background:rgba(255,255,255,.06);
+  color:#fff;
+  cursor:pointer;
+  transition:.2s;
+  white-space:nowrap;
+  position:relative;
+  backdrop-filter:blur(6px);
+}
+.h-act:hover{
+  background:rgba(212,160,23,.18);
+  border-color:var(--brand-gold);
+  transform:translateY(-1px);
+  box-shadow:0 4px 12px rgba(212,160,23,.25);
+}
+.h-act:active{transform:translateY(0)}
+.h-act .ico{font-size:15px;line-height:1}
+.h-act.pri{
+  background:linear-gradient(135deg,var(--brand-gold),#b8860b);
+  border-color:var(--brand-gold);
+  color:#0a1f44;
+  font-weight:800;
+}
+.h-act.pri:hover{
+  background:linear-gradient(135deg,#f5c518,#d4a017);
+  box-shadow:0 4px 14px rgba(245,197,24,.45);
+}
+.h-act.sync{
+  background:linear-gradient(135deg,rgba(0,102,255,.25), rgba(0,102,255,.15));
+  border-color:rgba(0,102,255,.6);
+}
+.h-act.sync:hover{
+  background:linear-gradient(135deg,rgba(0,102,255,.4), rgba(0,102,255,.25));
+  box-shadow:0 4px 12px rgba(0,102,255,.35);
+}
+
+/* ---- Tooltips ---- */
+.h-act[data-tooltip]:hover::after{
+  content:attr(data-tooltip);
+  position:absolute;
+  top:calc(100% + 8px);
+  right:50%;
+  transform:translateX(50%);
+  background:#0a1f44;
+  color:#fff;
+  font-size:11.5px;
+  font-weight:600;
+  padding:6px 10px;
+  border-radius:6px;
+  white-space:nowrap;
+  border:1px solid var(--brand-gold);
+  box-shadow:0 4px 12px rgba(0,0,0,.4);
+  z-index:100;
+  pointer-events:none;
+  animation:fadeIn .2s;
+}
+.h-act[data-tooltip]:hover::before{
+  content:"";
+  position:absolute;
+  top:100%;
+  right:50%;
+  transform:translateX(50%);
+  border:6px solid transparent;
+  border-bottom-color:var(--brand-gold);
+  pointer-events:none;
+  z-index:101;
+}
+@keyframes fadeIn{ from{opacity:0; transform:translate(50%,-4px)} to{opacity:1; transform:translate(50%,0)} }
+
+/* ---- حالة المزامنة ---- */
+.sync-status{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:5px 12px;
+  border-radius:20px;
+  font-size:11.5px;
+  font-weight:700;
+  background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.2);
+  color:#fff;
+  transition:.2s;
+}
+.sync-status.idle{background:rgba(148,163,184,.25); color:#cbd5e1}
+.sync-status.ok{background:rgba(16,185,129,.25); color:#6ee7b7; border-color:rgba(16,185,129,.5)}
+.sync-status.err{background:rgba(220,38,38,.25); color:#fca5a5; border-color:rgba(220,38,38,.5)}
+.sync-status.load{background:rgba(251,191,36,.25); color:#fde68a; border-color:rgba(251,191,36,.5)}
+.sync-status .dot{width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 6px currentColor}
+.sync-status.load .dot{animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* ---- شريط ثانوي: معلومات المستخدم ---- */
+.sub-bar{
+  background:linear-gradient(135deg,rgba(0,102,255,.15), rgba(10,31,68,.9));
+  padding:6px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  font-size:11.5px;
+  color:rgba(255,255,255,.85);
+  border-top:1px solid rgba(212,160,23,.2);
+  flex-wrap:wrap;
+}
+.sub-bar .info-item{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.sub-bar .info-item b{color:var(--brand-gold2);font-weight:800}
+.sub-bar .sep{opacity:.3}
+
+/* ---- باقي التطبيق ---- */
+header.app-header{
+  background:linear-gradient(135deg,#1e3a8a,#1e5aa8 40%,#2e7dd1);
+  color:#fff;
+  padding:16px 24px;
+  box-shadow:var(--sh2);
+  position:relative;
+  overflow:hidden;
+}
+header.app-header h1{margin:0;font-size:19px;font-weight:800}
+header.app-header p{margin:4px 0 0;font-size:13px;opacity:.92}
+header.app-header .badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+header.app-header .badges span{background:rgba(255,255,255,.18);padding:3px 12px;border-radius:20px;font-size:12px}
 
 main{max-width:1600px;margin:16px auto;padding:0 16px 90px}
 .card{background:var(--card);border-radius:14px;padding:18px 22px;margin-bottom:16px;box-shadow:var(--sh)}
 .card h2{margin:0 0 14px;font-size:16px;color:var(--pri);display:flex;align-items:center;gap:8px;padding-bottom:10px;border-bottom:2px solid #eef2f7;flex-wrap:wrap}
 .card h2::before{content:"";width:4px;height:20px;background:linear-gradient(180deg,var(--pri),var(--pri2));border-radius:2px}
 
-#libStatus{position:fixed;top:0;left:0;right:0;z-index:9999;padding:10px 18px;font-size:13px;font-weight:700;text-align:center;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 2px 8px rgba(0,0,0,.15);transition:.3s}
+#libStatus{position:fixed;top:120px;left:0;right:0;z-index:8500;padding:10px 18px;font-size:13px;font-weight:700;text-align:center;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 2px 8px rgba(0,0,0,.15);transition:.3s}
 #libStatus.loading{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#fff}
-#libStatus.ok{background:linear-gradient(135deg,#10b981,#059669);color:#fff;transform:translateY(-100%)}
+#libStatus.ok{background:linear-gradient(135deg,#10b981,#059669);color:#fff;transform:translateY(-200%)}
 #libStatus.err{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff}
 #libStatus .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-body.lib-ready #libStatus{transform:translateY(-100%)}
+body.lib-ready #libStatus{transform:translateY(-200%)}
 
 .upload-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media(max-width:760px){.upload-grid{grid-template-columns:1fr}}
@@ -245,12 +479,10 @@ body.lib-ready #libStatus{transform:translateY(-100%)}
 #fullscreen table.fs-tbl tr:hover td{background:#eff6ff}
 #fullscreen .fs-footer{padding:12px 22px;background:#fff;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--muted)}
 
-/* ============== أزرار الإدارة الجديدة ============== */
 .admin-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:12px 16px;background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:1px solid #ddd6fe;border-radius:10px;margin-bottom:14px}
 .admin-bar .title{font-weight:800;color:#6d28d9;font-size:13.5px;display:flex;align-items:center;gap:6px}
 .admin-bar .spacer{flex:1}
 
-/* ============== لوحة GitHub Sync ============== */
 .gh-panel{background:linear-gradient(135deg,#f8fafc,#f1f5f9);border:1px solid #cbd5e1;border-radius:12px;padding:16px 20px;margin-top:14px}
 .gh-panel h4{margin:0 0 12px;font-size:14px;color:#334155;display:flex;align-items:center;gap:8px}
 .gh-panel .gh-note{background:#eff6ff;border-inline-start:4px solid var(--pri);padding:10px 14px;border-radius:8px;font-size:12.5px;color:#1e40af;margin-bottom:12px;line-height:1.7}
@@ -264,12 +496,24 @@ body.lib-ready #libStatus{transform:translateY(-100%)}
 .gh-status.err{background:#fee2e2;color:#991b1b}
 .gh-status.load{background:#fef3c7;color:#92400e}
 
-/* ============== الطباعة الاحترافية ============== */
 #printContainer{display:none}
+
+/* ============================================================
+   القواعد الصارمة للطباعة — إخفاء كل ما هو UI/Branding
+   ============================================================ */
 @media print{
   /* إخفاء كل شيء ما عدا حاوية الطباعة */
   body>*{display:none!important}
-  #bulkBar{display:none!important}
+  .top-bar,
+  .sub-bar,
+  #bulkBar,
+  #libStatus,
+  .no-print,
+  .admin-bar,
+  .gh-panel,
+  header.app-header,
+  main,
+  footer{display:none!important}
   #printContainer{display:block!important;background:#fff;margin:0;padding:0}
 
   /* ضبط هوامش الصفحة */
@@ -280,7 +524,7 @@ body.lib-ready #libStatus{transform:translateY(-100%)}
 
   .pr-doc{font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:#000;font-size:11pt}
 
-  /* ============ الترويسة الرسمية ============ */
+  /* الترويسة الرسمية */
   .pr-head{
     text-align:center;
     margin-bottom:10mm;
@@ -294,7 +538,6 @@ body.lib-ready #libStatus{transform:translateY(-100%)}
   .pr-head .r3{font-size:13pt;font-weight:800;margin:3mm 0 1mm;color:#000}
   .pr-head .r4{font-size:10pt;font-weight:600;margin-top:1mm}
 
-  /* ============ عنوان القسم ============ */
   .pr-title{
     text-align:center;
     font-size:12.5pt;
@@ -308,7 +551,6 @@ body.lib-ready #libStatus{transform:translateY(-100%)}
     page-break-after:avoid;
   }
 
-  /* ============ ملخص الإحصاء ============ */
   .pr-summary{
     display:flex;
     justify-content:center;
@@ -325,7 +567,6 @@ body.lib-ready #libStatus{transform:translateY(-100%)}
   .pr-summary span{white-space:nowrap}
   .pr-summary b{color:#1e5aa8;font-weight:800}
 
-  /* ============ كل فوج في صفحة مستقلة ============ */
   .pr-sec{
     page-break-inside:avoid;
     page-break-after:always;
@@ -348,7 +589,6 @@ body.lib-ready #libStatus{transform:translateY(-100%)}
   }
   .pr-sec-title .l{display:flex;gap:5mm;font-size:9.5pt;font-weight:600}
 
-  /* ============ جدول التلاميذ ============ */
   table.pr-tbl{
     width:100%;
     border-collapse:collapse;
@@ -376,7 +616,6 @@ body.lib-ready #libStatus{transform:translateY(-100%)}
   }
   table.pr-tbl tbody tr:nth-child(even) td{background:#f9fafb}
 
-  /* ============ التوقيعات ============ */
   .pr-sign{
     margin-top:8mm;
     display:flex;
@@ -388,37 +627,141 @@ body.lib-ready #libStatus{transform:translateY(-100%)}
   .pr-sign>div{text-align:center;min-width:60mm}
   .pr-sign .line{margin-top:15mm;border-top:1.2px solid #000;padding-top:1.5mm}
 
-  /* ============ إخفاء هوية المختبر من الطباعة ============ */
-  .brand-bar,
-  .brand-signature,
-  .admin-bar,
-  .gh-panel,
-  .no-print,
-  header .brand-bar,
-  footer .brand-bar,
-  .pr-footer-brand{
-    display:none!important;
-    visibility:hidden!important;
-    height:0!important;
-    width:0!important;
-    overflow:hidden!important;
-    opacity:0!important;
-  }
-
-  /* منع ظهور أي روابط URL في الطباعة */
+  /* إخفاء الروابط */
   a[href]:after{content:""!important}
   a{color:#000!important;text-decoration:none!important}
+}
+
+/* ============== عارض الشعار (Lightbox) ============== */
+#logoViewer{position:fixed;inset:0;background:rgba(5,10,25,.92);z-index:10000;display:flex;align-items:center;justify-content:center;padding:30px;backdrop-filter:blur(8px);cursor:zoom-out}
+#logoViewer img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:50%;box-shadow:0 0 0 3px rgba(212,160,23,.6),0 20px 60px rgba(0,0,0,.7);animation:zoomIn .3s}
+@keyframes zoomIn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+#logoViewer .close-hint{position:absolute;top:20px;right:24px;color:#fff;font-size:13px;font-weight:700;background:rgba(255,255,255,.15);padding:8px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.25)}
+
+/* ============== أزرار صغيرة للشاشة الصغيرة ============== */
+@media(max-width:900px){
+  .brand-text .t3{display:none}
+  .brand-text .t2{font-size:9px}
+  .h-act .label-full{display:none}
+  .h-act{padding:8px 10px}
+  .h-act .ico{font-size:17px}
+}
+@media(max-width:640px){
+  .brand-text{display:none}
+  .brand-zone{border:none;padding-inline-end:6px}
+  .brand-logo{width:40px;height:40px}
+  .h-act .label-mid{display:none}
+  .sub-bar{font-size:10.5px;padding:5px 12px}
 }
 </style>
 </head>
 <body>
 
+<!-- ============================================================
+     الشريط الأفقي العلوي — Sticky Top Navbar
+     ============================================================ -->
+<nav class="top-bar no-print" role="navigation" aria-label="شريط الأدوات الرئيسي">
+  <div class="top-bar-inner">
+
+    <!-- 🎨 الشعار + الهوية -->
+    <div class="brand-zone">
+      <img
+        id="brandLogo"
+        class="brand-logo"
+        alt="DONIA LABS TECH — مختبر الأفكار الذكية"
+        title="اضغط لتكبير الشعار"
+        src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'>
+          <defs>
+            <radialGradient id='bg' cx='50%25' cy='50%25' r='70%25'>
+              <stop offset='0%25' stop-color='%230a1f44'/>
+              <stop offset='100%25' stop-color='%23000000'/>
+            </radialGradient>
+            <linearGradient id='gold' x1='0%25' y1='0%25' x2='100%25' y2='100%25'>
+              <stop offset='0%25' stop-color='%23f5c518'/>
+              <stop offset='50%25' stop-color='%23d4a017'/>
+              <stop offset='100%25' stop-color='%23b8860b'/>
+            </linearGradient>
+            <linearGradient id='blue' x1='0%25' y1='0%25' x2='100%25' y2='100%25'>
+              <stop offset='0%25' stop-color='%230066ff'/>
+              <stop offset='100%25' stop-color='%23003db3'/>
+            </linearGradient>
+          </defs>
+          <circle cx='100' cy='100' r='96' fill='url(%23bg)' stroke='url(%23gold)' stroke-width='4'/>
+          <circle cx='100' cy='100' r='84' fill='none' stroke='url(%23blue)' stroke-width='2' opacity='0.7'/>
+          <path d='M 55 120 L 100 60 L 145 120 L 120 120 L 100 90 L 80 120 Z' fill='url(%23blue)' stroke='url(%23gold)' stroke-width='1'/>
+          <text x='100' y='150' font-family='Arial' font-size='14' font-weight='900' fill='url(%23gold)' text-anchor='middle' letter-spacing='1'>DONIA</text>
+          <text x='100' y='168' font-family='Arial' font-size='9' font-weight='700' fill='%23ffffff' text-anchor='middle' letter-spacing='2'>LABS TECH</text>
+        </svg>"
+      >
+      <div class="brand-text">
+        <span class="t1">DONIA LABS TECH</span>
+        <span class="t2">Smart Ideas Lab</span>
+        <span class="t3">مختبر الأفكار الذكية والتكنولوجيا المتقدمة</span>
+        <a href="https://donialabstech.online/" target="_blank" rel="noopener" title="زيارة الموقع الرسمي">
+          🌐 donialabstech.online
+        </a>
+      </div>
+    </div>
+
+    <!-- 🔘 أزرار العمليات الأفقية -->
+    <div class="actions-zone" role="toolbar">
+
+      <button class="h-act sync" id="btnSync" data-tooltip="مزامنة الحالة مع GitHub (حفظ / استرجاع)" onclick="openSyncDialog()" title="مزامنة GitHub">
+        <span class="ico">☁️</span>
+        <span class="label-full">مزامنة GitHub</span>
+        <span class="label-mid">مزامنة</span>
+      </button>
+
+      <button class="h-act pri" id="btnExport" data-tooltip="تنزيل نسخة احتياطية كاملة بصيغة JSON" onclick="exportBackupJSON()" title="تصدير نسخة احتياطية">
+        <span class="ico">📥</span>
+        <span class="label-full">تصدير نسخة احتياطية</span>
+        <span class="label-mid">تصدير</span>
+      </button>
+
+      <button class="h-act pri" id="btnImport" data-tooltip="استرجاع حالة عمل سابقة من ملف JSON" onclick="triggerImportBackup()" title="استرجاع نسخة احتياطية">
+        <span class="ico">📤</span>
+        <span class="label-full">استرجاع نسخة احتياطية</span>
+        <span class="label-mid">استرجاع</span>
+      </button>
+
+      <button class="h-act" id="btnPrint" data-tooltip="فتح معاينة الطباعة للأفواج" onclick="printAll()" title="طباعة / معاينة">
+        <span class="ico">🖨️</span>
+        <span class="label-full">طباعة / معاينة</span>
+        <span class="label-mid">طباعة</span>
+      </button>
+
+    </div>
+
+    <!-- حالة المزامنة -->
+    <span class="sync-status idle" id="syncStatus" title="حالة المزامنة">
+      <span class="dot"></span>
+      <span id="syncStatusText">غير متصل</span>
+    </span>
+
+  </div>
+
+  <!-- شريط فرعي: معلومات الحالة -->
+  <div class="sub-bar">
+    <span class="info-item">📊 <b id="statStudents">0</b> تلميذ</span>
+    <span class="sep">•</span>
+    <span class="info-item">📌 <b id="statLocks">0</b> تثبيت</span>
+    <span class="sep">•</span>
+    <span class="info-item">🏫 <b id="statGroups">0</b> فوج</span>
+    <span class="sep">•</span>
+    <span class="info-item" id="statLastSave">💾 لا يوجد حفظ سابق</span>
+  </div>
+</nav>
+
+<!-- شريط حالة التحميل -->
 <div id="libStatus" class="loading">
   <span class="spin"></span>
   <span>جارٍ تحميل مكتبة قراءة ملفات Excel (SheetJS)...</span>
 </div>
 
-<header>
+<!-- ============================================================
+     الهيدر الأساسي — محفوظ كما هو
+     ============================================================ -->
+<header class="app-header">
   <h1>📚 DONIA-CLASSE — نظام توزيع التلاميذ 2027</h1>
   <p>متوسطة بوضريسة محمد الأمين — المسيلة · السنة الدراسية 2026 / 2027</p>
   <div class="badges">
@@ -428,18 +771,6 @@ body.lib-ready #libStatus{transform:translateY(-100%)}
     <span>🔀 نقل جماعي</span>
     <span>💾 نسخ احتياطي</span>
     <span>☁️ مزامنة GitHub</span>
-  </div>
-  <div class="brand-bar">
-    <div class="brand-info">
-      <div class="logo">🧪</div>
-      <div class="name">
-        مختبر الأفكار الذكية — DONIALABSTECH
-        <small>Lead Software Engineer · DONIA-CLASSE v3.0</small>
-      </div>
-    </div>
-    <a href="https://donialabstech.online/" target="_blank" rel="noopener">
-      🌐 donialabstech.online
-    </a>
   </div>
 </header>
 
@@ -463,60 +794,8 @@ body.lib-ready #libStatus{transform:translateY(-100%)}
   </div>
 </section>
 
-<section class="card hidden" id="adminCard">
-  <h2>② الإدارة والحفظ</h2>
-  <div class="admin-bar">
-    <span class="title">💾 النسخ الاحتياطي</span>
-    <button class="pri" onclick="exportBackupJSON()">📥 حفظ نسخة احتياطية (JSON)</button>
-    <button onclick="exportBackupXLS()">📊 حفظ نسخة احتياطية (Excel)</button>
-    <button class="brand" onclick="triggerImportBackup()">📤 استرجاع نسخة احتياطية</button>
-    <input type="file" id="backupInput" accept=".json,.xlsx,.xls" hidden>
-    <span class="spacer"></span>
-    <span class="title">☁️ GitHub</span>
-    <button class="brand" onclick="toggleGHPanel()">⚙️ إعدادات المزامنة</button>
-  </div>
-
-  <div class="gh-panel hidden" id="ghPanel">
-    <h4>☁️ ربط GitHub — حفظ تلقائي في المستودع</h4>
-    <div class="gh-note">
-      <b>📌 كيف تحصل على Personal Access Token (PAT):</b><br>
-      1. اذهب إلى <code>https://github.com/settings/tokens</code><br>
-      2. اضغط <b>Generate new token (classic)</b><br>
-      3. اختر صلاحية <code>repo</code> (كاملة) و<code>gist</code> اختياري<br>
-      4. انسخ الـ Token والصقه هنا (يُخزَّن محلياً في المتصفح فقط)<br>
-      <b>⚠️ تحذير:</b> لا تشارك الرابط الـ Token مع أي شخص.
-    </div>
-    <div class="gh-form">
-      <div class="form-row">
-        <label>Personal Access Token (PAT)</label>
-        <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off">
-      </div>
-      <div class="form-row">
-        <label>اسم المستودع (owner/repo)</label>
-        <input type="text" id="ghRepo" placeholder="username/students-distribution">
-      </div>
-      <div class="form-row">
-        <label>الفرع (Branch)</label>
-        <input type="text" id="ghBranch" value="main">
-      </div>
-      <div class="form-row">
-        <label>مسار الملف</label>
-        <input type="text" id="ghPath" value="data/backup.json">
-      </div>
-    </div>
-    <div class="gh-actions">
-      <button class="pri" onclick="ghSave()">☁️ حفظ في GitHub</button>
-      <button class="brand" onclick="ghLoad()">⬇️ استرجاع من GitHub</button>
-      <button onclick="ghTest()">🔍 اختبار الاتصال</button>
-      <button onclick="ghClearToken()">🗑️ حذف بيانات الاعتماد</button>
-      <span class="spacer" style="flex:1"></span>
-      <span class="gh-status idle" id="ghStatus">⚪ غير متصل</span>
-    </div>
-  </div>
-</section>
-
 <section class="card hidden" id="settingsCard">
-  <h2>③ لوحة الإعدادات</h2>
+  <h2>② لوحة الإعدادات</h2>
   <div class="mapbox" id="mapInfo"></div>
   <div id="settingsBody"></div>
   <div class="ctrl-bar">
@@ -530,17 +809,17 @@ body.lib-ready #libStatus{transform:translateY(-100%)}
 </section>
 
 <section class="card hidden" id="lockedCard">
-  <h2>④ قائمة التثبيت اليدوي (Locked Assignments)</h2>
+  <h2>③ قائمة التثبيت اليدوي (Locked Assignments)</h2>
   <div id="lockedBody"></div>
 </section>
 
 <section class="card hidden" id="auditCard">
-  <h2>⑤ لوحة التدقيق والتحقق (Validation Dashboard)</h2>
+  <h2>④ لوحة التدقيق والتحقق (Validation Dashboard)</h2>
   <div id="auditBody"></div>
 </section>
 
 <section class="card hidden" id="resultCard">
-  <h2>⑥ القوائم النهائية حسب المستوى والفوج</h2>
+  <h2>⑤ القوائم النهائية حسب المستوى والفوج</h2>
   <div class="tabs" id="tabs"></div>
   <div id="levelView"></div>
 </section>
@@ -562,9 +841,11 @@ body.lib-ready #libStatus{transform:translateY(-100%)}
   </div>
 </div>
 
+<input type="file" id="backupInput" accept=".json,.xlsx,.xls" hidden>
+
 <script>
 /* =====================================================================
-   القسم 1: الثوابت والخريطة المدرسية
+   القسم 1: الثوابت
    ===================================================================== */
 const LEVELS   = ['أولى','ثانية','ثالثة','رابعة'];
 const LEVEL_N  = {'أولى':1,'ثانية':2,'ثالثة':3,'رابعة':4};
@@ -572,7 +853,7 @@ const LEVEL_LABEL = {'أولى':'أولى متوسط','ثانية':'ثانية �
 const LEVEL_SHORT = {'أولى':'1م','ثانية':'2م','ثالثة':'3م','رابعة':'4م'};
 const OFFICIAL_GROUPS = {'أولى':12,'ثانية':8,'ثالثة':5,'رابعة':6};
 const SCHOOL = { wilaya:'المسيلة', name:'متوسطة بوضريسة محمد الأمين', year:'2026 / 2027' };
-const BRAND = { name:'مختبر الأفكار الذكية', code:'DONIALABSTECH', url:'https://donialabstech.online/' };
+const BRAND = { name:'مختبر الأفكار الذكية والتكنولوجيا المتقدمة', code:'DONIALABSTECH', url:'https://donialabstech.online/' };
 
 /* =====================================================================
    القسم 2: أدوات النص
@@ -746,7 +1027,6 @@ function enrich(){
       if(!s.system) s.system='غير محدد';
       return;
     }
-
     if(old&&old.level&&old.group){
       const curN=LEVEL_N[s.level];
       const oldN=LEVEL_N[old.level];
@@ -767,7 +1047,7 @@ function enrich(){
 }
 
 /* =====================================================================
-   القسم 8: الخوارزمية الحتمية (محافظة تماماً على المنطق الأصلي)
+   القسم 8: الخوارزمية الحتمية — محفوظة 100%
    ===================================================================== */
 function addTo(g,s){
   g.list.push(s);
@@ -824,7 +1104,6 @@ function distribute(students,G,opts){
   };
   sysKeys.forEach(k=>ctx.sysTarget[k]=sysTot[k]/G);
 
-  // المرحلة صفر: التثبيتات اليدوية
   const lockedStudents=[];
   const freeStudents=[];
   students.forEach(s=>{
@@ -1027,11 +1306,207 @@ function runDistribution(){
   renderLockedPanel();
   renderResults();
   renderBulkBar();
+  updateTopBarStats();
   autoSaveLocal();
 }
 
 /* =====================================================================
-   القسم 11: لوحة التثبيت
+   القسم 11: شريط الحالة العلوي
+   ===================================================================== */
+function updateTopBarStats(){
+  const students = STATE.cur.length;
+  const locks = STATE.locks.size;
+  let groups = 0;
+  LEVELS.forEach(lv=>{
+    if(STATE.results[lv]) groups += STATE.results[lv].stats.G;
+  });
+  const el1=$('statStudents'); if(el1) el1.textContent = students;
+  const el2=$('statLocks'); if(el2) el2.textContent = locks;
+  const el3=$('statGroups'); if(el3) el3.textContent = groups;
+}
+function setSyncStatus(type, text){
+  const el = $('syncStatus');
+  if(!el) return;
+  el.className = 'sync-status '+type;
+  const t = $('syncStatusText');
+  if(t) t.textContent = text;
+  if(type==='ok' || type==='err'){
+    // إرجاع الحالة إلى idle بعد 5 ثوان
+    clearTimeout(el._timer);
+    el._timer = setTimeout(()=>{
+      el.className = 'sync-status idle';
+      if(t) t.textContent = 'غير متصل';
+    }, 5000);
+  }
+}
+
+/* =====================================================================
+   القسم 12: عارض الشعار (Lightbox)
+   ===================================================================== */
+function openLogoViewer(){
+  const old = $('logoViewer'); if(old) old.remove();
+  const div = document.createElement('div');
+  div.id = 'logoViewer';
+  const logo = $('brandLogo');
+  div.innerHTML = `
+    <span class="close-hint">اضغط في أي مكان للإغلاق ✕</span>
+    <img src="${logo.src}" alt="شعار DONIA LABS TECH">
+  `;
+  div.onclick = ()=> div.remove();
+  document.addEventListener('keydown', function esc(e){
+    if(e.key==='Escape'){ div.remove(); document.removeEventListener('keydown', esc); }
+  });
+  document.body.appendChild(div);
+}
+
+/* =====================================================================
+   القسم 13: حوار المزامنة
+   ===================================================================== */
+function openSyncDialog(){
+  const old = $('syncDialog'); if(old) old.remove();
+  const creds = loadGHCreds();
+  const div = document.createElement('div');
+  div.id = 'syncDialog';
+  div.className = 'modal-bg';
+  div.innerHTML = `
+    <div class="modal-box" style="max-width:640px">
+      <h3>☁️ مزامنة البيانات مع GitHub</h3>
+      <div class="gh-note" style="background:#eff6ff;border-inline-start:4px solid #1e5aa8;padding:12px 14px;border-radius:8px;font-size:12.5px;color:#1e40af;margin-bottom:14px;line-height:1.8">
+        <b>📌 كيفية الحصول على Personal Access Token (PAT):</b><br>
+        1. اذهب إلى <code style="background:#dbeafe;padding:1px 6px;border-radius:4px">https://github.com/settings/tokens</code><br>
+        2. اضغط <b>Generate new token (classic)</b><br>
+        3. اختر صلاحية <code style="background:#dbeafe;padding:1px 6px;border-radius:4px">repo</code><br>
+        4. انسخ الـ Token والصقه أدناه (يُخزَّن محلياً فقط).
+      </div>
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Personal Access Token (PAT)</label>
+          <input type="password" id="syncToken" placeholder="ghp_xxxxxxxxxxxxxxxx" value="${esc(creds.token||'')}" autocomplete="off">
+        </div>
+        <div class="form-row">
+          <label>اسم المستودع (owner/repo)</label>
+          <input type="text" id="syncRepo" placeholder="username/students-distribution" value="${esc(creds.repo||'')}">
+        </div>
+        <div class="form-row">
+          <label>الفرع (Branch)</label>
+          <input type="text" id="syncBranch" value="${esc(creds.branch||'main')}">
+        </div>
+        <div class="form-row">
+          <label>مسار الملف</label>
+          <input type="text" id="syncPath" value="${esc(creds.path||'data/backup.json')}">
+        </div>
+      </div>
+      <div class="modal-actions" style="flex-wrap:wrap">
+        <button class="danger" onclick="ghClearFromDialog()">🗑️ حذف بيانات الاعتماد</button>
+        <button onclick="ghTestFromDialog()">🔍 اختبار الاتصال</button>
+        <button class="pri" onclick="ghLoadFromDialog()">⬇️ استرجاع من GitHub</button>
+        <button class="pri" style="background:linear-gradient(135deg,#d4a017,#b8860b)" onclick="ghSaveFromDialog()">☁️ حفظ في GitHub</button>
+        <button onclick="document.getElementById('syncDialog').remove()">إغلاق</button>
+      </div>
+    </div>`;
+  document.body.appendChild(div);
+}
+function _readSyncCredsFromDialog(){
+  return {
+    token: $('syncToken').value.trim(),
+    repo: $('syncRepo').value.trim(),
+    branch: $('syncBranch').value.trim()||'main',
+    path: $('syncPath').value.trim()||'data/backup.json'
+  };
+}
+function ghClearFromDialog(){
+  if(!confirm('حذف بيانات الاعتماد من المتصفح؟'))return;
+  localStorage.removeItem(GH_LS_KEY);
+  $('syncToken').value='';
+  $('syncRepo').value='';
+  setSyncStatus('idle','تم حذف الاعتماد');
+}
+async function ghTestFromDialog(){
+  const c = _readSyncCredsFromDialog();
+  saveGHCreds(c);
+  try{
+    setSyncStatus('load','جارٍ الاتصال...');
+    const res = await fetch(`https://api.github.com/repos/${c.repo}`, {
+      headers: { 'Authorization': `token ${c.token}`, 'Accept': 'application/vnd.github+json' }
+    });
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    setSyncStatus('ok','الاتصال ناجح ✅');
+    alert('✅ الاتصال بالمستودع ناجح.');
+  }catch(e){
+    setSyncStatus('err','فشل الاتصال');
+    alert('❌ فشل الاتصال:\n'+e.message);
+  }
+}
+async function ghSaveFromDialog(){
+  if(!STATE.cur.length){ alert('⚠️ لا توجد بيانات لحفظها.'); return; }
+  const c = _readSyncCredsFromDialog();
+  saveGHCreds(c);
+  try{
+    setSyncStatus('load','جارٍ الحفظ على GitHub...');
+    // الحصول على sha إن وجد
+    let sha = null;
+    try{
+      const r = await fetch(`https://api.github.com/repos/${c.repo}/contents/${encodeURIComponent(c.path)}?ref=${encodeURIComponent(c.branch)}`, {
+        headers: { 'Authorization': `token ${c.token}`, 'Accept': 'application/vnd.github+json' }
+      });
+      if(r.ok){ const j = await r.json(); sha = j.sha; }
+    }catch(e){}
+
+    const payload = serializeState();
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(payload, null, 2))));
+    const body = {
+      message: `DONIA-CLASSE backup — ${new Date().toISOString()}`,
+      content, branch: c.branch
+    };
+    if(sha) body.sha = sha;
+
+    const res = await fetch(`https://api.github.com/repos/${c.repo}/contents/${encodeURIComponent(c.path)}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${c.token}`,
+        'Accept': 'application/vnd.github+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+    if(!res.ok){
+      const err = await res.json().catch(()=>({}));
+      throw new Error(err.message || 'HTTP '+res.status);
+    }
+    setSyncStatus('ok','تم الحفظ على GitHub ✅');
+    alert('✅ تم حفظ النسخة على GitHub بنجاح.');
+    $('statLastSave').textContent = '💾 آخر حفظ: '+new Date().toLocaleTimeString('ar');
+  }catch(e){
+    setSyncStatus('err','فشل الحفظ');
+    alert('❌ فشل الحفظ على GitHub:\n'+e.message);
+  }
+}
+async function ghLoadFromDialog(){
+  const c = _readSyncCredsFromDialog();
+  saveGHCreds(c);
+  try{
+    setSyncStatus('load','جارٍ الاسترجاع...');
+    const res = await fetch(`https://api.github.com/repos/${c.repo}/contents/${encodeURIComponent(c.path)}?ref=${encodeURIComponent(c.branch)}`, {
+      headers: { 'Authorization': `token ${c.token}`, 'Accept': 'application/vnd.github+json' }
+    });
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    const content = decodeURIComponent(escape(atob(data.content.replace(/\s/g,''))));
+    const parsed = JSON.parse(content);
+    deserializeState(parsed);
+    if(!confirm(`تم قراءة النسخة:\n• التلاميذ: ${STATE.cur.length}\n• التثبيتات: ${STATE.locks.size}\n\nاستبدال الحالة الحالية؟`))return;
+    tryRun();
+    setSyncStatus('ok','تم الاسترجاع ✅');
+    alert('✅ تم استرجاع النسخة من GitHub.');
+    document.getElementById('syncDialog').remove();
+  }catch(e){
+    setSyncStatus('err','فشل الاسترجاع');
+    alert('❌ فشل الاسترجاع:\n'+e.message);
+  }
+}
+
+/* =====================================================================
+   القسم 14: لوحة التثبيت
    ===================================================================== */
 function renderLockedPanel(){
   const hasAny = STATE.locks.size>0;
@@ -1108,7 +1583,7 @@ function exportLocks(){
 }
 
 /* =====================================================================
-   القسم 12: لوحة التدقيق
+   القسم 15: لوحة التدقيق
    ===================================================================== */
 function renderAudit(){
   $('auditCard').classList.remove('hidden');
@@ -1132,7 +1607,7 @@ function renderAudit(){
       </ul>
     </div>`;
   }else{
-    html+=`<div style="font-size:13.5px;line-height:1.8">تم كشف المشاكل التالية، يرجى مراجعتها:</div>`;
+    html+=`<div style="font-size:13.5px;line-height:1.8">تم كشف المشاكل التالية:</div>`;
   }
 
   html+=`<div class="audit-grid">
@@ -1143,29 +1618,29 @@ function renderAudit(){
       <div class="lbl">إجمالي المخرجات</div><div class="val">${a.totals.output} تلميذ</div>
     </div>
     <div class="audit-item ${a.duplicates.length===0?'ok':'bad'}">
-      <div class="lbl">تكرارات رقم التعريف</div><div class="val">${a.duplicates.length}</div>
+      <div class="lbl">تكرارات</div><div class="val">${a.duplicates.length}</div>
     </div>
     <div class="audit-item ${a.missing.length===0?'ok':'bad'}">
-      <div class="lbl">تلاميذ مفقودون</div><div class="val">${a.missing.length}</div>
+      <div class="lbl">مفقودون</div><div class="val">${a.missing.length}</div>
     </div>
     <div class="audit-item ${a.mismatched.length===0?'ok':'bad'}">
       <div class="lbl">اختلافات بيانات</div><div class="val">${a.mismatched.length}</div>
     </div>
     <div class="audit-item ${a.lockIssues.length===0?'ok':'bad'}">
-      <div class="lbl">مشاكل التثبيت اليدوي</div><div class="val">${a.lockIssues.length}</div>
+      <div class="lbl">مشاكل التثبيت</div><div class="val">${a.lockIssues.length}</div>
     </div>
     <div class="audit-item ${a.groupCountIssues.length===0?'ok':'bad'}">
       <div class="lbl">مشاكل الخريطة</div><div class="val">${a.groupCountIssues.length}</div>
     </div>
     <div class="audit-item ok">
-      <div class="lbl">تلاميذ مُثبَّتون يدوياً</div><div class="val">${STATE.locks.size}</div>
+      <div class="lbl">📌 مُثبَّتون</div><div class="val">${STATE.locks.size}</div>
     </div>
   </div>`;
 
   html+=`<table class="audit-table">
     <thead><tr>
-      <th>المستوى</th><th>عدد المدخلات</th><th>عدد المخرجات</th><th>الحالة</th>
-      <th>عدد الأفواج (متوقع / فعلي)</th><th>أصغر فوج</th><th>أكبر فوج</th>
+      <th>المستوى</th><th>مدخلات</th><th>مخرجات</th><th>الحالة</th>
+      <th>الأفواج (متوقع/فعلي)</th><th>أصغر</th><th>أكبر</th>
     </tr></thead><tbody>`;
   LEVELS.forEach(lv=>{
     const la=a.perLevel[lv]; if(!la)return;
@@ -1175,54 +1650,21 @@ function renderAudit(){
       <td><b>${LEVEL_LABEL[lv]}</b></td>
       <td>${la.inputCount}</td>
       <td>${la.outputCount}</td>
-      <td class="${ok?'ok':'bad'}">${ok?'✓ مطابق':'✕ خطأ'}</td>
+      <td class="${ok?'ok':'bad'}">${ok?'✓':'✕'}</td>
       <td class="${gcOk?'ok':'bad'}">${la.groupsExpected} / ${la.groupsActual}</td>
       <td>${la.minGroup}</td><td>${la.maxGroup}</td>
     </tr>`;
   });
   html+=`<tr class="total">
-    <td>الإجمالي</td>
-    <td>${a.totals.input}</td>
-    <td>${a.totals.output}</td>
-    <td class="${a.totals.input===a.totals.output?'ok':'bad'}">${a.totals.input===a.totals.output?'✓ مطابق':'✕ خطأ'}</td>
+    <td>الإجمالي</td><td>${a.totals.input}</td><td>${a.totals.output}</td>
+    <td class="${a.totals.input===a.totals.output?'ok':'bad'}">${a.totals.input===a.totals.output?'✓':'✕'}</td>
     <td colspan="3">—</td>
-  </tr>`;
-  html+=`</tbody></table>`;
+  </tr></tbody></table>`;
 
   if(a.duplicates.length){
-    html+=`<div style="margin-top:16px"><h4 style="margin:0 0 8px;color:#b91c1c">🔴 تكرارات رقم التعريف (${a.duplicates.length})</h4><div class="dup-list">`;
+    html+=`<div style="margin-top:16px"><h4 style="margin:0 0 8px;color:#b91c1c">🔴 تكرارات (${a.duplicates.length})</h4><div class="dup-list">`;
     a.duplicates.forEach(d=>{
-      html+=`<div class="dup-row"><b>${esc(d.name)}</b> — رقم التعريف <code>${esc(d.id)}</code>
-        (ظهر في: <b>${LEVEL_SHORT[d.first.level]}${d.first.group}</b> و <b>${LEVEL_SHORT[d.second.level]}${d.second.group}</b>)</div>`;
-    });
-    html+=`</div></div>`;
-  }
-  if(a.missing.length){
-    html+=`<div style="margin-top:16px"><h4 style="margin:0 0 8px;color:#b91c1c">🔴 تلاميذ مفقودون (${a.missing.length})</h4><div class="dup-list">`;
-    a.missing.forEach(m=>{
-      html+=`<div class="dup-row"><b>${esc(m.name)}</b> — <code>${esc(m.id)}</code> (${LEVEL_SHORT[m.level]}${m.group})</div>`;
-    });
-    html+=`</div></div>`;
-  }
-  if(a.mismatched.length){
-    html+=`<div style="margin-top:16px"><h4 style="margin:0 0 8px;color:#b91c1c">🔴 اختلافات في البيانات (${a.mismatched.length})</h4><div class="dup-list">`;
-    a.mismatched.forEach(m=>{
-      html+=`<div class="dup-row"><b>${esc(m.name)}</b> — <code>${esc(m.id)}</code> — الحقل: <b>${m.field}</b></div>`;
-    });
-    html+=`</div></div>`;
-  }
-  if(a.lockIssues.length){
-    html+=`<div style="margin-top:16px"><h4 style="margin:0 0 8px;color:#b91c1c">🔴 مشاكل التثبيت اليدوي (${a.lockIssues.length})</h4><div class="dup-list">`;
-    a.lockIssues.forEach(m=>{
-      html+=`<div class="dup-row"><b>${esc(m.name)}</b> — <code>${esc(m.id)}</code>
-        — متوقع: <b>${LEVEL_SHORT[m.expected.level]}${m.expected.group}</b>، فعلي: <b>${LEVEL_SHORT[m.actual.level]}${m.actual.group}</b></div>`;
-    });
-    html+=`</div></div>`;
-  }
-  if(a.groupCountIssues.length){
-    html+=`<div style="margin-top:16px"><h4 style="margin:0 0 8px;color:#b91c1c">⚠️ مشاكل الخريطة المدرسية</h4><div class="dup-list">`;
-    a.groupCountIssues.forEach(g=>{
-      html+=`<div class="dup-row">المستوى <b>${LEVEL_LABEL[g.level]}</b>: متوقع <b>${g.expected}</b> فوج، فعلي <b>${g.actual}</b> فوج</div>`;
+      html+=`<div class="dup-row"><b>${esc(d.name)}</b> — <code>${esc(d.id)}</code> (${LEVEL_SHORT[d.first.level]}${d.first.group} / ${LEVEL_SHORT[d.second.level]}${d.second.group})</div>`;
     });
     html+=`</div></div>`;
   }
@@ -1231,12 +1673,12 @@ function renderAudit(){
 }
 
 /* =====================================================================
-   القسم 13: الإعدادات
+   القسم 16: الإعدادات
    ===================================================================== */
 function renderSettings(){
   $('settingsCard').classList.remove('hidden');
   $('mapInfo').innerHTML=
-    `<span class="item">🏫 <b>الخريطة الرسمية:</b></span>`+
+    `<span class="item">🏫 <b>الخريطة:</b></span>`+
     `<span class="item">أولى = <b>${OFFICIAL_GROUPS['أولى']} فوج</b></span>`+
     `<span class="item">ثانية = <b>${OFFICIAL_GROUPS['ثانية']} فوج</b></span>`+
     `<span class="item">ثالثة = <b>${OFFICIAL_GROUPS['ثالثة']} فوج</b></span>`+
@@ -1277,7 +1719,7 @@ function renderSettings(){
 }
 
 /* =====================================================================
-   القسم 14: عرض النتائج
+   القسم 17: عرض النتائج
    ===================================================================== */
 function renderResults(){
   $('resultCard').classList.remove('hidden');
@@ -1301,7 +1743,7 @@ function renderLevelView(lv){
   const box=$('levelView');
   const kpis=`
     <div class="kpi-row">
-      <div class="kpi"><div class="v">${r.stats.total}</div><div class="l">إجمالي التلاميذ</div></div>
+      <div class="kpi"><div class="v">${r.stats.total}</div><div class="l">إجمالي</div></div>
       <div class="kpi"><div class="v">${r.stats.G}</div><div class="l">عدد الأفواج</div></div>
       <div class="kpi"><div class="v">${r.stats.avg}</div><div class="l">المعدل/فوج</div></div>
       <div class="kpi p-m"><div class="v">${r.stats.m}</div><div class="l">ذكور</div></div>
@@ -1365,7 +1807,7 @@ function renderLevelView(lv){
       let tag='';
       if(isLocked){
         const lock=STATE.locks.get(s.id);
-        tag=`<span class="tag-mini lock">📌 مُثبَّت على ${LEVEL_SHORT[lock.level]}${lock.group}</span>`;
+        tag=`<span class="tag-mini lock">📌 ${LEVEL_SHORT[lock.level]}${lock.group}</span>`;
       }else if(s.origin==='promoted'){
         tag=s.trackGroup
           ? `<span class="tag-mini keep">مسار ${s.oldLevel} ${s.trackGroup}</span>`
@@ -1453,15 +1895,12 @@ function renderLevelView(lv){
 }
 
 /* =====================================================================
-   القسم 15: شريط العمليات الجماعية
+   القسم 18: شريط العمليات الجماعية
    ===================================================================== */
 function renderBulkBar(){
   const bar = $('bulkBar');
   const count = STATE.selection.size;
-  if(count===0){
-    bar.classList.remove('on');
-    return;
-  }
+  if(count===0){ bar.classList.remove('on'); return; }
   bar.classList.add('on');
   $('bulkCount').textContent = count;
 
@@ -1471,7 +1910,6 @@ function renderBulkBar(){
   const grpSelect = $('bulkTargetGroup');
   const prevLv = lvSelect.value;
   const prevGrp = grpSelect.value;
-
   const singleLevel = levels.length===1 ? levels[0] : null;
 
   lvSelect.innerHTML = levels.map(lv=>
@@ -1501,36 +1939,24 @@ function clearSelection(){
 }
 
 /* =====================================================================
-   القسم 16: التثبيت اليدوي
+   القسم 19: التثبيت اليدوي
    ===================================================================== */
 function toggleLock(id, level, group){
-  if(STATE.locks.has(id)){
-    STATE.locks.delete(id);
-  }else{
-    STATE.locks.set(id, { level, group });
-  }
+  if(STATE.locks.has(id)) STATE.locks.delete(id);
+  else STATE.locks.set(id, { level, group });
   runDistribution();
 }
 function lockSelected(){
   if(STATE.selection.size===0)return;
   const lvSelect = $('bulkTargetLevel').value;
   const grpNum = parseInt($('bulkTargetGroup').value);
-
   const selStudents = [...STATE.selection].map(id=>STATE.cur.find(s=>s.id===id)).filter(Boolean);
   const levels = [...new Set(selStudents.map(s=>s.level))];
-  if(levels.length>1){
-    alert('⚠️ لا يمكن تثبيت تلاميذ من مستويات مختلفة في فوج واحد.');
-    return;
-  }
+  if(levels.length>1){ alert('⚠️ لا يمكن تثبيت تلاميذ من مستويات مختلفة.'); return; }
   const actualLv = levels[0];
   const G = STATE.groupCount[actualLv]||OFFICIAL_GROUPS[actualLv];
-  if(grpNum<1 || grpNum>G){
-    alert(`⚠️ الفوج ${grpNum} خارج نطاق المستوى (1-${G}).`);
-    return;
-  }
-
+  if(grpNum<1 || grpNum>G){ alert(`⚠️ الفوج ${grpNum} خارج النطاق (1-${G}).`); return; }
   if(!confirm(`📌 تثبيت ${selStudents.length} تلميذ في الفوج ${LEVEL_SHORT[actualLv]}${grpNum}?`))return;
-
   selStudents.forEach(s=>{
     STATE.locks.set(s.id, { level: actualLv, group: grpNum });
   });
@@ -1543,44 +1969,29 @@ function unlockSelected(){
   STATE.selection.forEach(id=>{
     if(STATE.locks.has(id)){ STATE.locks.delete(id); unlocked++; }
   });
-  if(unlocked===0){
-    alert('لا يوجد تلاميذ مُثبَّتون ضمن المحددين.');
-    return;
-  }
+  if(unlocked===0){ alert('لا يوجد تلاميذ مُثبَّتون ضمن المحددين.'); return; }
   STATE.selection.clear();
   runDistribution();
 }
 
 /* =====================================================================
-   القسم 17: النقل الجماعي
+   القسم 20: النقل الجماعي
    ===================================================================== */
 function transferSelected(){
   if(STATE.selection.size===0)return;
   const lvSelect = $('bulkTargetLevel').value;
   const grpNum = parseInt($('bulkTargetGroup').value);
-
   const selStudents = [...STATE.selection].map(id=>STATE.cur.find(s=>s.id===id)).filter(Boolean);
   const levels = [...new Set(selStudents.map(s=>s.level))];
-  if(levels.length>1){
-    alert('⚠️ لا يمكن النقل الجماعي عبر مستويات مختلفة.');
-    return;
-  }
+  if(levels.length>1){ alert('⚠️ لا يمكن النقل الجماعي عبر مستويات مختلفة.'); return; }
   const actualLv = levels[0];
-  if(actualLv!==lvSelect){
-    alert(`⚠️ اختر نفس مستوى التلاميذ المحددين: «${LEVEL_LABEL[actualLv]}».`);
-    return;
-  }
+  if(actualLv!==lvSelect){ alert(`⚠️ اختر مستوى «${LEVEL_LABEL[actualLv]}».`); return; }
   const G = STATE.groupCount[actualLv]||OFFICIAL_GROUPS[actualLv];
-  if(grpNum<1 || grpNum>G){
-    alert(`⚠️ الفوج ${grpNum} خارج النطاق (1-${G}).`);
-    return;
-  }
-
-  if(!confirm(`🔀 نقل ${selStudents.length} تلميذ إلى الفوج ${LEVEL_SHORT[actualLv]}${grpNum}?\nسيتم تثبيتهم على الفوج الجديد.`))return;
+  if(grpNum<1 || grpNum>G){ alert(`⚠️ الفوج ${grpNum} خارج النطاق (1-${G}).`); return; }
+  if(!confirm(`🔀 نقل ${selStudents.length} تلميذ إلى ${LEVEL_SHORT[actualLv]}${grpNum}?\nسيتم تثبيتهم على الفوج الجديد.`))return;
 
   const r = STATE.results[actualLv];
   if(!r)return;
-
   const targetG = r.groups.find(g=>g.num===grpNum);
   if(!targetG)return;
 
@@ -1604,9 +2015,9 @@ function transferSelected(){
   renderLockedPanel();
   renderResults();
   renderBulkBar();
+  updateTopBarStats();
   autoSaveLocal();
 }
-
 function deleteSelected(){
   if(STATE.selection.size===0)return;
   const count = STATE.selection.size;
@@ -1622,7 +2033,7 @@ function deleteSelected(){
 }
 
 /* =====================================================================
-   القسم 18: أدوات التعديل الفردي
+   القسم 21: التعديل الفردي
    ===================================================================== */
 function toggleGender(id){
   const st=STATE.cur.find(x=>x.id===id); if(!st)return;
@@ -1630,7 +2041,6 @@ function toggleGender(id){
   STATE.overrides[id]=nxt;
   runDistribution();
 }
-
 function moveStudent(id){
   const st=STATE.cur.find(x=>x.id===id); if(!st)return;
   const lv=st.level;
@@ -1672,16 +2082,13 @@ function moveStudent(id){
     </div>`;
   document.body.appendChild(div);
 }
-
 function applyMove(id, btn){
   const sel=btn.closest('.modal-box').querySelector('#moveTarget');
   const lockCb=btn.closest('.modal-box').querySelector('#moveLock');
   const targetNum=parseInt(sel.value);
   const doLock=lockCb.checked;
   const st=STATE.cur.find(x=>x.id===id); if(!st)return;
-
   const r=STATE.results[st.level]; if(!r){btn.closest('.modal-bg').remove();return;}
-
   for(const g of r.groups){
     const found=g.list.find(x=>x.id===id);
     if(found){ removeFrom(g, found); break; }
@@ -1695,18 +2102,15 @@ function applyMove(id, btn){
   r.stats.min=Math.min(...r.groups.map(g=>g.list.length));
   r.stats.max=Math.max(...r.groups.map(g=>g.list.length));
   r.stats.avg=(r.stats.total/r.stats.G).toFixed(1);
-
-  if(doLock){
-    STATE.locks.set(id, { level: st.level, group: targetNum });
-  }
-
+  if(doLock) STATE.locks.set(id, { level: st.level, group: targetNum });
   btn.closest('.modal-bg').remove();
   STATE.audit=runAudit();
   renderAudit();
   renderLockedPanel();
   renderResults();
+  updateTopBarStats();
+  autoSaveLocal();
 }
-
 function deleteStudent(id){
   const st=STATE.cur.find(x=>x.id===id); if(!st)return;
   const div=document.createElement('div');
@@ -1715,7 +2119,7 @@ function deleteStudent(id){
     <div class="modal-box" style="max-width:420px">
       <h3 style="color:#dc2626">⚠️ تأكيد الحذف</h3>
       <p style="font-size:13.5px;color:#475569;line-height:1.8">
-        هل أنت متأكد من حذف التلميذ:<br>
+        هل أنت متأكد من حذف:<br>
         <b style="color:#1e293b">${esc(st.name)}</b><br>
         <span style="font-size:12px;color:#94a3b8">ID: ${esc(st.id)}</span>
       </p>
@@ -1726,7 +2130,6 @@ function deleteStudent(id){
     </div>`;
   document.body.appendChild(div);
 }
-
 function applyDelete(id, btn){
   const idx=STATE.cur.findIndex(x=>x.id===id);
   if(idx>=0)STATE.cur.splice(idx,1);
@@ -1738,7 +2141,7 @@ function applyDelete(id, btn){
 }
 
 /* =====================================================================
-   القسم 19: إضافة تلميذ يدوياً
+   القسم 22: إضافة تلميذ يدوياً
    ===================================================================== */
 $('btnAddStudent').onclick=function(){
   const div=document.createElement('div');
@@ -1793,7 +2196,7 @@ $('btnAddStudent').onclick=function(){
       <div class="form-row">
         <label>📌 تثبيت مباشر في الفوج (اختياري)</label>
         <select id="addLockGroup">
-          <option value="">— بدون تثبيت (توزيع تلقائي) —</option>
+          <option value="">— بدون تثبيت —</option>
           ${LEVELS.map(lv=>{
             const G=STATE.groupCount[lv]||OFFICIAL_GROUPS[lv];
             const opts=[];
@@ -1810,7 +2213,6 @@ $('btnAddStudent').onclick=function(){
     </div>`;
   document.body.appendChild(div);
 };
-
 function applyAddStudent(btn){
   const id=cleanId($('addId').value);
   const name=$('addName').value.trim().replace(/\s+/g,' ');
@@ -1822,7 +2224,6 @@ function applyAddStudent(btn){
   const lockVal=$('addLockGroup').value;
   const err=$('addError');
   err.textContent='';
-
   if(!id){err.textContent='❌ رقم التعريف مطلوب'; return;}
   if(!name){err.textContent='❌ اللقب والاسم مطلوب'; return;}
   if(STATE.cur.find(x=>x.id===id)){err.textContent='❌ رقم التعريف موجود مسبقاً'; return;}
@@ -1833,29 +2234,26 @@ function applyAddStudent(btn){
     gender, origin:'manual', trackGroup:null, moved:false, manual:true
   };
   STATE.cur.push(newStudent);
-
   if(lockVal){
     const [lockLv, lockGrp] = lockVal.split('|');
     STATE.locks.set(id, { level: lockLv, group: parseInt(lockGrp) });
   }
-
   btn.closest('.modal-bg').remove();
   tryRun();
 }
 
 /* =====================================================================
-   القسم 20: العرض بملء الشاشة
+   القسم 23: العرض بملء الشاشة
    ===================================================================== */
 function openFullscreen(lv, groupNum){
   const r=STATE.results[lv]; if(!r)return;
   const g=r.groups.find(x=>x.num===groupNum); if(!g)return;
-
   const rows=g.list.map((s,i)=>{
     const gTxt=s.gender==='M'?'ذكر':(s.gender==='F'?'أنثى':'—');
     const isLocked=STATE.locks.has(s.id);
     let status='';
     if(isLocked) status=`📌 مُثبَّت`;
-    else if(s.origin==='promoted')status=s.trackGroup?`مُرقّى · مسار ${s.oldLevel} ${s.trackGroup}`:'مُرقّى · أُعيد توزيعه';
+    else if(s.origin==='promoted')status=s.trackGroup?`مُرقّى · مسار ${s.oldLevel} ${s.trackGroup}`:'مُرقّى';
     else if(s.origin==='repeater')status=s.trackGroup?`معيد · مسار ${s.oldLevel} ${s.trackGroup}`:'معيد';
     else if(s.origin==='manual')status='مُضاف يدوياً';
     else status='جديد';
@@ -1870,7 +2268,6 @@ function openFullscreen(lv, groupNum){
       <td style="font-size:11.5px;color:#64748b">${esc(status)}</td>
     </tr>`;
   }).join('');
-
   const div=document.createElement('div');
   div.id='fullscreen';
   div.innerHTML=`
@@ -1907,17 +2304,14 @@ function openFullscreen(lv, groupNum){
       <span>${SCHOOL.name} — ${SCHOOL.year}</span>
       <span>معاينة الفوج ${LEVEL_SHORT[lv]}${groupNum}</span>
     </div>`;
-
   document.addEventListener('keydown',function escHandler(e){
     if(e.key==='Escape'){
       const fs=document.getElementById('fullscreen');
       if(fs){fs.remove(); document.removeEventListener('keydown',escHandler);}
     }
   });
-
   document.body.appendChild(div);
 }
-
 function printFullscreen(){
   const fs=document.getElementById('fullscreen');
   if(!fs)return;
@@ -1926,7 +2320,6 @@ function printFullscreen(){
   const info=fs.querySelector('.fs-head .info').innerHTML;
   const now=new Date();
   const dateStr=`${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
-
   let tbl=`<table class="pr-tbl">
     <thead><tr>
       <th style="width:34px">ر.ت</th>
@@ -1950,7 +2343,6 @@ function printFullscreen(){
     </tr>`;
   });
   tbl+=`</tbody></table>`;
-
   $('printContainer').innerHTML=`
     <div class="pr-doc">
       <div class="pr-head">
@@ -1972,7 +2364,7 @@ function printFullscreen(){
 }
 
 /* =====================================================================
-   القسم 21: الطباعة
+   القسم 24: الطباعة
    ===================================================================== */
 function buildPrintHTML(levels){
   const now=new Date();
@@ -1981,7 +2373,7 @@ function buildPrintHTML(levels){
   let firstSection=true;
   levels.forEach(lv=>{
     const r=STATE.results[lv]; if(!r)return;
-    html+=`<div style="page-break-before:${firstSection?'auto':'always'}"></div>`;
+    if(!firstSection) html+=`<div style="page-break-before:always"></div>`;
     firstSection=false;
     html+=`
       <div class="pr-head">
@@ -1992,8 +2384,8 @@ function buildPrintHTML(levels){
       </div>
       <div class="pr-title">قوائم الأفواج — ${LEVEL_LABEL[lv]}</div>
       <div class="pr-summary">
-        <span>عدد التلاميذ: <b>${r.stats.total}</b></span>
-        <span>عدد الأفواج: <b>${r.stats.G}</b></span>
+        <span>العدد: <b>${r.stats.total}</b></span>
+        <span>الأفواج: <b>${r.stats.G}</b></span>
         <span>ذكور: <b>${r.stats.m}</b></span>
         <span>إناث: <b>${r.stats.f}</b></span>
         <span>معيدون: <b>${r.stats.rep}</b></span>
@@ -2050,12 +2442,16 @@ function printLevel(lv){
 }
 function printAll(){
   const list=LEVELS.filter(lv=>STATE.results[lv]);
+  if(!list.length){
+    alert('⚠️ لا توجد بيانات للطباعة. حمّل الملفات أولاً.');
+    return;
+  }
   $('printContainer').innerHTML=buildPrintHTML(list);
   setTimeout(()=>window.print(),80);
 }
 
 /* =====================================================================
-   القسم 22: التصدير إلى Excel
+   القسم 25: تصدير Excel
    ===================================================================== */
 function exportLevel(lv){
   const r=STATE.results[lv]; if(!r)return;
@@ -2127,11 +2523,11 @@ function exportAll(){
 }
 
 /* =====================================================================
-   القسم 23: نظام الحفظ والنسخ الاحتياطي
+   القسم 26: النسخ الاحتياطي
    ===================================================================== */
 function serializeState(){
   return {
-    version: '3.0',
+    version: '3.1',
     app: 'DONIA-CLASSE',
     brand: BRAND,
     school: SCHOOL,
@@ -2149,10 +2545,9 @@ function serializeState(){
     surnames: [...STATE.surnames]
   };
 }
-
 function deserializeState(data){
   if(!data || data.app!=='DONIA-CLASSE'){
-    throw new Error('ملف النسخة الاحتياطية غير صالح أو غير معروف');
+    throw new Error('ملف النسخة الاحتياطية غير صالح');
   }
   STATE.groupCount = Object.assign({}, OFFICIAL_GROUPS, data.groupCount||{});
   STATE.overrides = data.overrides||{};
@@ -2163,8 +2558,7 @@ function deserializeState(data){
     fileGroup:s.fileGroup||0, system:s.system||'غير محدد',
     reg:s.reg||'', gender:s.gender||'U',
     origin:s.origin||'new', trackGroup:s.trackGroup||null,
-    oldLevel:s.oldLevel||null, manual:!!s.manual,
-    moved:false
+    oldLevel:s.oldLevel||null, manual:!!s.manual, moved:false
   }));
   STATE.oldMap = data.oldMap||{};
   STATE.surnames = new Set(data.surnames||[]);
@@ -2172,7 +2566,6 @@ function deserializeState(data){
   STATE.loadedCur = STATE.cur.length>0;
   STATE.loadedOld = Object.keys(STATE.oldMap).length>0;
 }
-
 function exportBackupJSON(){
   if(!STATE.cur.length){
     alert('⚠️ لا توجد بيانات لحفظها. حمّل الملفات أولاً.');
@@ -2187,69 +2580,8 @@ function exportBackupJSON(){
   a.download = `DONIA-CLASSE_backup_${ts}.json`;
   a.click();
   URL.revokeObjectURL(url);
+  $('statLastSave').textContent = '💾 آخر تصدير: '+new Date().toLocaleTimeString('ar');
 }
-
-function exportBackupXLS(){
-  if(!STATE.cur.length){
-    alert('⚠️ لا توجد بيانات لحفظها.');
-    return;
-  }
-  const wb=XLSX.utils.book_new();
-
-  // ورقة Meta
-  const meta=[
-    {key:'app', value:'DONIA-CLASSE'},
-    {key:'version', value:'3.0'},
-    {key:'exportedAt', value:new Date().toISOString()},
-    {key:'brand', value:BRAND.name+' | '+BRAND.code},
-    {key:'school', value:SCHOOL.name+' — '+SCHOOL.wilaya},
-    {key:'year', value:SCHOOL.year},
-    {key:'totalStudents', value:STATE.cur.length},
-    {key:'totalLocks', value:STATE.locks.size},
-    {key:'groupCount', value:JSON.stringify(STATE.groupCount)}
-  ];
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(meta), 'Meta');
-
-  // ورقة التلاميذ (مع كل الحقول)
-  const students = STATE.cur.map(s=>({
-    'رقم التعريف': s.id,
-    'اللقب والاسم': s.name,
-    'تاريخ الميلاد': s.birth,
-    'المستوى': s.level,
-    'رقم الفوج الأصلي': s.fileGroup,
-    'النظام': s.system,
-    'رقم التسجيل': s.reg,
-    'الجنس': s.gender,
-    'الحالة': s.origin,
-    'مسار الفوج': s.trackGroup||'',
-    'مستوى سابق': s.oldLevel||'',
-    'مُضاف يدوياً': s.manual?'نعم':'لا',
-    '📌 مُثبَّت على': STATE.locks.has(s.id)?`${LEVEL_SHORT[STATE.locks.get(s.id).level]}${STATE.locks.get(s.id).group}`:''
-  }));
-  const wsS=XLSX.utils.json_to_sheet(students);
-  wsS['!cols']=[{wch:18},{wch:28},{wch:13},{wch:10},{wch:14},{wch:13},{wch:11},{wch:8},{wch:10},{wch:11},{wch:11},{wch:11},{wch:12}];
-  XLSX.utils.book_append_sheet(wb, wsS, 'التلاميذ');
-
-  // ورقة التثبيتات
-  if(STATE.locks.size>0){
-    const locks=[];
-    STATE.locks.forEach((l,id)=>{
-      const s=STATE.cur.find(x=>x.id===id);
-      if(!s)return;
-      locks.push({
-        'رقم التعريف':id,
-        'اللقب والاسم':s.name,
-        'المستوى':LEVEL_LABEL[l.level],
-        'الفوج المُثبَّت':`${LEVEL_SHORT[l.level]}${l.group}`
-      });
-    });
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(locks), 'التثبيتات');
-  }
-
-  const ts = new Date().toISOString().replace(/[:.]/g,'-').slice(0,19);
-  XLSX.writeFile(wb, `DONIA-CLASSE_backup_${ts}.xlsx`);
-}
-
 function triggerImportBackup(){
   $('backupInput').click();
 }
@@ -2257,14 +2589,16 @@ $('backupInput').addEventListener('change', async e=>{
   const f = e.target.files[0];
   if(!f)return;
   try{
-    if(f.name.endsWith('.json')){
+    if(f.name.endsWith('.json') || f.type.includes('json')){
       const txt = await f.text();
       const data = JSON.parse(txt);
       deserializeState(data);
       if(!confirm(`تم قراءة النسخة الاحتياطية:\n• التلاميذ: ${STATE.cur.length}\n• التثبيتات: ${STATE.locks.size}\n\nسيتم استبدال الحالة الحالية. متابعة؟`))return;
       tryRun();
+      setSyncStatus('ok','تم استرجاع النسخة');
       alert('✅ تم استرجاع النسخة الاحتياطية بنجاح.');
-    } else if(f.name.endsWith('.xlsx')||f.name.endsWith('.xls')){
+    } else {
+      // Excel backup (يحتاج ورقة التلاميذ)
       const wb = await readWorkbook(f);
       if(!wb.SheetNames.includes('التلاميذ')){
         throw new Error('ملف Excel لا يحتوي على ورقة «التلاميذ»');
@@ -2273,23 +2607,17 @@ $('backupInput').addEventListener('change', async e=>{
       const lockRows = wb.SheetNames.includes('التثبيتات') ? sheetToObjects(wb.Sheets['التثبيتات']) : [];
       const metaRows = wb.SheetNames.includes('Meta') ? sheetToObjects(wb.Sheets['Meta']) : [];
 
-      if(!confirm(`تم قراءة النسخة الاحتياطية (Excel):\n• التلاميذ: ${studRows.length}\n• التثبيتات: ${lockRows.length}\n\nسيتم استبدال الحالة الحالية. متابعة؟`))return;
+      if(!confirm(`تم قراءة النسخة (Excel):\n• التلاميذ: ${studRows.length}\n• التثبيتات: ${lockRows.length}\n\nمتابعة؟`))return;
 
-      STATE.cur = [];
-      STATE.locks = new Map();
-      STATE.overrides = {};
-      STATE.oldMap = {};
-      STATE.surnames = new Set();
-      STATE.selection = new Set();
+      STATE.cur = []; STATE.locks = new Map(); STATE.overrides = {};
+      STATE.oldMap = {}; STATE.surnames = new Set(); STATE.selection = new Set();
 
-      // قراءة Meta
       metaRows.forEach(m=>{
         if(m.key==='groupCount' && m.value){
           try{ STATE.groupCount = Object.assign({}, OFFICIAL_GROUPS, JSON.parse(m.value)); }catch(e){}
         }
       });
 
-      // قراءة التلاميذ
       studRows.forEach(r=>{
         const id = cleanId(r['رقم التعريف']); if(!id)return;
         STATE.cur.push({
@@ -2309,13 +2637,9 @@ $('backupInput').addEventListener('change', async e=>{
         });
       });
 
-      // قراءة التثبيتات
       lockRows.forEach(r=>{
         const id = cleanId(r['رقم التعريف']); if(!id)return;
         const grp = String(r['الفوج المُثبَّت']||'');
-        const m = grp.match(/^(\d?م)(\d+)$/);
-        const lv = LEVELS.find(x=>LEVEL_SHORT[x]+(m?m[2]:'')===grp) || null;
-        // استخراج المستوى من النص
         let lv2 = null, gn = 0;
         LEVELS.forEach(x=>{
           if(grp.startsWith(LEVEL_SHORT[x])){
@@ -2323,15 +2647,14 @@ $('backupInput').addEventListener('change', async e=>{
             gn = parseInt(grp.slice(LEVEL_SHORT[x].length))||0;
           }
         });
-        if(lv2 && gn>0){
-          STATE.locks.set(id, { level: lv2, group: gn });
-        }
+        if(lv2 && gn>0) STATE.locks.set(id, { level: lv2, group: gn });
       });
 
       STATE.loadedCur = STATE.cur.length>0;
       STATE.loadedOld = false;
       tryRun();
-      alert('✅ تم استرجاع النسخة الاحتياطية (Excel) بنجاح.');
+      setSyncStatus('ok','تم استرجاع Excel');
+      alert('✅ تم استرجاع النسخة (Excel) بنجاح.');
     }
   }catch(err){
     alert('❌ فشل استرجاع النسخة: '+err.message);
@@ -2340,7 +2663,7 @@ $('backupInput').addEventListener('change', async e=>{
 });
 
 /* =====================================================================
-   القسم 24: الحفظ التلقائي المحلي
+   القسم 27: الحفظ التلقائي المحلي
    ===================================================================== */
 const LS_KEY = 'DONIA-CLASSE-state-v3';
 let autoSaveTimer = null;
@@ -2350,7 +2673,8 @@ function autoSaveLocal(){
   autoSaveTimer = setTimeout(()=>{
     try{
       localStorage.setItem(LS_KEY, JSON.stringify(serializeState()));
-    }catch(e){ console.warn('تعذّر الحفظ التلقائي:', e.message); }
+      $('statLastSave').textContent = '💾 آخر حفظ تلقائي: '+new Date().toLocaleTimeString('ar');
+    }catch(e){}
   }, 800);
 }
 function loadLocalIfExists(){
@@ -2365,7 +2689,7 @@ function loadLocalIfExists(){
 }
 
 /* =====================================================================
-   القسم 25: مزامنة GitHub
+   القسم 28: بيانات اعتماد GitHub (Local Storage)
    ===================================================================== */
 const GH_LS_KEY = 'DONIA-CLASSE-github';
 function loadGHCreds(){
@@ -2377,130 +2701,9 @@ function loadGHCreds(){
 function saveGHCreds(c){
   try{ localStorage.setItem(GH_LS_KEY, JSON.stringify(c)); }catch(e){}
 }
-function applyGHCredsToUI(){
-  const c = loadGHCreds();
-  $('ghToken').value = c.token||'';
-  $('ghRepo').value = c.repo||'';
-  $('ghBranch').value = c.branch||'main';
-  $('ghPath').value = c.path||'data/backup.json';
-}
-function readGHCredsFromUI(){
-  return {
-    token: $('ghToken').value.trim(),
-    repo: $('ghRepo').value.trim(),
-    branch: $('ghBranch').value.trim()||'main',
-    path: $('ghPath').value.trim()||'data/backup.json'
-  };
-}
-function toggleGHPanel(){
-  const p = $('ghPanel');
-  p.classList.toggle('hidden');
-  if(!p.classList.contains('hidden')){
-    applyGHCredsToUI();
-    setGHStatus('idle','⚪ غير متصل');
-  }
-}
-function setGHStatus(type, txt){
-  const el = $('ghStatus');
-  el.className = 'gh-status '+type;
-  el.textContent = txt;
-}
-async function ghApi(method, path, body){
-  const c = readGHCredsFromUI();
-  if(!c.token) throw new Error('يجب إدخال Personal Access Token أولاً');
-  if(!c.repo || !c.repo.includes('/')) throw new Error('صيغة المستودع يجب أن تكون owner/repo');
-  const url = `https://api.github.com/repos/${c.repo}/contents/${encodeURIComponent(c.path)}${method==='GET'?'?ref='+encodeURIComponent(c.branch):''}`;
-  const headers = {
-    'Authorization': `token ${c.token}`,
-    'Accept': 'application/vnd.github+json',
-    'X-GitHub-Api-Version': '2022-11-28'
-  };
-  if(body) headers['Content-Type'] = 'application/json';
-  const res = await fetch(url, {
-    method,
-    headers,
-    body: body ? JSON.stringify(body) : undefined
-  });
-  if(!res.ok){
-    const err = await res.json().catch(()=>({}));
-    throw new Error(err.message || `HTTP ${res.status}`);
-  }
-  return res.json();
-}
-async function ghTest(){
-  try{
-    setGHStatus('load','⏳ جارٍ الاتصال...');
-    const c = readGHCredsFromUI();
-    saveGHCreds(c);
-    const data = await ghApi('GET', c.path);
-    setGHStatus('ok', `✅ الاتصال ناجح — آخر تحديث ${new Date().toLocaleTimeString('ar')}`);
-  }catch(e){
-    // إذا لم يكن الملف موجوداً بعد فهذا ليس خطأ فادحاً
-    if(String(e.message).includes('Not Found') || String(e.message).includes('404')){
-      setGHStatus('ok','✅ المستودع متاح (الملف لم يُنشأ بعد)');
-    } else {
-      setGHStatus('err','❌ '+e.message);
-    }
-  }
-}
-async function ghSave(){
-  try{
-    if(!STATE.cur.length){ alert('⚠️ لا توجد بيانات لحفظها.'); return; }
-    setGHStatus('load','⏳ جارٍ الحفظ على GitHub...');
-    const c = readGHCredsFromUI();
-    saveGHCreds(c);
-
-    // نحاول قراءة SHA إذا الملف موجود
-    let sha = null;
-    try{
-      const cur = await ghApi('GET', c.path);
-      sha = cur.sha;
-    }catch(e){ /* الملف غير موجود */ }
-
-    const payload = serializeState();
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(payload, null, 2))));
-    const body = {
-      message: `DONIA-CLASSE backup — ${new Date().toISOString()}`,
-      content,
-      branch: c.branch
-    };
-    if(sha) body.sha = sha;
-
-    await ghApi('PUT', c.path, body);
-    setGHStatus('ok', `✅ تم الحفظ في ${c.repo}/${c.path} — ${new Date().toLocaleTimeString('ar')}`);
-  }catch(e){
-    setGHStatus('err','❌ '+e.message);
-    alert('فشل الحفظ على GitHub:\n'+e.message);
-  }
-}
-async function ghLoad(){
-  try{
-    setGHStatus('load','⏳ جارٍ الاسترجاع من GitHub...');
-    const c = readGHCredsFromUI();
-    saveGHCreds(c);
-    const data = await ghApi('GET', c.path);
-    const content = decodeURIComponent(escape(atob(data.content.replace(/\s/g,''))));
-    const parsed = JSON.parse(content);
-    deserializeState(parsed);
-    if(!confirm(`تم قراءة النسخة من GitHub:\n• التلاميذ: ${STATE.cur.length}\n• التثبيتات: ${STATE.locks.size}\n\nاستبدال الحالة الحالية؟`))return;
-    tryRun();
-    setGHStatus('ok', '✅ تم الاسترجاع من GitHub');
-    alert('✅ تم استرجاع النسخة من GitHub بنجاح.');
-  }catch(e){
-    setGHStatus('err','❌ '+e.message);
-    alert('فشل الاسترجاع من GitHub:\n'+e.message);
-  }
-}
-function ghClearToken(){
-  if(!confirm('حذف بيانات الاعتماد من المتصفح؟'))return;
-  localStorage.removeItem(GH_LS_KEY);
-  $('ghToken').value = '';
-  $('ghRepo').value = '';
-  setGHStatus('idle','⚪ تم حذف بيانات الاعتماد');
-}
 
 /* =====================================================================
-   القسم 26: أحداث التحميل والتشغيل
+   القسم 29: ربط الأحداث
    ===================================================================== */
 window.addEventListener('xlsx-ready', initApp);
 window.addEventListener('xlsx-failed', function(){
@@ -2520,15 +2723,18 @@ function initApp(){
   $('fileOld').disabled=false;
   setTimeout(()=>bar.style.display='none',1500);
   bindUploads();
-  // محاولة استرجاع آخر حالة محفوظة
+  bindLogoClick();
   if(loadLocalIfExists()){
     setTimeout(()=>{
       tryRun();
-      if(STATE.cur.length){
-        console.log('✅ تم استرجاع الحالة المحفوظة من المتصفح تلقائياً.');
-      }
+      setSyncStatus('ok','تم استرجاع الحالة المحلية');
     }, 400);
   }
+}
+
+function bindLogoClick(){
+  const logo = $('brandLogo');
+  if(logo) logo.addEventListener('click', openLogoViewer);
 }
 
 function bindUploads(){
@@ -2576,7 +2782,6 @@ function showHelpModal(){
     <div class="modal-box">
       <h3 style="color:#dc2626">⚠️ تعذّر تحميل مكتبة قراءة Excel</h3>
       <p>التطبيق يحتاج مكتبة <b>SheetJS</b>، وفشل تحميلها من جميع المصادر.</p>
-      <h4 style="color:#1e5aa8;margin-top:14px">🔧 الحل:</h4>
       <ol style="line-height:1.9;font-size:13.5px">
         <li>تأكّد من اتصالك بالإنترنت ثم أعد فتح الملف.</li>
         <li>إذا استمر الخطأ، حمّل الملف يدوياً من:
