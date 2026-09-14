@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>نظام توزيع التلاميذ 2027 — معالجة حتمية 100%</title>
+<meta name="description" content="نظام إدارة وتوزيع التلاميذ على الأفواج — خوارزمية حتمية مع لوحة تدقيق">
+
+<script>
+/* ================================================================
+   تحميل مكتبة SheetJS من مصادر متعددة (احتياطي تلقائي)
+   ================================================================ */
+(function(){
+  const SOURCES = [
+    'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',
+    'https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js',
+    'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js'
+  ];
+  window.__xlsxStatus = { loaded:false, source:'', error:null };
+  let idx = 0;
+  function tryLoad(){
+    if(idx >= SOURCES.length){
+      window.__xlsxStatus.error = 'فشل تحميل المكتبة';
+      window.dispatchEvent(new Event('xlsx-failed'));
+      return;
+    }
+    const s = document.createElement('script');
+    s.src = SOURCES[idx];
+    s.async = false;
+    s.onload = function(){
+      if(typeof XLSX !== 'undefined' && XLSX.utils && XLSX.read){
+        window.__xlsxStatus = { loaded:true, source:SOURCES[idx], error:null };
+        window.dispatchEvent(new Event('xlsx-ready'));
+      } else { idx++; tryLoad(); }
+    };
+    s.onerror = function(){
+      try{ s.parentNode && s.parentNode.removeChild(s); }catch(e){}
+      idx++; tryLoad();
+    };
+    document.head.appendChild(s);
+  }
+  tryLoad();
+})();
+</script>
+
+<style>
+/* ============== أساسيات ============== */
+:root{
+  --pri:#1e5aa8; --pri2:#2e7dd1; --pri-d:#17497f;
+  --ok:#059669; --warn:#d97706; --err:#dc2626;
+  --bg:#eef2f7; --card:#fff; --border:#e2e8f0;
+  --txt:#1f2937; --muted:#64748b;
+  --male:#2563eb; --female:#db2777; --unk:#d97706;
+  --sh:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --sh2:0 4px 12px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:var(--txt);font-size:14px;line-height:1.5}
+button{font-family:inherit;font-size:13px;padding:8px 14px;border-radius:8px;border:1px solid #cbd5e1;background:#fff;color:var(--txt);cursor:pointer;transition:.15s;font-weight:600}
+button:hover{background:#f1f5f9;border-color:#94a3b8}
+button:active{transform:translateY(1px)}
+button.pri{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;border:none;box-shadow:0 2px 4px rgba(30,90,168,.25)}
+button.pri:hover{background:linear-gradient(135deg,var(--pri-d),var(--pri))}
+button.danger{color:var(--err);border-color:#fecaca;background:#fef2f2}
+button.danger:hover{background:#fee2e2}
+button.sm{padding:4px 9px;font-size:12px;font-weight:700}
+button:disabled{opacity:.5;cursor:not-allowed;filter:grayscale(.5)}
+input[type=text],input[type=number],input[type=date],select{padding:6px 10px;border:1px solid #cbd5e1;border-radius:8px;font-family:inherit;font-size:13px;outline:none;transition:.15s;background:#fff;width:100%}
+input:focus,select:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(30,90,168,.1)}
+.hidden{display:none!important}
+
+header{background:linear-gradient(135deg,#1e3a8a,#1e5aa8 40%,#2e7dd1);color:#fff;padding:18px 24px;box-shadow:var(--sh2)}
+header h1{margin:0;font-size:20px;font-weight:800}
+header p{margin:5px 0 0;font-size:13px;opacity:.92}
+header .badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+header .badges span{background:rgba(255,255,255,.18);padding:3px 12px;border-radius:20px;font-size:12px}
+
+main{max-width:1600px;margin:16px auto;padding:0 16px 90px}
+.card{background:var(--card);border-radius:14px;padding:18px 22px;margin-bottom:16px;box-shadow:var(--sh)}
+.card h2{margin:0 0 14px;font-size:16px;color:var(--pri);display:flex;align-items:center;gap:8px;padding-bottom:10px;border-bottom:2px solid #eef2f7}
+.card h2::before{content:"";width:4px;height:20px;background:linear-gradient(180deg,var(--pri),var(--pri2));border-radius:2px}
+
+#libStatus{position:fixed;top:0;left:0;right:0;z-index:9999;padding:10px 18px;font-size:13px;font-weight:700;text-align:center;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 2px 8px rgba(0,0,0,.15);transition:.3s}
+#libStatus.loading{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#fff}
+#libStatus.ok{background:linear-gradient(135deg,#10b981,#059669);color:#fff;transform:translateY(-100%)}
+#libStatus.err{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff}
+#libStatus .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+body.lib-ready #libStatus{transform:translateY(-100%)}
+
+.upload-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:760px){.upload-grid{grid-template-columns:1fr}}
+.drop{display:block;border:2px dashed #b9c7db;border-radius:12px;padding:22px 16px;text-align:center;background:#f8fafd;cursor:pointer;transition:.2s;position:relative}
+.drop:hover{border-color:var(--pri2);background:#eef6ff}
+.drop.on{border-color:var(--ok);background:#ecfdf5;border-style:solid}
+.drop.on::after{content:"✓";position:absolute;top:10px;left:12px;width:22px;height:22px;line-height:22px;background:var(--ok);color:#fff;border-radius:50%;font-weight:800;font-size:13px}
+.drop.disabled{pointer-events:none;opacity:.5;filter:grayscale(.5)}
+.drop b{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:6px;color:var(--pri);font-size:15px}
+.drop small{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+.drop .msg{margin-top:10px;font-size:12.5px;font-weight:700}
+.msg.ok{color:var(--ok)} .msg.err{color:var(--err)}
+
+.mapbox{background:linear-gradient(135deg,#ecfdf5,#f0fdf4);border:1px solid #a7f3d0;border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:13px;color:#065f46;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.mapbox .item{display:flex;align-items:center;gap:6px}
+.mapbox .item b{background:#fff;color:#047857;padding:2px 10px;border-radius:14px;font-size:13px;border:1px solid #a7f3d0}
+
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;border-bottom:2px solid var(--border)}
+.tab{padding:10px 20px;border-radius:10px 10px 0 0;background:transparent;border:none;cursor:pointer;font-weight:700;color:var(--muted);font-size:13.5px;transition:.15s;position:relative;bottom:-2px;border-bottom:3px solid transparent}
+.tab:hover{background:#f1f5f9;color:var(--pri)}
+.tab.active{background:linear-gradient(180deg,#f8fafd,#fff);color:var(--pri);border-bottom-color:var(--pri)}
+.tab .count{background:#e2e8f0;color:#475569;padding:1px 8px;border-radius:12px;font-size:11px;margin-inline-start:6px;font-weight:700}
+.tab.active .count{background:var(--pri);color:#fff}
+
+.level-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;padding:12px 0;margin-bottom:14px;border-bottom:1px solid var(--border)}
+.level-bar .left,.level-bar .right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.search-wrap{position:relative}
+.search-wrap input{padding-inline-start:32px;width:240px}
+.search-wrap::before{content:"🔍";position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:13px;pointer-events:none;opacity:.6}
+
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.kpi{background:linear-gradient(135deg,#f8fafc,#f1f5f9);border:1px solid var(--border);border-radius:12px;padding:12px 14px;text-align:center;position:relative;overflow:hidden}
+.kpi::before{content:"";position:absolute;top:0;right:0;width:4px;height:100%;background:var(--pri)}
+.kpi.p-m::before{background:var(--male)} .kpi.p-f::before{background:var(--female)} .kpi.p-r::before{background:var(--warn)} .kpi.p-ok::before{background:var(--ok)}
+.kpi .v{font-size:22px;font-weight:800;color:var(--pri);line-height:1.2}
+.kpi.p-m .v{color:var(--male)} .kpi.p-f .v{color:var(--female)} .kpi.p-r .v{color:var(--warn)} .kpi.p-ok .v{color:var(--ok)}
+.kpi .l{font-size:11.5px;color:var(--muted);font-weight:600;margin-top:2px}
+
+.section-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:16px}
+@media(max-width:820px){.section-grid{grid-template-columns:1fr}}
+.section-card{background:#fff;border-radius:12px;border:1px solid var(--border);box-shadow:var(--sh);overflow:hidden;display:flex;flex-direction:column;cursor:pointer;transition:.2s}
+.section-card:hover{box-shadow:var(--sh2);transform:translateY(-2px)}
+.sc-head{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.sc-head .num{font-size:17px;font-weight:800}
+.sc-head .num small{font-weight:600;opacity:.85;font-size:12px;margin-inline-start:6px}
+.sc-head .total{background:rgba(255,255,255,.22);padding:3px 12px;border-radius:20px;font-size:12.5px;font-weight:700}
+.sc-head .expand{background:rgba(255,255,255,.15);border:none;color:#fff;padding:3px 9px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer}
+.sc-head .expand:hover{background:rgba(255,255,255,.3)}
+.sc-stats{display:flex;background:#f8fafc;border-bottom:1px solid var(--border);font-size:12px}
+.sc-stats .st{flex:1;padding:8px 4px;text-align:center;border-inline-end:1px solid var(--border);font-weight:700}
+.sc-stats .st:last-child{border-inline-end:none}
+.sc-stats .st.m{color:var(--male)} .sc-stats .st.f{color:var(--female)} .sc-stats .st.r{color:var(--warn)} .sc-stats .st.u{color:var(--muted)}
+.sc-stats .st b{display:block;font-size:15px;font-weight:800;line-height:1.1}
+.sc-stats .st span{font-size:10.5px;opacity:.85;font-weight:600}
+.sc-list{flex:1;overflow-y:auto;max-height:560px;padding:4px 0}
+.sc-list::-webkit-scrollbar{width:8px}
+.sc-list::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+
+.student-row{display:flex;align-items:flex-start;gap:8px;padding:7px 12px;border-bottom:1px solid #f1f5f9;font-size:12.5px;transition:.1s}
+.student-row:hover{background:#f8fafc}
+.student-row:last-child{border-bottom:none}
+.sr-num{flex:0 0 24px;height:24px;line-height:24px;text-align:center;background:#f1f5f9;color:#475569;border-radius:6px;font-weight:700;font-size:11.5px}
+.sr-main{flex:1;min-width:0}
+.sr-name{font-weight:700;color:#1e293b;word-break:break-word;line-height:1.3}
+.sr-name .tag-mini{display:inline-block;padding:1px 6px;border-radius:5px;font-size:9.5px;font-weight:700;margin-inline-start:5px;vertical-align:middle}
+.tag-mini.keep{background:#dcfce7;color:#166534}
+.tag-mini.moved{background:#fee2e2;color:#991b1b}
+.tag-mini.rep{background:#fef3c7;color:#92400e}
+.tag-mini.new{background:#ede9fe;color:#5b21b6}
+.sr-meta{display:flex;gap:6px;align-items:center;margin-top:2px;font-size:10.5px;color:var(--muted);flex-wrap:wrap}
+.sr-meta .dot{width:3px;height:3px;background:#cbd5e1;border-radius:50%}
+.sr-actions{display:flex;gap:3px;align-items:center;flex-shrink:0}
+.sr-act{width:22px;height:22px;line-height:20px;text-align:center;border-radius:5px;font-size:11px;border:1px solid #e2e8f0;background:#fff;cursor:pointer;padding:0;font-weight:700}
+.sr-act:hover{background:#f1f5f9}
+.sr-act.del:hover{background:#fef2f2;border-color:#fecaca;color:var(--err)}
+.sr-act.mv:hover{background:#eff6ff;border-color:#bfdbfe;color:var(--pri)}
+.sr-gender{flex:0 0 26px;height:22px;line-height:22px;text-align:center;border-radius:6px;font-weight:800;font-size:11.5px;cursor:pointer;user-select:none}
+.sr-gender.m{background:#dbeafe;color:var(--male)}
+.sr-gender.f{background:#fce7f3;color:var(--female)}
+.sr-gender.u{background:#fef3c7;color:var(--unk)}
+
+.warnbox{background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1px solid #fde68a;border-radius:10px;padding:12px 16px;font-size:12.5px;color:#92400e;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start}
+.warnbox .ico{flex:0 0 20px;font-size:16px}
+
+/* ============ شاشة التدقيق ============ */
+.audit-panel{border-radius:12px;padding:18px 22px;margin-bottom:18px;border:2px solid}
+.audit-panel.pass{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#10b981;color:#065f46}
+.audit-panel.fail{background:linear-gradient(135deg,#fef2f2,#fee2e2);border-color:#dc2626;color:#991b1b}
+.audit-panel h3{margin:0 0 12px;font-size:17px;display:flex;align-items:center;gap:10px;font-weight:800}
+.audit-panel .icon{width:32px;height:32px;line-height:32px;text-align:center;border-radius:50%;font-size:20px;font-weight:900;color:#fff;flex-shrink:0}
+.audit-panel.pass .icon{background:#10b981}
+.audit-panel.fail .icon{background:#dc2626}
+.audit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:12px}
+.audit-item{background:rgba(255,255,255,.7);border-radius:8px;padding:10px 14px;font-size:13px}
+.audit-item .lbl{font-size:11.5px;font-weight:700;opacity:.85;margin-bottom:3px}
+.audit-item .val{font-size:15px;font-weight:800}
+.audit-item.ok .val{color:#047857}
+.audit-item.bad .val{color:#b91c1c}
+.audit-table{width:100%;border-collapse:collapse;margin-top:14px;font-size:13px;background:#fff;border-radius:8px;overflow:hidden}
+.audit-table th{background:#f1f5f9;color:#334155;padding:10px;text-align:center;font-weight:700;border-bottom:2px solid #e2e8f0;font-size:12px}
+.audit-table td{padding:9px 10px;text-align:center;border-bottom:1px solid #f1f5f9;font-weight:600}
+.audit-table tr:last-child td{border-bottom:none}
+.audit-table .ok{color:#047857}
+.audit-table .bad{color:#b91c1c;background:#fef2f2}
+.audit-table .total{background:#f8fafc;font-weight:800;color:#1e5aa8}
+
+.dup-list{margin-top:10px;background:#fff;border-radius:8px;padding:10px 14px;font-size:12.5px;max-height:220px;overflow-y:auto}
+.dup-list .dup-row{padding:6px 0;border-bottom:1px dashed #fecaca;color:#991b1b}
+.dup-list .dup-row:last-child{border-bottom:none}
+
+.settings-table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;margin-bottom:10px}
+.settings-table th{background:#f8fafc;color:#334155;font-weight:700;padding:10px 12px;text-align:center;border-bottom:2px solid var(--border);font-size:12px}
+.settings-table td{padding:10px 12px;text-align:center;border-bottom:1px solid #f1f5f9}
+.settings-table tr:hover{background:#f8fafc}
+.settings-table input[type=number]{width:70px;padding:5px;border:1px solid #cbd5e1;border-radius:6px;text-align:center;font-weight:700;color:var(--pri)}
+.settings-table .prom{color:#0369a1;font-weight:700}
+.settings-table .rep{color:#b45309;font-weight:700}
+.settings-table .new{color:#7c3aed;font-weight:700}
+.ctrl-bar{display:flex;gap:14px;flex-wrap:wrap;align-items:center;padding:12px 0;margin-top:8px;border-top:1px solid var(--border)}
+.ctrl-bar label{display:flex;gap:7px;align-items:center;cursor:pointer;font-size:13px;font-weight:600;color:#334155}
+.ctrl-bar input[type=checkbox]{width:16px;height:16px;accent-color:var(--pri);cursor:pointer}
+.hint{font-size:12px;color:var(--muted);margin-top:6px}
+
+/* ============ النافذة المنبثقة للنموذج ============ */
+.modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.65);z-index:9000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)}
+.modal-box{background:#fff;border-radius:14px;max-width:520px;width:100%;padding:24px;box-shadow:0 25px 60px rgba(0,0,0,.35);max-height:88vh;overflow-y:auto}
+.modal-box h3{margin:0 0 16px;color:var(--pri);font-size:17px;font-weight:800;display:flex;align-items:center;gap:8px}
+.form-row{margin-bottom:12px}
+.form-row label{display:block;font-size:12px;font-weight:700;color:#475569;margin-bottom:4px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:520px){.form-grid{grid-template-columns:1fr}}
+.modal-actions{margin-top:18px;display:flex;gap:10px;justify-content:flex-end}
+
+/* ============ العرض بملء الشاشة ============ */
+#fullscreen{position:fixed;inset:0;background:#f1f5f9;z-index:9500;display:flex;flex-direction:column}
+#fullscreen .fs-head{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:var(--sh2)}
+#fullscreen .fs-head h3{margin:0;font-size:18px;font-weight:800}
+#fullscreen .fs-head .info{display:flex;gap:16px;font-size:13px;font-weight:600;opacity:.95}
+#fullscreen .fs-head .info b{background:rgba(255,255,255,.2);padding:2px 10px;border-radius:12px;margin-inline-start:4px}
+#fullscreen .fs-body{flex:1;overflow:auto;padding:16px 22px}
+#fullscreen table.fs-tbl{width:100%;border-collapse:collapse;font-size:13px;background:#fff;box-shadow:var(--sh);border-radius:8px;overflow:hidden}
+#fullscreen table.fs-tbl th{background:#1e5aa8;color:#fff;padding:10px;text-align:center;font-weight:700;font-size:12.5px;position:sticky;top:0;z-index:2}
+#fullscreen table.fs-tbl td{padding:8px 10px;text-align:center;border-bottom:1px solid #f1f5f9}
+#fullscreen table.fs-tbl td.name{text-align:right;padding-right:12px;font-weight:700}
+#fullscreen table.fs-tbl tr:nth-child(even) td{background:#fafcff}
+#fullscreen table.fs-tbl tr:hover td{background:#eff6ff}
+#fullscreen .fs-footer{padding:12px 22px;background:#fff;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--muted)}
+
+/* ============ الطباعة ============ */
+#printContainer{display:none}
+@media print{
+  body>*{display:none!important}
+  #printContainer{display:block!important;background:#fff}
+  @page{size:A4 portrait;margin:10mm 8mm}
+  .pr-doc{font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:#000}
+  .pr-head{text-align:center;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #000}
+  .pr-head .r1{font-size:12px;font-weight:700}
+  .pr-head .r2{font-size:11px;margin-top:2px}
+  .pr-head .r3{font-size:13px;font-weight:800;margin-top:5px}
+  .pr-head .r4{font-size:11px;margin-top:2px}
+  .pr-title{text-align:center;font-size:14px;font-weight:800;margin:10px 0;padding:6px;background:#f1f5f9;border:1px solid #cbd5e1}
+  .pr-summary{display:flex;justify-content:center;gap:16px;font-size:10.5px;margin-bottom:10px;padding:5px;border:1px solid #cbd5e1}
+  .pr-sec{page-break-inside:avoid;page-break-after:always;margin-bottom:12px}
+  .pr-sec:last-child{page-break-after:auto}
+  .pr-sec-title{font-size:12.5px;font-weight:800;padding:5px 10px;background:#1e5aa8;color:#fff;margin-bottom:5px;display:flex;justify-content:space-between}
+  .pr-sec-title .l{display:flex;gap:12px;font-size:10.5px;font-weight:600}
+  table.pr-tbl{width:100%;border-collapse:collapse;font-size:10px}
+  table.pr-tbl th,table.pr-tbl td{border:1px solid #555;padding:3px 4px;text-align:center}
+  table.pr-tbl th{background:#e5e7eb;font-weight:700;font-size:9.5px}
+  table.pr-tbl td.name{text-align:right;padding-right:6px;font-weight:600}
+  table.pr-tbl tr:nth-child(even) td{background:#fafafa}
+  .pr-sign{margin-top:14px;display:flex;justify-content:space-between;font-size:10.5px;font-weight:700}
+  .pr-sign>div{text-align:center;min-width:160px}
+  .pr-sign .line{margin-top:22px;border-top:1px solid #333;padding-top:2px}
+}
+</style>
+</head>
+<body>
+
+<div id="libStatus" class="loading">
+  <span class="spin"></span>
+  <span>جارٍ تحميل مكتبة قراءة ملفات Excel (SheetJS)...</span>
+</div>
+
+<header>
+  <h1>📚 نظام توزيع التلاميذ — معالجة حتمية 100%</h1>
+  <p>متوسطة بوضريسة محمد الأمين — المسيلة · السنة الدراسية 2026 / 2027</p>
+  <div class="badges">
+    <span>🏫 الخريطة: أولى 12 · ثانية 8 · ثالثة 5 · رابعة 6</span>
+    <span>🔒 صفر فقدان بيانات</span>
+    <span>🎯 مطابقة صارمة برقم التعريف</span>
+    <span>✏️ إضافة / حذف / نقل</span>
+    <span>✅ تدقيق تلقائي</span>
+  </div>
+</header>
+
+<main>
+
+<section class="card" id="uploadCard">
+  <h2>① تحميل الملفات</h2>
+  <div class="upload-grid">
+    <label class="drop disabled" id="dropCur">
+      <b>📄 ملف القوائم الحالية (2027)</b>
+      <small>«قوائم 2027 للتعديل.xls» — يحتوي المستويات: 1م · 2م · 3م · 4م</small>
+      <input type="file" id="fileCur" accept=".xls,.xlsx,.csv" hidden disabled>
+      <div class="msg" id="msgCur"></div>
+    </label>
+    <label class="drop disabled" id="dropOld">
+      <b>🗂️ ملف السنة الماضية</b>
+      <small>«Eleve.xls» — يحتوي الأقسام السابقة (1م1 · 2م3 ...)</small>
+      <input type="file" id="fileOld" accept=".xls,.xlsx,.csv" hidden disabled>
+      <div class="msg" id="msgOld"></div>
+    </label>
+  </div>
+</section>
+
+<section class="card hidden" id="settingsCard">
+  <h2>② لوحة الإعدادات</h2>
+  <div class="mapbox" id="mapInfo"></div>
+  <div id="settingsBody"></div>
+  <div class="ctrl-bar">
+    <label><input type="checkbox" id="optStrict" checked> الالتزام الصارم بالمسار</label>
+    <label><input type="checkbox" id="optSystem"> موازنة نظام التمدرس</label>
+    <div style="flex:1"></div>
+    <button id="btnAddStudent" class="pri">➕ إضافة تلميذ يدوياً</button>
+    <button id="btnRun">🔄 تشغيل التوزيع</button>
+  </div>
+</section>
+
+<section class="card hidden" id="auditCard">
+  <h2>③ لوحة التدقيق والتحقق (Validation Dashboard)</h2>
+  <div id="auditBody"></div>
+</section>
+
+<section class="card hidden" id="resultCard">
+  <h2>④ القوائم النهائية حسب المستوى والفوج</h2>
+  <div class="tabs" id="tabs"></div>
+  <div id="levelView"></div>
+</section>
+
+</main>
+
+<div id="printContainer"></div>
+
+<script>
+/* =====================================================================
+   القسم 1: الثوابت والخريطة المدرسية
+   ===================================================================== */
+const LEVELS   = ['أولى','ثانية','ثالثة','رابعة'];
+const LEVEL_N  = {'أولى':1,'ثانية':2,'ثالثة':3,'رابعة':4};
+const LEVEL_LABEL = {'أولى':'أولى متوسط','ثانية':'ثانية متوسط','ثالثة':'ثالثة متوسط','رابعة':'رابعة متوسط'};
+const LEVEL_SHORT = {'أولى':'1م','ثانية':'2م','ثالثة':'3م','رابعة':'4م'};
+const OFFICIAL_GROUPS = {'أولى':12,'ثانية':8,'ثالثة':5,'رابعة':6};
+const SCHOOL = { wilaya:'المسيلة', name:'متوسطة بوضريسة محمد الأمين', year:'2026 / 2027' };
+
+/* =====================================================================
+   القسم 2: أدوات النص
+   ===================================================================== */
+const DIAC=/[\u064B-\u0652\u0640\u0670]/g;
+const stripDiac=s=>String(s||'').replace(DIAC,'');
+function normAr(s){
+  s=stripDiac(s);
+  s=s.replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ؤ/g,'و').replace(/ئ/g,'ي');
+  return s.replace(/\s+/g,' ').trim();
+}
+function normLevel(s){
+  let t=normAr(s).replace(/^ال/,'');
+  if(t.startsWith('اول')||t.startsWith('اولي'))return 'أولى';
+  if(t.startsWith('ثان'))return 'ثانية';
+  if(t.startsWith('ثالث'))return 'ثالثة';
+  if(t.startsWith('راب'))return 'رابعة';
+  return null;
+}
+const cleanId=v=>String(v==null?'':v).replace(/\D/g,'').replace(/^0+/,'');
+function fmtDate(v){
+  if(v instanceof Date && !isNaN(v)){
+    const y=v.getFullYear(),m=String(v.getMonth()+1).padStart(2,'0'),d=String(v.getDate()).padStart(2,'0');
+    return `${y}-${m}-${d}`;
+  }
+  return String(v==null?'':v).trim();
+}
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* =====================================================================
+   القسم 3: قاموس الأسماء
+   ===================================================================== */
+const FEMALE_RAW=`نعيمة تسنيم سيرين حسناء رهف إيمان مروة ريتاج صباح هدى هاجر أروى ميسون نورهان أسيل ياسمين سلسبيل سلمى ملك ألاء روان مارية كوثر مرام بشرى سجود لجين أشواق حنان إكرام تقوى توبة عبير مريم سارة آية رحمة أميمة نور شيماء لينا سندس رميصاء خلود ندى يسرى إيناس حنين رحاب نسيمة أريج نسرين ذكرى عائشة مايا رتيل فضيلة ميسم وصال هبة حياة سهير شهد ريماس دعاء رؤيا أبرار عزيزة ضحى جود منار ملاك نرجس صابرة سجى فاطمة الزهراء خديجة زينب كريمة شهيناز منى نجلة لبنى رجاء يقين أنفال إسراء إنتصار انتصار آمال أمال أميرة هيفاء هناء صفاء وفاء سناء أسماء بسمة حورية خولة رقية زهرة سعاد سمية شروق صبرين نادية نوال هالة وداد يسرا أحلام احلام سهام عايدة نجوى سمر نهاد ريم دينة شهيرة نجلاء نجاة جيهان ماية دانية سديم رنا رنيم لميس لمياء ليلى لينة مسعودة منال ميساء نهال نهى هديل هيام يمينة بثينة ثريا جميلة حبيبة حفصة حليمة دلال رزان رغد سلوى شذى صابرين صافية علياء غادة فاتن فريدة لطيفة لؤلؤة ميس نصيرة إخلاص أمينة وفية سعيدة حميدة راضية زهية صونية سونية فتيحة فوزية حسيبة رشيدة زبيدة نجية وردة وريدة آمنة أنيسة بادية ثورية زليخة سعدية عفاف مليكة نزهة ياقوت إلهام الزهرة شافية صليحة طاوس عالية غنية لويزة محجوبة نورة هنية وسيلة ياسمينة رحيمة شريفة صفية طيبة كنزة جنة دينا داليا راوية رشا رفيقة رمال روز سامية سليمة سهى شادية شفيقة شمس مامة مباركة ماجدة مها منيبة`;
+const MALE_RAW=`محمد أحمد يوسف عبدالرحمان الرحمان الرحمن الله الحق الحي حبيب عماد سراج هيثم فاروق الصديق وائل الحليم يونس أشرف وسيم مؤيد أكرم إسماعيل خليل اللطيف هشام علي شمس النور زكرياء زكريا زين منصف مبارك باديس هارون يعقوب أيمن أنيس تيم أمجد زكي سامي معتز آدم أمير الصمد الجليل إدريس جواد يحيى يحي حمزة فؤاد ساعد زياد خير خليفة الطيب فارس إبراهيم صالح حسام أسامة شهاب ياسر ليث نصر بدر خالد إسلام الفتاح بلال إياد نجيب حاتم مراد هاني الباسط عيسى تميم وليد أمين علاء رياض المالك محب معاذ صلاح لؤي شعيب سفيان السلام حمودي رمزي بوبكر منير حذيفة أنس إلياس معتصم بشار ريان أيوب بهاء فاتح ثامر قيس طارق وحيد شاكر رفيق إسحاق باسم جابر المنعم الوهاب فهد معمر أدهم المختار فضيل الهادي براء ياسين مهدي هادي عمار مروان إيهاب حسين حسان رامي رضا سعد سليم سمير شادي صابر صهيب طيب عادل عامر عثمان عدنان عصام فتحي فريد كريم كمال لطفي ماجد مالك محسن محفوظ مختار مصطفى نبيل نذير يزيد بشير جلال حيدر رابح رائد رشيد سعيد سليمان شريف شعبان صديق عاطف عطية عقبة عمر غانم قاسم لقمان ماهر محمود موسى هاشم عابد طلحة ضرار جبريل نضال عبدالحق عبدالحي عبدالرحمان عبدالله عبدالرحيم عبدالنور عبدالوهاب عبدالجليل عبدالصمد عبدالرؤوف عبدالفتاح عبدالمالك عبدالمنعم عبدالعالي عبدالهادي عبداللطيف عبدالحميد عبدالسلام عبدالغفور عبدالناصر عبدالباسط عبدالرشيد الحميد العزيز المجيد القادر الكريم العلي العظيم`;
+const FEMALE=new Set(FEMALE_RAW.split(/\s+/).filter(Boolean).map(normAr));
+const MALE=new Set(MALE_RAW.split(/\s+/).filter(Boolean).map(normAr));
+const SKIP=new Set(['الرحمان','الرحمن','الله','بالله','الدين','الاسلام','السلام','النور','الهدي','اليقين','الايمان','الزهراء','الجنة','عبد','بن','بنت','سيدي','الحاج','الحاجة','الشريف','الشريفة'].map(normAr));
+function guessGender(given){
+  if(!given)return 'U';
+  const w=normAr(given);
+  if(FEMALE.has(w))return 'F';
+  if(MALE.has(w))return 'M';
+  const t=given.split(/\s+/).filter(Boolean);
+  for(let i=t.length-1;i>=0;i--){
+    const k=normAr(t[i]);
+    if(SKIP.has(k))continue;
+    if(FEMALE.has(k))return 'F';
+    if(MALE.has(k))return 'M';
+  }
+  const last=t[t.length-1]||'';
+  if(/ة$/.test(last))return 'F';
+  if(/اء$/.test(last))return 'F';
+  if(/[ى]$/.test(last)&&!/^(يحيى|مصطفى|موسى|عيسى|مرتضى)$/.test(last))return 'F';
+  return 'U';
+}
+
+/* =====================================================================
+   القسم 4: الحالة العامة
+   ===================================================================== */
+const STATE={
+  cur:[],
+  oldMap:{},
+  surnames:new Set(),
+  groupCount:Object.assign({},OFFICIAL_GROUPS),
+  overrides:{},
+  results:{},
+  audit:null,
+  activeLevel:null,
+  loadedCur:false, loadedOld:false,
+  manualAdditions:[]
+};
+const $=id=>document.getElementById(id);
+
+/* =====================================================================
+   القسم 5: قراءة Excel
+   ===================================================================== */
+function sheetToObjects(ws){
+  const aoa=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:true,blankrows:false});
+  let hdr=-1;
+  for(let i=0;i<Math.min(aoa.length,25);i++){
+    const row=(aoa[i]||[]).map(x=>normAr(x));
+    if(row.includes('رقم التعريف')||row.includes('رقم تعريف')||row.includes('رقم تعريف التلميذ')){hdr=i;break;}
+  }
+  if(hdr===-1)return [];
+  const headers=(aoa[hdr]||[]).map(x=>String(x||'').trim());
+  const out=[];
+  for(let i=hdr+1;i<aoa.length;i++){
+    const row=aoa[i]||[];
+    if(row.every(x=>x===''||x==null))continue;
+    const o={};
+    headers.forEach((h,j)=>{ if(h)o[h]=row[j]; });
+    out.push(o);
+  }
+  return out;
+}
+function readWorkbook(file){
+  return new Promise((res,rej)=>{
+    const fr=new FileReader();
+    fr.onload=e=>{
+      try{ res(XLSX.read(new Uint8Array(e.target.result),{type:'array',cellDates:true,cellText:false})); }
+      catch(err){ rej(err); }
+    };
+    fr.onerror=rej;
+    fr.readAsArrayBuffer(file);
+  });
+}
+
+/* =====================================================================
+   القسم 6: تحليل الملفات
+   ===================================================================== */
+function parseCurrent(wb){
+  const out=[];
+  wb.SheetNames.forEach(sn=>{
+    sheetToObjects(wb.Sheets[sn]).forEach(r=>{
+      const id=cleanId(r['رقم تعريف'] ?? r['رقم التعريف']); if(!id)return;
+      const lvl=normLevel(r['مستوى'] ?? r['المستوى'] ?? r['السنة']); if(!lvl)return;
+      const name=String(r['اسم التلميد'] ?? r['اسم التلميذ'] ?? '').replace(/\s+/g,' ').trim();
+      out.push({
+        id, name,
+        birth:fmtDate(r['تاريخ ميلاد'] ?? r['تاريخ الميلاد']),
+        level:lvl,
+        fileGroup:parseInt(r['رقم الفوج'])||0,
+        system:String(r['النظام'] ?? r['نظام التمدرس'] ?? '').trim()||'غير محدد',
+        reg:String(r['رقم التسجيل'] ?? r['رقم القيد'] ?? '').trim(),
+        gender:'U', origin:'new', trackGroup:null, moved:false, manual:false
+      });
+    });
+  });
+  return out;
+}
+
+function parseOld(wb){
+  const map={},surnames=new Set();
+  wb.SheetNames.forEach(sn=>{
+    sheetToObjects(wb.Sheets[sn]).forEach(r=>{
+      const id=cleanId(r['رقم التعريف'] ?? r['رقم تعريف'] ?? r['رقم تعريف التلميذ']); if(!id)return;
+      const nom=String(r['اللقب']||'').replace(/\s+/g,' ').trim();
+      const pre=String(r['الاسم']||'').replace(/\s+/g,' ').trim();
+      const g=normAr(r['الجنس']||'');
+      map[id]={
+        nom, prenom:pre,
+        gender:g.startsWith('انث')||g.startsWith('أنث')?'F':(g.startsWith('ذكر')?'M':'U'),
+        level:normLevel(r['السنة'] ?? r['مستوى']),
+        group:parseInt(r['القسم'] ?? r['رقم الفوج'])||0,
+        system:String(r['نظام التمدرس'] ?? r['النظام'] ?? '').trim()
+      };
+      if(nom)surnames.add(normAr(nom));
+    });
+  });
+  return {map,surnames};
+}
+
+/* =====================================================================
+   القسم 7: الإثراء
+   ===================================================================== */
+function splitName(full){
+  const toks=String(full||'').split(/\s+/).filter(Boolean);
+  for(let n=Math.min(3,toks.length-1);n>=1;n--){
+    const c=normAr(toks.slice(0,n).join(' '));
+    if(STATE.surnames.has(c))return toks.slice(n).join(' ');
+  }
+  return toks.slice(1).join(' ')||full;
+}
+function enrich(){
+  STATE.cur.forEach(s=>{
+    const old=STATE.oldMap[s.id];
+    let g='U';
+    if(STATE.overrides[s.id]) g=STATE.overrides[s.id];
+    else if(old&&old.gender!=='U') g=old.gender;
+    else g=guessGender(splitName(s.name));
+    s.gender=g;
+
+    if(s.manual){
+      // التلاميذ المُضافون يدوياً لا يُطبَّق عليهم منطق المسار
+      if(s.origin!=='manual') s.origin='manual';
+      if(!s.system) s.system='غير محدد';
+      return;
+    }
+
+    if(old&&old.level&&old.group){
+      const curN=LEVEL_N[s.level];
+      const oldN=LEVEL_N[old.level];
+      if(oldN+1===curN){
+        s.origin='promoted'; s.trackGroup=old.group; s.oldLevel=old.level;
+      }else if(oldN===curN){
+        s.origin='repeater'; s.trackGroup=old.group; s.oldLevel=old.level;
+      }else{
+        s.origin='new'; s.trackGroup=null; s.oldLevel=null;
+      }
+    }else{
+      s.origin='new'; s.trackGroup=null; s.oldLevel=null;
+    }
+    if(!s.system||s.system==='غير محدد'){
+      if(old&&old.system) s.system=old.system;
+    }
+  });
+}
+
+/* =====================================================================
+   القسم 8: الخوارزمية الحتمية
+   ===================================================================== */
+function addTo(g,s){
+  g.list.push(s);
+  if(s.gender==='M')g.m++; else if(s.gender==='F')g.f++; else g.u++;
+  if(s.origin==='repeater')g.reps++;
+  if(s.origin==='promoted')g.prom++;
+  g.sys[s.system]=(g.sys[s.system]||0)+1;
+}
+function removeFrom(g,s){
+  const i=g.list.indexOf(s); if(i>=0)g.list.splice(i,1);
+  if(s.gender==='M')g.m--; else if(s.gender==='F')g.f--; else g.u--;
+  if(s.origin==='repeater')g.reps--;
+  if(s.origin==='promoted')g.prom--;
+  g.sys[s.system]=(g.sys[s.system]||0)-1;
+}
+function scoreGroup(g,s,ctx){
+  const c=g.list.length+1;
+  const m=g.m+(s.gender==='M'?1:0);
+  const f=g.f+(s.gender==='F'?1:0);
+  const r=g.reps+(s.origin==='repeater'?1:0);
+  let sc=ctx.wCount*Math.pow(c-ctx.tc,2)
+       + ctx.wGender*(Math.pow(m-ctx.tm,2)+Math.pow(f-ctx.tf,2))
+       + ctx.wRep*Math.pow(r-ctx.tr,2);
+  if(ctx.wSystem>0){
+    const cur=(g.sys[s.system]||0)+1;
+    const tg=ctx.sysTarget[s.system]||0;
+    sc+=ctx.wSystem*Math.pow(cur-tg,2);
+  }
+  return sc;
+}
+function deterministicSort(arr){
+  return arr.slice().sort((a,b)=>{
+    const c=a.name.localeCompare(b.name,'ar');
+    return c!==0 ? c : a.id.localeCompare(b.id);
+  });
+}
+
+function distribute(students,G,opts){
+  const groups=[];
+  for(let i=0;i<G;i++)groups.push({num:i+1,list:[],m:0,f:0,u:0,reps:0,prom:0,sys:{}});
+
+  const total=students.length;
+  const totM=students.filter(s=>s.gender==='M').length;
+  const totF=students.filter(s=>s.gender==='F').length;
+  const totRep=students.filter(s=>s.origin==='repeater').length;
+  const sysKeys=[...new Set(students.map(s=>s.system))];
+  const sysTot={}; sysKeys.forEach(k=>sysTot[k]=students.filter(s=>s.system===k).length);
+
+  const ctx={
+    tc:total/G, tm:totM/G, tf:totF/G, tr:totRep/G,
+    sysTarget:{}, wCount:1, wGender:2, wRep:1.5,
+    wSystem:opts.balanceSystem?0.6:0
+  };
+  sysKeys.forEach(k=>ctx.sysTarget[k]=sysTot[k]/G);
+
+  const pKeep=[],pFree=[],rKeep=[],rFree=[],newbies=[];
+  students.forEach(s=>{
+    if(s.origin==='promoted'&&s.trackGroup){
+      (s.trackGroup>=1&&s.trackGroup<=G?pKeep:pFree).push(s);
+    }else if(s.origin==='repeater'&&s.trackGroup){
+      (s.trackGroup>=1&&s.trackGroup<=G?rKeep:rFree).push(s);
+    }else newbies.push(s);
+  });
+
+  deterministicSort(pKeep).forEach(s=>addTo(groups[s.trackGroup-1],s));
+  deterministicSort(rKeep).forEach(s=>addTo(groups[s.trackGroup-1],s));
+
+  const freePool=[];
+  deterministicSort(rFree).forEach(s=>freePool.push(s));
+  deterministicSort(newbies).forEach(s=>freePool.push(s));
+  deterministicSort(pFree).forEach(s=>freePool.push(s));
+
+  const mArr=[],fArr=[],uArr=[];
+  freePool.forEach(s=>{
+    if(s.gender==='M')mArr.push(s);
+    else if(s.gender==='F')fArr.push(s);
+    else uArr.push(s);
+  });
+  const interleaved=[];
+  const mx=Math.max(mArr.length,fArr.length,uArr.length);
+  for(let i=0;i<mx;i++){
+    if(mArr[i])interleaved.push(mArr[i]);
+    if(fArr[i])interleaved.push(fArr[i]);
+    if(uArr[i])interleaved.push(uArr[i]);
+  }
+
+  interleaved.forEach(s=>{
+    let best=null,bs=Infinity;
+    for(const g of groups){
+      const sc=scoreGroup(g,s,ctx);
+      if(sc<bs || (sc===bs && (!best || g.num<best.num))){
+        bs=sc; best=g;
+      }
+    }
+    if(s.trackGroup&&s.trackGroup!==best.num){
+      s.trackGroup=null; s.moved=true;
+    }
+    addTo(best,s);
+  });
+
+  if(!opts.strict){
+    let guard=0;
+    while(guard++<5000){
+      let mxG=groups[0],mnG=groups[0];
+      for(const g of groups){
+        if(g.list.length>mxG.list.length)mxG=g;
+        if(g.list.length<mnG.list.length)mnG=g;
+      }
+      if(mxG.list.length-mnG.list.length<=1)break;
+      const candidates=mxG.list.filter(s=>!s.trackGroup)
+        .sort((a,b)=>a.name.localeCompare(b.name,'ar'));
+      if(!candidates.length)break;
+      const s=candidates[0];
+      removeFrom(mxG,s); s.moved=true; addTo(mnG,s);
+    }
+  }
+
+  groups.forEach(g=>g.list.sort((a,b)=>a.name.localeCompare(b.name,'ar')));
+  const stats={
+    total,G, avg:(total/G).toFixed(1),
+    m:totM, f:totF, u:total-totM-totF, rep:totRep,
+    min:Math.min(...groups.map(g=>g.list.length)),
+    max:Math.max(...groups.map(g=>g.list.length))
+  };
+  return {groups,stats};
+}
+
+/* =====================================================================
+   القسم 9: لوحة التدقيق
+   ===================================================================== */
+function runAudit(){
+  const audit={
+    pass:true, totals:{}, perLevel:{},
+    duplicates:[], missing:[], mismatched:[], groupCountIssues:[]
+  };
+  audit.totals.input=STATE.cur.length;
+
+  let outTotal=0;
+  const seenIds=new Map();
+  LEVELS.forEach(lv=>{
+    const r=STATE.results[lv];
+    const lvAudit={
+      level:lv,
+      inputCount:STATE.cur.filter(s=>s.level===lv).length,
+      outputCount:0,
+      groupsExpected:OFFICIAL_GROUPS[lv],
+      groupsActual:r?r.stats.G:0,
+      minGroup:r?r.stats.min:0,
+      maxGroup:r?r.stats.max:0,
+      matched:true
+    };
+    if(r){
+      r.groups.forEach(g=>{
+        g.list.forEach(s=>{
+          outTotal++;
+          lvAudit.outputCount++;
+          if(seenIds.has(s.id)){
+            audit.duplicates.push({
+              id:s.id, name:s.name,
+              first:seenIds.get(s.id),
+              second:{level:lv,group:g.num}
+            });
+          }else{
+            seenIds.set(s.id,{level:lv,group:g.num});
+          }
+        });
+      });
+    }
+    if(lvAudit.inputCount!==lvAudit.outputCount){
+      lvAudit.matched=false;
+      audit.pass=false;
+    }
+    if(lvAudit.groupsActual!==OFFICIAL_GROUPS[lv]){
+      audit.groupCountIssues.push({
+        level:lv, expected:OFFICIAL_GROUPS[lv], actual:lvAudit.groupsActual
+      });
+    }
+    audit.perLevel[lv]=lvAudit;
+  });
+  audit.totals.output=outTotal;
+  if(audit.totals.input!==audit.totals.output)audit.pass=false;
+
+  const sourceMap=new Map();
+  STATE.cur.forEach(s=>sourceMap.set(s.id,s));
+  LEVELS.forEach(lv=>{
+    const r=STATE.results[lv]; if(!r)return;
+    r.groups.forEach(g=>{
+      g.list.forEach(s=>{
+        const src=sourceMap.get(s.id);
+        if(!src){ audit.missing.push({id:s.id,name:s.name,level:lv,group:g.num}); return; }
+        if(src.name!==s.name||src.birth!==s.birth||src.reg!==s.reg){
+          audit.mismatched.push({
+            id:s.id, name:s.name,
+            field:src.name!==s.name?'الاسم':(src.birth!==s.birth?'تاريخ الميلاد':'رقم التسجيل')
+          });
+        }
+      });
+    });
+  });
+  if(audit.duplicates.length||audit.missing.length||audit.mismatched.length)
+    audit.pass=false;
+  return audit;
+}
+
+/* =====================================================================
+   القسم 10: التشغيل والعرض
+   ===================================================================== */
+function tryRun(){
+  if(!STATE.loadedCur)return;
+  renderSettings();
+  enrich();
+  runDistribution();
+}
+function runDistribution(){
+  const opts={
+    strict:$('optStrict').checked,
+    balanceSystem:$('optSystem').checked
+  };
+  STATE.results={};
+  LEVELS.forEach(lv=>{
+    const list=STATE.cur.filter(s=>s.level===lv);
+    if(!list.length)return;
+    const G=STATE.groupCount[lv]||OFFICIAL_GROUPS[lv];
+    STATE.results[lv]=distribute(list,G,opts);
+  });
+  STATE.audit=runAudit();
+  renderAudit();
+  renderResults();
+}
+
+/* =====================================================================
+   القسم 11: عرض لوحة التدقيق
+   ===================================================================== */
+function renderAudit(){
+  $('auditCard').classList.remove('hidden');
+  const a=STATE.audit;
+  const pass=a.pass;
+
+  let html=`<div class="audit-panel ${pass?'pass':'fail'}">
+    <h3><span class="icon">${pass?'✓':'✕'}</span>
+      ${pass?'التدقيق ناجح — مطابقة 100%':'⚠️ فشل التدقيق — توجد فروقات'}
+    </h3>`;
+
+  if(pass){
+    html+=`<div style="font-size:13.5px;line-height:1.8">
+      تم التحقق من سلامة جميع البيانات بنجاح:
+      <ul style="margin:8px 0;padding-inline-start:24px">
+        <li>✅ إجمالي المدخلات = إجمالي المخرجات (${a.totals.input} تلميذ)</li>
+        <li>✅ لا يوجد أي تكرار في أرقام التعريف</li>
+        <li>✅ جميع الأسماء وتواريخ الميلاد وأرقام التسجيل مطابقة للأصل حرفياً</li>
+        <li>✅ عدد الأفواج مطابق للخريطة المدرسية الرسمية</li>
+      </ul>
+    </div>`;
+  }else{
+    html+=`<div style="font-size:13.5px;line-height:1.8">تم كشف المشاكل التالية، يرجى مراجعتها:</div>`;
+  }
+
+  html+=`<div class="audit-grid">
+    <div class="audit-item ${a.totals.input===a.totals.output?'ok':'bad'}">
+      <div class="lbl">إجمالي المدخلات</div><div class="val">${a.totals.input} تلميذ</div>
+    </div>
+    <div class="audit-item ${a.totals.input===a.totals.output?'ok':'bad'}">
+      <div class="lbl">إجمالي المخرجات</div><div class="val">${a.totals.output} تلميذ</div>
+    </div>
+    <div class="audit-item ${a.duplicates.length===0?'ok':'bad'}">
+      <div class="lbl">تكرارات رقم التعريف</div><div class="val">${a.duplicates.length}</div>
+    </div>
+    <div class="audit-item ${a.missing.length===0?'ok':'bad'}">
+      <div class="lbl">تلاميذ مفقودون</div><div class="val">${a.missing.length}</div>
+    </div>
+    <div class="audit-item ${a.mismatched.length===0?'ok':'bad'}">
+      <div class="lbl">اختلافات بيانات</div><div class="val">${a.mismatched.length}</div>
+    </div>
+    <div class="audit-item ${a.groupCountIssues.length===0?'ok':'bad'}">
+      <div class="lbl">مشاكل الخريطة</div><div class="val">${a.groupCountIssues.length}</div>
+    </div>
+  </div>`;
+
+  html+=`<table class="audit-table">
+    <thead><tr>
+      <th>المستوى</th><th>عدد المدخلات</th><th>عدد المخرجات</th><th>الحالة</th>
+      <th>عدد الأفواج (متوقع / فعلي)</th><th>أصغر فوج</th><th>أكبر فوج</th>
+    </tr></thead><tbody>`;
+  LEVELS.forEach(lv=>{
+    const la=a.perLevel[lv]; if(!la)return;
+    const gcOk=la.groupsActual===la.groupsExpected;
+    const ok=la.matched&&gcOk;
+    html+=`<tr>
+      <td><b>${LEVEL_LABEL[lv]}</b></td>
+      <td>${la.inputCount}</td>
+      <td>${la.outputCount}</td>
+      <td class="${ok?'ok':'bad'}">${ok?'✓ مطابق':'✕ خطأ'}</td>
+      <td class="${gcOk?'ok':'bad'}">${la.groupsExpected} / ${la.groupsActual}</td>
+      <td>${la.minGroup}</td><td>${la.maxGroup}</td>
+    </tr>`;
+  });
+  html+=`<tr class="total">
+    <td>الإجمالي</td>
+    <td>${a.totals.input}</td>
+    <td>${a.totals.output}</td>
+    <td class="${a.totals.input===a.totals.output?'ok':'bad'}">${a.totals.input===a.totals.output?'✓ مطابق':'✕ خطأ'}</td>
+    <td colspan="3">—</td>
+  </tr>`;
+  html+=`</tbody></table>`;
+
+  if(a.duplicates.length){
+    html+=`<div style="margin-top:16px"><h4 style="margin:0 0 8px;color:#b91c1c">🔴 تكرارات رقم التعريف (${a.duplicates.length})</h4><div class="dup-list">`;
+    a.duplicates.forEach(d=>{
+      html+=`<div class="dup-row"><b>${esc(d.name)}</b> — رقم التعريف <code>${esc(d.id)}</code>
+        (ظهر في: <b>${LEVEL_SHORT[d.first.level]}${d.first.group}</b> و <b>${LEVEL_SHORT[d.second.level]}${d.second.group}</b>)</div>`;
+    });
+    html+=`</div></div>`;
+  }
+  if(a.missing.length){
+    html+=`<div style="margin-top:16px"><h4 style="margin:0 0 8px;color:#b91c1c">🔴 تلاميذ مفقودون (${a.missing.length})</h4><div class="dup-list">`;
+    a.missing.forEach(m=>{
+      html+=`<div class="dup-row"><b>${esc(m.name)}</b> — <code>${esc(m.id)}</code> (${LEVEL_SHORT[m.level]}${m.group})</div>`;
+    });
+    html+=`</div></div>`;
+  }
+  if(a.mismatched.length){
+    html+=`<div style="margin-top:16px"><h4 style="margin:0 0 8px;color:#b91c1c">🔴 اختلافات في البيانات (${a.mismatched.length})</h4><div class="dup-list">`;
+    a.mismatched.forEach(m=>{
+      html+=`<div class="dup-row"><b>${esc(m.name)}</b> — <code>${esc(m.id)}</code> — الحقل: <b>${m.field}</b></div>`;
+    });
+    html+=`</div></div>`;
+  }
+  if(a.groupCountIssues.length){
+    html+=`<div style="margin-top:16px"><h4 style="margin:0 0 8px;color:#b91c1c">⚠️ مشاكل الخريطة المدرسية</h4><div class="dup-list">`;
+    a.groupCountIssues.forEach(g=>{
+      html+=`<div class="dup-row">المستوى <b>${LEVEL_LABEL[g.level]}</b>: متوقع <b>${g.expected}</b> فوج، فعلي <b>${g.actual}</b> فوج</div>`;
+    });
+    html+=`</div></div>`;
+  }
+  html+=`</div>`;
+  $('auditBody').innerHTML=html;
+}
+
+/* =====================================================================
+   القسم 12: الإعدادات
+   ===================================================================== */
+function renderSettings(){
+  $('settingsCard').classList.remove('hidden');
+  $('mapInfo').innerHTML=
+    `<span class="item">🏫 <b>الخريطة الرسمية:</b></span>`+
+    `<span class="item">أولى = <b>${OFFICIAL_GROUPS['أولى']} فوج</b></span>`+
+    `<span class="item">ثانية = <b>${OFFICIAL_GROUPS['ثانية']} فوج</b></span>`+
+    `<span class="item">ثالثة = <b>${OFFICIAL_GROUPS['ثالثة']} فوج</b></span>`+
+    `<span class="item">رابعة = <b>${OFFICIAL_GROUPS['رابعة']} فوج</b></span>`;
+
+  let html=`<table class="settings-table"><thead><tr>
+    <th>المستوى</th><th>عدد التلاميذ</th><th>عدد الأفواج</th><th>المعدل/فوج</th>
+    <th>مُرقّون</th><th>معيدون</th><th>جدد + حر</th><th>أفواج سابقة</th>
+  </tr></thead><tbody>`;
+  LEVELS.forEach(lv=>{
+    const list=STATE.cur.filter(s=>s.level===lv);
+    const G=STATE.groupCount[lv]||1;
+    const prom=list.filter(s=>s.origin==='promoted'&&s.trackGroup).length;
+    const rep=list.filter(s=>s.origin==='repeater'&&s.trackGroup).length;
+    const free=list.length-prom-rep;
+    const oldLvl=LEVELS[LEVEL_N[lv]-2];
+    const oldG=oldLvl?new Set(Object.values(STATE.oldMap).filter(o=>o.level===oldLvl&&o.group).map(o=>o.group)).size:0;
+    html+=`<tr>
+      <td><b>${lv}</b></td>
+      <td>${list.length||'—'}</td>
+      <td><input type="number" min="1" max="30" value="${G}" data-lvl="${lv}" class="gInput"></td>
+      <td>${list.length?(list.length/G).toFixed(1):'—'}</td>
+      <td class="prom">${prom}</td><td class="rep">${rep}</td><td class="new">${free}</td>
+      <td>${oldG||'—'}</td>
+    </tr>`;
+  });
+  html+=`</tbody></table>`;
+  $('settingsBody').innerHTML=html;
+  $('settingsBody').querySelectorAll('.gInput').forEach(inp=>{
+    inp.addEventListener('change',e=>{
+      const v=Math.max(1,parseInt(e.target.value)||1);
+      STATE.groupCount[e.target.dataset.lvl]=v;
+      tryRun();
+    });
+  });
+}
+
+/* =====================================================================
+   القسم 13: عرض النتائج
+   ===================================================================== */
+function renderResults(){
+  $('resultCard').classList.remove('hidden');
+  const tabs=$('tabs'); tabs.innerHTML='';
+  const available=LEVELS.filter(lv=>STATE.results[lv]);
+  if(!available.length)return;
+  if(!STATE.activeLevel||!STATE.results[STATE.activeLevel]) STATE.activeLevel=available[0];
+  available.forEach(lv=>{
+    const r=STATE.results[lv];
+    const b=document.createElement('button');
+    b.className='tab'+(lv===STATE.activeLevel?' active':'');
+    b.innerHTML=`${LEVEL_LABEL[lv]} <span class="count">${r.stats.total} ت · ${r.stats.G} أفواج</span>`;
+    b.onclick=()=>{ STATE.activeLevel=lv; renderResults(); };
+    tabs.appendChild(b);
+  });
+  renderLevelView(STATE.activeLevel);
+}
+
+function renderLevelView(lv){
+  const r=STATE.results[lv];
+  const box=$('levelView');
+  const kpis=`
+    <div class="kpi-row">
+      <div class="kpi"><div class="v">${r.stats.total}</div><div class="l">إجمالي التلاميذ</div></div>
+      <div class="kpi"><div class="v">${r.stats.G}</div><div class="l">عدد الأفواج</div></div>
+      <div class="kpi"><div class="v">${r.stats.avg}</div><div class="l">المعدل/فوج</div></div>
+      <div class="kpi p-m"><div class="v">${r.stats.m}</div><div class="l">ذكور</div></div>
+      <div class="kpi p-f"><div class="v">${r.stats.f}</div><div class="l">إناث</div></div>
+      <div class="kpi p-r"><div class="v">${r.stats.rep}</div><div class="l">معيدون</div></div>
+      <div class="kpi p-ok"><div class="v">${r.stats.min}–${r.stats.max}</div><div class="l">الأدنى/الأعلى</div></div>
+    </div>`;
+
+  const bar=`
+    <div class="level-bar">
+      <div class="left">
+        <button class="pri" onclick="printLevel('${lv}')">🖨️ طباعة هذا المستوى</button>
+        <button onclick="printAll()">🖨️ طباعة كل المستويات</button>
+        <button onclick="exportLevel('${lv}')">⬇️ Excel — هذا المستوى</button>
+        <button onclick="exportAll()">⬇️ Excel — كل المستويات</button>
+      </div>
+      <div class="right">
+        <div class="search-wrap">
+          <input type="text" id="searchBox" placeholder="بحث بالاسم أو رقم التعريف...">
+        </div>
+      </div>
+    </div>`;
+
+  let cards=`<div class="section-grid" id="sectionsGrid">`;
+  r.groups.forEach(g=>{
+    const total=g.list.length;
+    const over=total>r.stats.avg*1.2?' style="outline:2px solid #fbbf24;outline-offset:-2px"':'';
+    cards+=`
+      <div class="section-card"${over} data-num="${g.num}">
+        <div class="sc-head">
+          <div class="num">${LEVEL_SHORT[lv]}${g.num}<small>— الفوج ${g.num}</small></div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <div class="total">${total} تلميذ</div>
+            <button class="expand" onclick="event.stopPropagation();openFullscreen('${lv}',${g.num})">⛶ تكبير</button>
+          </div>
+        </div>
+        <div class="sc-stats">
+          <div class="st m"><b>${g.m}</b><span>ذكور</span></div>
+          <div class="st f"><b>${g.f}</b><span>إناث</span></div>
+          <div class="st u"><b>${g.u}</b><span>؟</span></div>
+          <div class="st r"><b>${g.reps}</b><span>معيدون</span></div>
+        </div>
+        <div class="sc-list">`;
+
+    g.list.forEach((s,idx)=>{
+      const gCls=s.gender==='M'?'m':(s.gender==='F'?'f':'u');
+      const gTxt=s.gender==='M'?'ذ':(s.gender==='F'?'أ':'؟');
+      let tag='';
+      if(s.origin==='promoted'){
+        tag=s.trackGroup
+          ? `<span class="tag-mini keep">مسار ${s.oldLevel} ${s.trackGroup}</span>`
+          : `<span class="tag-mini moved">أُعيد توزيعه</span>`;
+      }else if(s.origin==='repeater'){
+        tag=s.trackGroup
+          ? `<span class="tag-mini rep">معيد · مسار ${s.oldLevel} ${s.trackGroup}</span>`
+          : `<span class="tag-mini rep">معيد</span>`;
+      }else if(s.origin==='manual'){
+        tag=`<span class="tag-mini new">مُضاف يدوياً</span>`;
+      }else{
+        tag=`<span class="tag-mini new">جديد</span>`;
+      }
+      const sysBadge=s.system?`<span>${esc(s.system)}</span>`:'';
+      cards+=`
+        <div class="student-row" data-search="${esc((s.name+' '+s.id).toLowerCase())}">
+          <div class="sr-num">${idx+1}</div>
+          <div class="sr-main">
+            <div class="sr-name">${esc(s.name)}${tag}</div>
+            <div class="sr-meta">
+              <span>${esc(s.birth||'—')}</span>
+              <span class="dot"></span>${sysBadge}
+              <span class="dot"></span><span>تسجيل: ${esc(s.reg||'—')}</span>
+            </div>
+          </div>
+          <div class="sr-actions">
+            <button class="sr-act mv" title="نقل إلى فوج آخر"
+              onclick="event.stopPropagation();moveStudent('${esc(s.id)}')">↔</button>
+            <button class="sr-act del" title="حذف التلميذ"
+              onclick="event.stopPropagation();deleteStudent('${esc(s.id)}')">✕</button>
+            <div class="sr-gender ${gCls}" data-id="${esc(s.id)}" title="تغيير الجنس"
+              onclick="event.stopPropagation();toggleGender('${esc(s.id)}')">${gTxt}</div>
+          </div>
+        </div>`;
+    });
+    cards+=`</div></div>`;
+  });
+  cards+=`</div>`;
+  box.innerHTML=kpis+bar+cards;
+
+  // ربط البحث
+  const sb=$('searchBox');
+  if(sb){
+    sb.addEventListener('input',()=>{
+      const q=sb.value.trim().toLowerCase();
+      box.querySelectorAll('#sectionsGrid .student-row').forEach(row=>{
+        row.style.display=(!q||row.dataset.search.includes(q))?'':'none';
+      });
+      box.querySelectorAll('.section-card').forEach(card=>{
+        const has=[...card.querySelectorAll('.student-row')].some(r=>r.style.display!=='none');
+        card.style.display=has?'':'none';
+      });
+    });
+  }
+}
+
+/* =====================================================================
+   القسم 14: أدوات التعديل التفاعلي
+   ===================================================================== */
+function toggleGender(id){
+  const st=STATE.cur.find(x=>x.id===id); if(!st)return;
+  const nxt=st.gender==='M'?'F':(st.gender==='F'?'U':'M');
+  STATE.overrides[id]=nxt;
+  runDistribution();
+}
+
+function moveStudent(id){
+  const st=STATE.cur.find(x=>x.id===id); if(!st)return;
+  const lv=st.level;
+  const G=STATE.groupCount[lv]||OFFICIAL_GROUPS[lv];
+  // البحث عن الفوج الحالي
+  let currentGroup=0;
+  const r=STATE.results[lv];
+  if(r){
+    for(const g of r.groups){
+      if(g.list.find(x=>x.id===id)){ currentGroup=g.num; break; }
+    }
+  }
+  const options=[];
+  for(let i=1;i<=G;i++)options.push(`<option value="${i}" ${i===currentGroup?'selected':''}>${LEVEL_SHORT[lv]}${i}</option>`);
+
+  const div=document.createElement('div');
+  div.className='modal-bg';
+  div.innerHTML=`
+    <div class="modal-box" style="max-width:420px">
+      <h3>↔ نقل التلميذ</h3>
+      <p style="margin:0 0 14px;font-size:13.5px;color:#475569">
+        <b>${esc(st.name)}</b><br>
+        <span style="font-size:12px;color:#94a3b8">ID: ${esc(st.id)}</span>
+      </p>
+      <div class="form-row">
+        <label>الفوج الحالي</label>
+        <input type="text" value="${currentGroup?LEVEL_SHORT[lv]+currentGroup:'—'}" disabled>
+      </div>
+      <div class="form-row">
+        <label>الفوج الجديد</label>
+        <select id="moveTarget">${options.join('')}</select>
+      </div>
+      <div class="modal-actions">
+        <button onclick="this.closest('.modal-bg').remove()">إلغاء</button>
+        <button class="pri" onclick="applyMove('${esc(id)}', this)">تأكيد النقل</button>
+      </div>
+    </div>`;
+  document.body.appendChild(div);
+}
+
+function applyMove(id, btn){
+  const sel=btn.closest('.modal-box').querySelector('#moveTarget');
+  const targetNum=parseInt(sel.value);
+  const st=STATE.cur.find(x=>x.id===id); if(!st)return;
+
+  // نُجبر التلميذ على الذهاب إلى الفوج المطلوب بتثبيت مساره
+  const r=STATE.results[st.level]; if(!r){btn.closest('.modal-bg').remove();return;}
+
+  // إخراج التلميذ من فوجه الحالي
+  for(const g of r.groups){
+    const found=g.list.find(x=>x.id===id);
+    if(found){
+      removeFrom(g, found);
+      break;
+    }
+  }
+  // إدخاله في الفوج الجديد
+  const targetG=r.groups.find(g=>g.num===targetNum);
+  if(targetG){
+    addTo(targetG, st);
+    targetG.list.sort((a,b)=>a.name.localeCompare(b.name,'ar'));
+  }
+  // إعادة ترتيب الفوج القديم أيضاً
+  r.groups.forEach(g=>g.list.sort((a,b)=>a.name.localeCompare(b.name,'ar')));
+
+  // إعادة حساب الإحصائيات
+  r.stats.min=Math.min(...r.groups.map(g=>g.list.length));
+  r.stats.max=Math.max(...r.groups.map(g=>g.list.length));
+  r.stats.avg=(r.stats.total/r.stats.G).toFixed(1);
+
+  btn.closest('.modal-bg').remove();
+  STATE.audit=runAudit();
+  renderAudit();
+  renderResults();
+}
+
+function deleteStudent(id){
+  const st=STATE.cur.find(x=>x.id===id); if(!st)return;
+  const div=document.createElement('div');
+  div.className='modal-bg';
+  div.innerHTML=`
+    <div class="modal-box" style="max-width:420px">
+      <h3 style="color:#dc2626">⚠️ تأكيد الحذف</h3>
+      <p style="font-size:13.5px;color:#475569;line-height:1.8">
+        هل أنت متأكد من حذف التلميذ:<br>
+        <b style="color:#1e293b">${esc(st.name)}</b><br>
+        <span style="font-size:12px;color:#94a3b8">ID: ${esc(st.id)}</span>
+      </p>
+      <p style="font-size:12.5px;background:#fef2f2;padding:10px;border-radius:8px;color:#991b1b">
+        سيتم حذف التلميذ نهائياً من جميع القوائم، وسيُعاد توزيع باقي التلاميذ.
+      </p>
+      <div class="modal-actions">
+        <button onclick="this.closest('.modal-bg').remove()">إلغاء</button>
+        <button class="danger" onclick="applyDelete('${esc(id)}', this)">تأكيد الحذف</button>
+      </div>
+    </div>`;
+  document.body.appendChild(div);
+}
+
+function applyDelete(id, btn){
+  const idx=STATE.cur.findIndex(x=>x.id===id);
+  if(idx>=0)STATE.cur.splice(idx,1);
+  // حذف من التجاوزات
+  delete STATE.overrides[id];
+  btn.closest('.modal-bg').remove();
+  // إعادة التوزيع
+  tryRun();
+}
+
+/* =====================================================================
+   القسم 15: إضافة تلميذ يدوياً
+   ===================================================================== */
+$('btnAddStudent').onclick=function(){
+  const div=document.createElement('div');
+  div.className='modal-bg';
+  div.innerHTML=`
+    <div class="modal-box">
+      <h3>➕ إضافة تلميذ جديد</h3>
+      <div class="form-grid">
+        <div class="form-row">
+          <label>رقم التعريف *</label>
+          <input type="text" id="addId" placeholder="مثال: 1101228010123456">
+        </div>
+        <div class="form-row">
+          <label>المستوى *</label>
+          <select id="addLevel">
+            ${LEVELS.map(lv=>`<option value="${lv}">${LEVEL_LABEL[lv]}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>اللقب والاسم *</label>
+        <input type="text" id="addName" placeholder="مثال: بن علي محمد">
+      </div>
+      <div class="form-grid">
+        <div class="form-row">
+          <label>تاريخ الميلاد</label>
+          <input type="date" id="addBirth">
+        </div>
+        <div class="form-row">
+          <label>الجنس *</label>
+          <select id="addGender">
+            <option value="M">ذكر</option>
+            <option value="F">أنثى</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-row">
+          <label>النظام</label>
+          <select id="addSystem">
+            <option value="نصف داخلي">نصف داخلي</option>
+            <option value="خارجي">خارجي</option>
+            <option value="داخلي">داخلي</option>
+            <option value="غير محدد">غير محدد</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>رقم التسجيل</label>
+          <input type="text" id="addReg">
+        </div>
+      </div>
+      <div id="addError" style="color:#dc2626;font-size:12.5px;font-weight:700;margin-top:8px"></div>
+      <div class="modal-actions">
+        <button onclick="this.closest('.modal-bg').remove()">إلغاء</button>
+        <button class="pri" onclick="applyAddStudent(this)">إضافة التلميذ</button>
+      </div>
+    </div>`;
+  document.body.appendChild(div);
+};
+
+function applyAddStudent(btn){
+  const id=cleanId($('addId').value);
+  const name=$('addName').value.trim().replace(/\s+/g,' ');
+  const level=$('addLevel').value;
+  const birth=$('addBirth').value;
+  const gender=$('addGender').value;
+  const system=$('addSystem').value;
+  const reg=$('addReg').value.trim();
+  const err=$('addError');
+  err.textContent='';
+
+  // التحقق
+  if(!id){err.textContent='❌ رقم التعريف مطلوب'; return;}
+  if(!name){err.textContent='❌ اللقب والاسم مطلوب'; return;}
+  if(STATE.cur.find(x=>x.id===id)){err.textContent='❌ رقم التعريف موجود مسبقاً'; return;}
+
+  const newStudent={
+    id, name, birth, level,
+    fileGroup:0, system, reg,
+    gender, origin:'manual', trackGroup:null, moved:false, manual:true
+  };
+  STATE.cur.push(newStudent);
+  STATE.manualAdditions.push(newStudent);
+  btn.closest('.modal-bg').remove();
+  tryRun();
+}
+
+/* =====================================================================
+   القسم 16: العرض بملء الشاشة
+   ===================================================================== */
+function openFullscreen(lv, groupNum){
+  const r=STATE.results[lv]; if(!r)return;
+  const g=r.groups.find(x=>x.num===groupNum); if(!g)return;
+
+  const rows=g.list.map((s,i)=>{
+    const gTxt=s.gender==='M'?'ذكر':(s.gender==='F'?'أنثى':'—');
+    let status='';
+    if(s.origin==='promoted')status=s.trackGroup?`مُرقّى · مسار ${s.oldLevel} ${s.trackGroup}`:'مُرقّى · أُعيد توزيعه';
+    else if(s.origin==='repeater')status=s.trackGroup?`معيد · مسار ${s.oldLevel} ${s.trackGroup}`:'معيد';
+    else if(s.origin==='manual')status='مُضاف يدوياً';
+    else status='جديد';
+    return `<tr>
+      <td>${i+1}</td>
+      <td style="font-family:monospace;font-size:12px">${esc(s.id)}</td>
+      <td class="name">${esc(s.name)}</td>
+      <td>${esc(s.birth||'—')}</td>
+      <td>${gTxt}</td>
+      <td>${esc(s.system||'—')}</td>
+      <td>${esc(s.reg||'—')}</td>
+      <td style="font-size:11.5px;color:#64748b">${esc(status)}</td>
+    </tr>`;
+  }).join('');
+
+  const div=document.createElement('div');
+  div.id='fullscreen';
+  div.innerHTML=`
+    <div class="fs-head">
+      <h3>📋 الفوج التربوي: ${LEVEL_SHORT[lv]}${groupNum} — ${LEVEL_LABEL[lv]}</h3>
+      <div class="info">
+        <span>العدد <b>${g.list.length}</b></span>
+        <span>ذكور <b>${g.m}</b></span>
+        <span>إناث <b>${g.f}</b></span>
+        <span>معيدون <b>${g.reps}</b></span>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="pri" onclick="printFullscreen()">🖨️ طباعة</button>
+        <button onclick="document.getElementById('fullscreen').remove()">✕ إغلاق</button>
+      </div>
+    </div>
+    <div class="fs-body">
+      <table class="fs-tbl">
+        <thead><tr>
+          <th style="width:50px">ر.ت</th>
+          <th style="width:150px">رقم التعريف</th>
+          <th>اللقب والاسم</th>
+          <th style="width:110px">تاريخ الميلاد</th>
+          <th style="width:70px">الجنس</th>
+          <th style="width:110px">النظام</th>
+          <th style="width:100px">رقم التسجيل</th>
+          <th style="width:150px">الحالة / المسار</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <div class="fs-footer">
+      <span>${SCHOOL.name} — ${SCHOOL.year}</span>
+      <span>معاينة الفوج ${LEVEL_SHORT[lv]}${groupNum}</span>
+    </div>`;
+
+  // إغلاق بضغط Escape
+  document.addEventListener('keydown',function esc(e){
+    if(e.key==='Escape'){
+      const fs=document.getElementById('fullscreen');
+      if(fs){fs.remove(); document.removeEventListener('keydown',esc);}
+    }
+  });
+
+  document.body.appendChild(div);
+}
+
+function printFullscreen(){
+  const fs=document.getElementById('fullscreen');
+  if(!fs)return;
+  // إعادة بناء نفس الجدول في حاوية الطباعة
+  const head=fs.querySelector('.fs-head h3').textContent;
+  const rows=fs.querySelectorAll('.fs-tbl tbody tr');
+  const info=fs.querySelector('.fs-head .info').innerHTML;
+
+  const now=new Date();
+  const dateStr=`${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
+
+  let tbl=`<table class="pr-tbl">
+    <thead><tr>
+      <th style="width:34px">ر.ت</th>
+      <th style="width:140px">رقم التعريف</th>
+      <th>اللقب والاسم</th>
+      <th style="width:80px">تاريخ الميلاد</th>
+      <th style="width:34px">ج</th>
+      <th style="width:80px">النظام</th>
+      <th style="width:70px">رقم التسجيل</th>
+    </tr></thead><tbody>`;
+  rows.forEach(tr=>{
+    const tds=tr.querySelectorAll('td');
+    tbl+=`<tr>
+      <td>${tds[0].textContent}</td>
+      <td style="font-family:monospace;font-size:9.5px">${tds[1].textContent}</td>
+      <td class="name">${tds[2].textContent}</td>
+      <td>${tds[3].textContent}</td>
+      <td>${tds[4].textContent==='ذكر'?'ذ':(tds[4].textContent==='أنثى'?'أ':'—')}</td>
+      <td>${tds[5].textContent}</td>
+      <td>${tds[6].textContent}</td>
+    </tr>`;
+  });
+  tbl+=`</tbody></table>`;
+
+  $('printContainer').innerHTML=`
+    <div class="pr-doc">
+      <div class="pr-head">
+        <div class="r1">الجمهورية الجزائرية الديمقراطية الشعبية</div>
+        <div class="r2">وزارة التربية الوطنية</div>
+        <div class="r3">${SCHOOL.name} — ${SCHOOL.wilaya}</div>
+        <div class="r4">السنة الدراسية: ${SCHOOL.year} &nbsp;·&nbsp; تاريخ الطباعة: ${dateStr}</div>
+      </div>
+      <div class="pr-title">${head}</div>
+      <div class="pr-summary">${info.replace(/<b>/g,'<b>').replace(/<\/b>/g,'</b>')}</div>
+      <div class="pr-sec">${tbl}
+        <div class="pr-sign">
+          <div>الأستاذ الرئيسي<div class="line"></div></div>
+          <div>مدير المؤسسة<div class="line"></div></div>
+        </div>
+      </div>
+    </div>`;
+  setTimeout(()=>window.print(),100);
+}
+
+/* =====================================================================
+   القسم 17: الطباعة والتصدير
+   ===================================================================== */
+function buildPrintHTML(levels){
+  const now=new Date();
+  const dateStr=`${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
+  let html=`<div class="pr-doc">`;
+  let first=true;
+  levels.forEach(lv=>{
+    const r=STATE.results[lv]; if(!r)return;
+    if(!first)html+=`<div style="page-break-before:always"></div>`;
+    first=false;
+    html+=`
+      <div class="pr-head">
+        <div class="r1">الجمهورية الجزائرية الديمقراطية الشعبية</div>
+        <div class="r2">وزارة التربية الوطنية</div>
+        <div class="r3">${SCHOOL.name} — ${SCHOOL.wilaya}</div>
+        <div class="r4">السنة الدراسية: ${SCHOOL.year} &nbsp;·&nbsp; تاريخ الطباعة: ${dateStr}</div>
+      </div>
+      <div class="pr-title">قوائم الأفواج — ${LEVEL_LABEL[lv]}</div>
+      <div class="pr-summary">
+        <span>عدد التلاميذ: <b>${r.stats.total}</b></span>
+        <span>عدد الأفواج: <b>${r.stats.G}</b></span>
+        <span>ذكور: <b>${r.stats.m}</b></span>
+        <span>إناث: <b>${r.stats.f}</b></span>
+        <span>معيدون: <b>${r.stats.rep}</b></span>
+      </div>`;
+    r.groups.forEach(g=>{
+      html+=`
+        <div class="pr-sec">
+          <div class="pr-sec-title">
+            <span>الفوج التربوي: ${LEVEL_SHORT[lv]}${g.num}</span>
+            <span class="l">
+              <span>العدد: ${g.list.length}</span><span>ذ: ${g.m}</span>
+              <span>أ: ${g.f}</span><span>معيدون: ${g.reps}</span>
+            </span>
+          </div>
+          <table class="pr-tbl">
+            <thead><tr>
+              <th style="width:34px">ر.ت</th>
+              <th style="width:130px">رقم التعريف</th>
+              <th>اللقب والاسم</th>
+              <th style="width:80px">تاريخ الميلاد</th>
+              <th style="width:34px">ج</th>
+              <th style="width:80px">النظام</th>
+              <th style="width:70px">رقم التسجيل</th>
+            </tr></thead><tbody>`;
+      g.list.forEach((s,i)=>{
+        const gTxt=s.gender==='M'?'ذ':(s.gender==='F'?'أ':'؟');
+        html+=`<tr>
+          <td>${i+1}</td>
+          <td style="font-family:monospace;font-size:9.5px">${esc(s.id)}</td>
+          <td class="name">${esc(s.name)}</td>
+          <td>${esc(s.birth||'')}</td>
+          <td>${gTxt}</td>
+          <td>${esc(s.system||'')}</td>
+          <td>${esc(s.reg||'')}</td>
+        </tr>`;
+      });
+      html+=`</tbody></table>
+        <div class="pr-sign">
+          <div>الأستاذ الرئيسي<div class="line"></div></div>
+          <div>مدير المؤسسة<div class="line"></div></div>
+        </div>
+      </div>`;
+    });
+  });
+  html+=`</div>`;
+  return html;
+}
+function printLevel(lv){
+  $('printContainer').innerHTML=buildPrintHTML([lv]);
+  setTimeout(()=>window.print(),80);
+}
+function printAll(){
+  const list=LEVELS.filter(lv=>STATE.results[lv]);
+  $('printContainer').innerHTML=buildPrintHTML(list);
+  setTimeout(()=>window.print(),80);
+}
+
+/* =====================================================================
+   القسم 18: التصدير إلى Excel
+   ===================================================================== */
+function exportLevel(lv){
+  const r=STATE.results[lv]; if(!r)return;
+  const wb=XLSX.utils.book_new();
+  const rows=[]; let idx=0;
+  r.groups.forEach(g=>{
+    g.list.forEach(s=>{
+      idx++;
+      rows.push({
+        'ر.ت':idx,'الفوج':`${LEVEL_SHORT[lv]}${g.num}`,
+        'رقم تعريف':s.id,'اللقب والاسم':s.name,
+        'تاريخ الميلاد':s.birth,
+        'الجنس':s.gender==='M'?'ذكر':(s.gender==='F'?'أنثى':'غير محدد'),
+        'النظام':s.system,'رقم التسجيل':s.reg,
+        'الحالة':s.origin==='promoted'?'مُرقّى':(s.origin==='repeater'?'معيد':(s.origin==='manual'?'مُضاف':'جديد')),
+        'المسار السابق':s.trackGroup?`${s.oldLevel||''} ${s.trackGroup}`:'—'
+      });
+    });
+    rows.push({});
+  });
+  const ws=XLSX.utils.json_to_sheet(rows);
+  ws['!cols']=[{wch:5},{wch:10},{wch:18},{wch:28},{wch:13},{wch:9},{wch:13},{wch:11},{wch:9},{wch:14}];
+  XLSX.utils.book_append_sheet(wb,ws,LEVEL_SHORT[lv]);
+  XLSX.writeFile(wb,`قوائم_${LEVEL_SHORT[lv]}_2027.xlsx`);
+}
+function exportAll(){
+  const wb=XLSX.utils.book_new();
+  const sum=[];
+  LEVELS.forEach(lv=>{
+    const r=STATE.results[lv]; if(!r)return;
+    r.groups.forEach(g=>{
+      sum.push({
+        'المستوى':LEVEL_LABEL[lv],'الفوج':`${LEVEL_SHORT[lv]}${g.num}`,
+        'العدد':g.list.length,'ذكور':g.m,'إناث':g.f,'غير محدد':g.u,
+        'معيدون':g.reps,'مُرقّون':g.prom,
+        'نصف داخلي':g.sys['نصف داخلي']||0,'خارجي':g.sys['خارجي']||0
+      });
+    });
+  });
+  const wsSum=XLSX.utils.json_to_sheet(sum);
+  wsSum['!cols']=[{wch:15},{wch:10},{wch:8},{wch:8},{wch:8},{wch:10},{wch:9},{wch:9},{wch:12},{wch:10}];
+  XLSX.utils.book_append_sheet(wb,wsSum,'إحصاء');
+
+  LEVELS.forEach(lv=>{
+    const r=STATE.results[lv]; if(!r)return;
+    const rows=[]; let idx=0;
+    r.groups.forEach(g=>{
+      g.list.forEach(s=>{
+        idx++;
+        rows.push({
+          'ر.ت':idx,'الفوج':`${LEVEL_SHORT[lv]}${g.num}`,
+          'رقم تعريف':s.id,'اللقب والاسم':s.name,
+          'تاريخ الميلاد':s.birth,
+          'الجنس':s.gender==='M'?'ذكر':(s.gender==='F'?'أنثى':'غير محدد'),
+          'النظام':s.system,'رقم التسجيل':s.reg,
+          'الحالة':s.origin==='promoted'?'مُرقّى':(s.origin==='repeater'?'معيد':(s.origin==='manual'?'مُضاف':'جديد')),
+          'المسار السابق':s.trackGroup?`${s.oldLevel||''} ${s.trackGroup}`:'—'
+        });
+      });
+      rows.push({});
+    });
+    const ws=XLSX.utils.json_to_sheet(rows);
+    ws['!cols']=[{wch:5},{wch:10},{wch:18},{wch:28},{wch:13},{wch:9},{wch:13},{wch:11},{wch:9},{wch:14}];
+    XLSX.utils.book_append_sheet(wb,ws,LEVEL_SHORT[lv]);
+  });
+  XLSX.writeFile(wb,'توزيع_الأفواج_2027.xlsx');
+}
+
+/* =====================================================================
+   القسم 19: أحداث الرفع والتشغيل
+   ===================================================================== */
+window.addEventListener('xlsx-ready',initApp);
+window.addEventListener('xlsx-failed',function(){
+  const bar=$('libStatus');
+  bar.className='err';
+  bar.innerHTML='❌ تعذّر تحميل مكتبة Excel — يرجى الاتصال بالإنترنت';
+  showHelpModal();
+});
+
+function initApp(){
+  const bar=$('libStatus');
+  bar.className='ok';
+  document.body.classList.add('lib-ready');
+  $('dropCur').classList.remove('disabled');
+  $('dropOld').classList.remove('disabled');
+  $('fileCur').disabled=false;
+  $('fileOld').disabled=false;
+  setTimeout(()=>bar.style.display='none',1500);
+  bindUploads();
+}
+
+function bindUploads(){
+  const setMsg=(id,txt,cls)=>{ $(id).innerHTML=txt?`<div class="msg ${cls}">${txt}</div>`:''; };
+
+  $('fileCur').addEventListener('change',async e=>{
+    const f=e.target.files[0]; if(!f)return;
+    try{
+      setMsg('msgCur','⏳ جارٍ القراءة...','ok');
+      const wb=await readWorkbook(f);
+      STATE.cur=parseCurrent(wb);
+      if(!STATE.cur.length){setMsg('msgCur','✖ لم يتم العثور على بيانات صالحة','err');return;}
+      STATE.loadedCur=true;
+      $('dropCur').classList.add('on');
+      setMsg('msgCur',`✔ ${STATE.cur.length} تلميذ`,'ok');
+      tryRun();
+    }catch(err){setMsg('msgCur','✖ خطأ: '+err.message,'err');}
+  });
+
+  $('fileOld').addEventListener('change',async e=>{
+    const f=e.target.files[0]; if(!f)return;
+    try{
+      setMsg('msgOld','⏳ جارٍ القراءة...','ok');
+      const wb=await readWorkbook(f);
+      const r=parseOld(wb);
+      STATE.oldMap=r.map; STATE.surnames=r.surnames;
+      STATE.loadedOld=true;
+      $('dropOld').classList.add('on');
+      setMsg('msgOld',`✔ ${Object.keys(r.map).length} سجل`,'ok');
+      tryRun();
+    }catch(err){setMsg('msgOld','✖ خطأ: '+err.message,'err');}
+  });
+
+  $('btnRun').onclick=()=>runDistribution();
+  $('optStrict').onchange=()=>runDistribution();
+  $('optSystem').onchange=()=>runDistribution();
+}
+
+function showHelpModal(){
+  const old=document.getElementById('helpModal'); if(old)old.remove();
+  const div=document.createElement('div');
+  div.id='helpModal';
+  div.className='modal-bg';
+  div.innerHTML=`
+    <div class="modal-box">
+      <h3 style="color:#dc2626">⚠️ تعذّر تحميل مكتبة قراءة Excel</h3>
+      <p>التطبيق يحتاج مكتبة <b>SheetJS</b>، وفشل تحميلها من جميع المصادر.</p>
+      <h4 style="color:#1e5aa8;margin-top:14px">🔧 الحل:</h4>
+      <ol style="line-height:1.9;font-size:13.5px">
+        <li>تأكّد من اتصالك بالإنترنت ثم أعد فتح الملف.</li>
+        <li>إذا استمر الخطأ، حمّل الملف يدوياً من:
+          <code style="background:#f1f5f9;padding:2px 7px;border-radius:5px;font-family:monospace;font-size:12px">https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js</code>
+          واحفظه بجانب HTML باسم <code>xlsx.full.min.js</code>.</li>
+      </ol>
+      <div class="modal-actions">
+        <button onclick="location.reload()">🔄 إعادة المحاولة</button>
+        <button class="pri" onclick="document.getElementById('helpModal').remove()">إغلاق</button>
+      </div>
+    </div>`;
+  document.body.appendChild(div);
+}
+
+/* تشغيل أولي */
+renderSettings();
+</script>
+</body>
+</html>
