@@ -1,0 +1,36 @@
+# ===== نظام التشغيل =====
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===== محررات النصوص =====
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ===== Node.js (اختياري) =====
+node_modules/
+npm-debug.log*
+yarn-error.log*
+package-lock.json
+
+# ===== ملفات مؤقتة =====
+*.tmp
+*.log
+*.bak
+*.cache
+
+# ===== ملفات Excel المُصدَّرة =====
+قوائم_*.xlsx
+توزيع_*.xlsx
+
+# ===== ملفات بيانات التلاميذ (حماية الخصوصية) =====
+# ⚠️ لا ترفع ملفات بيانات التلاميذ الحقيقية إلى GitHub
+samples/*.xls
+samples/*.xlsx
+
+# ===== ملفات النظام =====
+.env
+.env.local
