@@ -4,13 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>DONIA-CLASSE — نظام توزيع التلاميذ 2027</title>
-<meta name="description" content="نظام إدارة وتوزيع التلاميذ — مختبر الأفكار الذكية والتكنولوجيا المتقدمة | DONIALABSTECH">
+<meta name="description" content="نظام إدارة وتوزيع التلاميذ — مختبر الأفكار الذكية | DONIALABSTECH">
 <meta name="author" content="DONIALABSTECH">
 
 <script>
-/* ================================================================
-   تحميل مكتبة SheetJS من مصادر متعددة (احتياطي تلقائي)
-   ================================================================ */
 (function(){
   const SOURCES = [
     'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js',
@@ -69,7 +66,6 @@ button.pri:hover{background:linear-gradient(135deg,var(--pri-d),var(--pri))}
 button.lock{background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;border:none;box-shadow:0 2px 4px rgba(124,58,237,.25)}
 button.lock:hover{background:linear-gradient(135deg,#6d28d9,#5b21b6)}
 button.brand{background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;border:none;box-shadow:0 2px 4px rgba(139,92,246,.25)}
-button.brand:hover{background:linear-gradient(135deg,#7c3aed,#6d28d9)}
 button.danger{color:var(--err);border-color:#fecaca;background:#fef2f2}
 button.danger:hover{background:#fee2e2}
 button.sm{padding:4px 9px;font-size:12px;font-weight:700}
@@ -78,6 +74,7 @@ input[type=text],input[type=number],input[type=date],input[type=password],select
 input:focus,select:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(30,90,168,.1)}
 .hidden{display:none!important}
 
+/* الشريط العلوي */
 .top-bar{
   position:sticky;top:0;z-index:9000;
   background:linear-gradient(135deg,#0a1f44 0%,#0f2a5f 40%,#051530 100%);
@@ -89,10 +86,7 @@ input:focus,select:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(30,90
   display:flex;align-items:center;gap:14px;padding:10px 20px;
   flex-wrap:wrap;max-width:1800px;margin:0 auto;
 }
-.brand-zone{
-  display:flex;align-items:center;gap:12px;flex-shrink:0;
-  padding-inline-end:14px;border-inline-end:1px solid rgba(212,160,23,.3);
-}
+.brand-zone{display:flex;align-items:center;gap:12px;flex-shrink:0;padding-inline-end:14px;border-inline-end:1px solid rgba(212,160,23,.3)}
 .brand-logo{
   width:48px;height:48px;object-fit:contain;border-radius:50%;
   cursor:zoom-in;transition:transform .25s, box-shadow .25s;
@@ -132,6 +126,8 @@ input:focus,select:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(30,90
 .h-act.pri:hover{background:linear-gradient(135deg,#f5c518,#d4a017);box-shadow:0 4px 14px rgba(245,197,24,.45)}
 .h-act.sync{background:linear-gradient(135deg,rgba(0,102,255,.25), rgba(0,102,255,.15));border-color:rgba(0,102,255,.6)}
 .h-act.sync:hover{background:linear-gradient(135deg,rgba(0,102,255,.4), rgba(0,102,255,.25));box-shadow:0 4px 12px rgba(0,102,255,.35)}
+.h-act.fix{background:linear-gradient(135deg,rgba(220,38,38,.25), rgba(220,38,38,.15));border-color:rgba(220,38,38,.6)}
+.h-act.fix:hover{background:linear-gradient(135deg,rgba(220,38,38,.4), rgba(220,38,38,.25));box-shadow:0 4px 12px rgba(220,38,38,.35)}
 .h-act[data-tooltip]:hover::after{
   content:attr(data-tooltip);position:absolute;top:calc(100% + 8px);right:50%;
   transform:translateX(50%);background:#0a1f44;color:#fff;font-size:11.5px;
@@ -305,7 +301,6 @@ body.lib-ready #libStatus{transform:translateY(-200%)}
 .audit-item.ok .val{color:#047857}
 .audit-item.bad .val{color:#b91c1c}
 .audit-item.warn .val{color:#b45309}
-
 .issue-list{margin-top:14px;background:#fff;border-radius:8px;padding:10px 14px;font-size:12.5px;max-height:280px;overflow-y:auto}
 .issue-list .issue{padding:8px 10px;border-bottom:1px solid #fecaca;color:#7f1d1d;border-radius:6px;margin-bottom:4px;background:#fef2f2}
 .issue-list .issue.warn{padding:8px 10px;border-bottom:1px solid #fde68a;color:#92400e;border-radius:6px;margin-bottom:4px;background:#fffbeb}
@@ -314,7 +309,6 @@ body.lib-ready #libStatus{transform:translateY(-200%)}
 .issue-list .issue .badge-tag{display:inline-block;padding:1px 8px;border-radius:10px;font-size:10.5px;font-weight:800;margin-inline-end:6px}
 .issue-list .issue .badge-tag.err{background:#fee2e2;color:#991b1b}
 .issue-list .issue .badge-tag.warn{background:#fef3c7;color:#92400e}
-.issue-list .issue .badge-tag.valid{background:#e0e7ff;color:#3730a3}
 
 .settings-table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;margin-bottom:10px}
 .settings-table th{background:#f8fafc;color:#334155;font-weight:700;padding:10px 12px;text-align:center;border-bottom:2px solid var(--border);font-size:12px}
@@ -329,8 +323,17 @@ body.lib-ready #libStatus{transform:translateY(-200%)}
 .ctrl-bar input[type=checkbox]{width:16px;height:16px;accent-color:var(--pri);cursor:pointer}
 .hint{font-size:12px;color:var(--muted);margin-top:6px}
 
-#bulkBar{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(135deg,#1e3a8a,#1e5aa8);color:#fff;padding:14px 24px;box-shadow:0 -4px 16px rgba(0,0,0,.2);z-index:8000;display:none;align-items:center;gap:16px;flex-wrap:wrap}
-#bulkBar.on{display:flex}
+/* ⭐ شريط العمليات الجماعية السفلي — الإصلاح الجوهري */
+#bulkBar{
+  position:fixed;bottom:0;left:0;right:0;
+  background:linear-gradient(135deg,#1e3a8a,#1e5aa8);
+  color:#fff;padding:14px 24px;
+  box-shadow:0 -4px 16px rgba(0,0,0,.2);
+  z-index:8000;
+  display:none;
+  align-items:center;gap:16px;flex-wrap:wrap;
+}
+#bulkBar.on{display:flex!important}
 #bulkBar .info{font-size:13.5px;font-weight:700}
 #bulkBar .info b{background:rgba(255,255,255,.22);padding:2px 10px;border-radius:12px;margin-inline-start:6px}
 #bulkBar .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-inline-start:auto}
@@ -376,7 +379,7 @@ body.lib-ready #libStatus{transform:translateY(-200%)}
 #printContainer{display:none}
 @media print{
   body>*{display:none!important}
-  .top-bar,.sub-bar,#bulkBar,#libStatus,.no-print,.admin-bar,header.app-header,main,footer{display:none!important}
+  .top-bar,.sub-bar,#bulkBar,#libStatus,.no-print,header.app-header,main,footer{display:none!important}
   #printContainer{display:block!important;background:#fff;margin:0;padding:0}
   @page{size:A4 portrait;margin:15mm 10mm}
   .pr-doc{font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:#000;font-size:11pt}
@@ -431,45 +434,36 @@ body.lib-ready #libStatus{transform:translateY(-200%)}
 </head>
 <body>
 
-<nav class="top-bar no-print" role="navigation" aria-label="شريط الأدوات الرئيسي">
+<nav class="top-bar no-print">
   <div class="top-bar-inner">
     <div class="brand-zone">
-      <img id="brandLogo" class="brand-logo" alt="DONIA LABS TECH"
-        title="اضغط لتكبير الشعار"
+      <img id="brandLogo" class="brand-logo" alt="DONIA LABS TECH" title="اضغط لتكبير الشعار"
         src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><defs><radialGradient id='bg' cx='50%25' cy='50%25' r='70%25'><stop offset='0%25' stop-color='%230a1f44'/><stop offset='100%25' stop-color='%23000000'/></radialGradient><linearGradient id='gold' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%23f5c518'/><stop offset='50%25' stop-color='%23d4a017'/><stop offset='100%25' stop-color='%23b8860b'/></linearGradient><linearGradient id='blue' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%230066ff'/><stop offset='100%25' stop-color='%23003db3'/></linearGradient></defs><circle cx='100' cy='100' r='96' fill='url(%23bg)' stroke='url(%23gold)' stroke-width='4'/><circle cx='100' cy='100' r='84' fill='none' stroke='url(%23blue)' stroke-width='2' opacity='0.7'/><path d='M 55 120 L 100 60 L 145 120 L 120 120 L 100 90 L 80 120 Z' fill='url(%23blue)' stroke='url(%23gold)' stroke-width='1'/><text x='100' y='150' font-family='Arial' font-size='14' font-weight='900' fill='url(%23gold)' text-anchor='middle' letter-spacing='1'>DONIA</text><text x='100' y='168' font-family='Arial' font-size='9' font-weight='700' fill='%23ffffff' text-anchor='middle' letter-spacing='2'>LABS TECH</text></svg>">
       <div class="brand-text">
         <span class="t1">DONIA LABS TECH</span>
         <span class="t2">Smart Ideas Lab</span>
         <span class="t3">مختبر الأفكار الذكية والتكنولوجيا المتقدمة</span>
-        <a href="https://donialabstech.online/" target="_blank" rel="noopener" title="زيارة الموقع الرسمي">🌐 donialabstech.online</a>
+        <a href="https://donialabstech.online/" target="_blank" rel="noopener">🌐 donialabstech.online</a>
       </div>
     </div>
-    <div class="actions-zone" role="toolbar">
-      <button class="h-act sync" id="btnSync" data-tooltip="مزامنة الحالة مع GitHub" onclick="openSyncDialog()">
-        <span class="ico">☁️</span>
-        <span class="label-full">مزامنة GitHub</span>
-        <span class="label-mid">مزامنة</span>
+    <div class="actions-zone">
+      <button class="h-act sync" data-tooltip="مزامنة الحالة مع GitHub" onclick="openSyncDialog()">
+        <span class="ico">☁️</span><span class="label-full">مزامنة GitHub</span><span class="label-mid">مزامنة</span>
       </button>
-      <button class="h-act pri" id="btnExport" data-tooltip="تنزيل نسخة احتياطية JSON" onclick="exportBackupJSON()">
-        <span class="ico">📥</span>
-        <span class="label-full">تصدير نسخة احتياطية</span>
-        <span class="label-mid">تصدير</span>
+      <button class="h-act pri" data-tooltip="تنزيل نسخة احتياطية JSON" onclick="exportBackupJSON()">
+        <span class="ico">📥</span><span class="label-full">تصدير نسخة احتياطية</span><span class="label-mid">تصدير</span>
       </button>
-      <button class="h-act pri" id="btnImport" data-tooltip="استرجاع حالة عمل سابقة" onclick="triggerImportBackup()">
-        <span class="ico">📤</span>
-        <span class="label-full">استرجاع نسخة احتياطية</span>
-        <span class="label-mid">استرجاع</span>
+      <button class="h-act pri" data-tooltip="استرجاع حالة عمل سابقة" onclick="triggerImportBackup()">
+        <span class="ico">📤</span><span class="label-full">استرجاع نسخة احتياطية</span><span class="label-mid">استرجاع</span>
       </button>
-      <button class="h-act" id="btnPrint" data-tooltip="فتح معاينة الطباعة" onclick="printAll()">
-        <span class="ico">🖨️</span>
-        <span class="label-full">طباعة / معاينة</span>
-        <span class="label-mid">طباعة</span>
+      <button class="h-act" data-tooltip="فتح معاينة الطباعة" onclick="printAll()">
+        <span class="ico">🖨️</span><span class="label-full">طباعة / معاينة</span><span class="label-mid">طباعة</span>
+      </button>
+      <button class="h-act fix" data-tooltip="إعادة توزيع صارمة (حذف كل التثبيتات)" onclick="strictReset()">
+        <span class="ico">🔧</span><span class="label-full">إعادة توزيع صارمة</span><span class="label-mid">إصلاح</span>
       </button>
     </div>
-    <span class="sync-status idle" id="syncStatus" title="حالة المزامنة">
-      <span class="dot"></span>
-      <span id="syncStatusText">غير متصل</span>
-    </span>
+    <span class="sync-status idle" id="syncStatus"><span class="dot"></span><span id="syncStatusText">غير متصل</span></span>
   </div>
   <div class="sub-bar">
     <span class="info-item">📊 <b id="statStudents">0</b> تلميذ</span>
@@ -497,7 +491,7 @@ body.lib-ready #libStatus{transform:translateY(-200%)}
     <span>🔀 نقل جماعي</span>
     <span>💾 نسخ احتياطي</span>
     <span>☁️ مزامنة GitHub</span>
-    <span>✅ توزيع صارم v6.0</span>
+    <span>✅ v3.1</span>
   </div>
 </header>
 
@@ -774,7 +768,7 @@ function enrich(){
 }
 
 /* =====================================================================
-   القسم 8: الخوارزمية الحتمية v6.0 — توزيع صارم بالتساوي
+   القسم 8: الخوارزمية v3.1 — توزيع صارم مع علاج الأفواج الفارغة
    ===================================================================== */
 function addTo(g,s){
   g.list.push(s);
@@ -815,16 +809,11 @@ function deterministicSort(arr){
 }
 
 function distribute(students, G, opts){
-  // (1) تهيئة الأفواج
   const groups = [];
   for(let i = 0; i < G; i++){
-    groups.push({
-      num: i+1, list: [],
-      m:0, f:0, u:0, reps:0, prom:0, locked:0, sys:{}
-    });
+    groups.push({num: i+1, list: [], m:0, f:0, u:0, reps:0, prom:0, locked:0, sys:{}});
   }
 
-  // (2) حساب المستهدفات
   const total  = students.length;
   const totM   = students.filter(s=>s.gender==='M').length;
   const totF   = students.filter(s=>s.gender==='F').length;
@@ -839,7 +828,6 @@ function distribute(students, G, opts){
   };
   sysKeys.forEach(k => ctx.sysTarget[k] = sysTot[k]/G);
 
-  // ============ التصنيف حسب الأولوية (5 طبقات) ============
   const lockedList   = [];
   const promotedList = [];
   const repeaterList = [];
@@ -848,36 +836,21 @@ function distribute(students, G, opts){
 
   students.forEach(s => {
     const lock = STATE.locks.get(s.id);
-
-    // (0) تثبيت يدوي
     if(lock && lock.level === s.level && lock.group >= 1 && lock.group <= G){
-      lockedList.push(s);
-      return;
+      lockedList.push(s); return;
     }
-
-    // (1) مُرقّى بمسار صالح
     if(s.origin === 'promoted' && s.trackGroup >= 1 && s.trackGroup <= G){
-      promotedList.push(s);
-      return;
+      promotedList.push(s); return;
     }
-
-    // (2) معيد بمسار صالح
     if(s.origin === 'repeater' && s.trackGroup >= 1 && s.trackGroup <= G){
-      repeaterList.push(s);
-      return;
+      repeaterList.push(s); return;
     }
-
-    // (3) مُضاف يدوياً
     if(s.origin === 'manual'){
-      manualList.push(s);
-      return;
+      manualList.push(s); return;
     }
-
-    // (4) جديد أو فقد مساره
     freeList.push(s);
   });
 
-  // ============ المرحلة 1: تثبيت الأولويات العليا ============
   deterministicSort(lockedList).forEach(s => {
     const lock = STATE.locks.get(s.id);
     addTo(groups[lock.group - 1], s);
@@ -889,14 +862,12 @@ function distribute(students, G, opts){
     addTo(groups[s.trackGroup - 1], s);
   });
 
-  // ============ المرحلة 2: توزيع القائمة الحرة ============
   const freePool = [];
   deterministicSort(freeList.filter(s=>s.origin==='repeater')).forEach(s=>freePool.push(s));
   deterministicSort(freeList.filter(s=>s.origin==='promoted')).forEach(s=>freePool.push(s));
   deterministicSort(freeList.filter(s=>s.origin==='new' || !s.origin)).forEach(s=>freePool.push(s));
   deterministicSort(manualList).forEach(s=>freePool.push(s));
 
-  // تشذير الجنس
   const mArr=[], fArr=[], uArr=[];
   freePool.forEach(s=>{
     if(s.gender==='M') mArr.push(s);
@@ -922,8 +893,7 @@ function distribute(students, G, opts){
     addTo(best, s);
   });
 
-  // ============ المرحلة 3: الموازنة الصارمة النهائية ============
-  // ✅ تعمل دائماً لضمان فرق ≤ 1 بين أكبر وأصغر فوج
+  // موازنة صارمة
   const isProtected = (s) => {
     if(STATE.locks.has(s.id)) return true;
     if(s.origin === 'promoted' && s.trackGroup) return true;
@@ -947,7 +917,6 @@ function distribute(students, G, opts){
         const c = a.name.localeCompare(b.name,'ar');
         return c!==0 ? c : a.id.localeCompare(b.id);
       });
-
     if(!candidates.length) break;
     const s = candidates[0];
     removeFrom(mxG, s);
@@ -955,16 +924,13 @@ function distribute(students, G, opts){
     addTo(mnG, s);
   }
 
-  // ============ المرحلة 4: علاج الأفواج الفارغة (حل أخير) ============
-  // إذا كان عدد التلاميذ ≥ عدد الأفواج، فيجب ألا يبقى فوج فارغ
+  // علاج الأفواج الفارغة
   if(total >= G){
     let guard2 = 0;
     while(guard2++ < 500){
       const emptyGroups = groups.filter(g => g.list.length === 0);
       if(emptyGroups.length === 0) break;
-
       const targetEmpty = emptyGroups[0];
-      // ابحث عن أكبر فوج فيه مرشح قابل للنقل
       const sortedBySize = [...groups].sort((a,b)=>b.list.length - a.list.length);
       let moved = false;
       for(const bigG of sortedBySize){
@@ -985,10 +951,8 @@ function distribute(students, G, opts){
     }
   }
 
-  // ============ الترتيب النهائي ============
   groups.forEach(g => g.list.sort((a,b)=> a.name.localeCompare(b.name,'ar')));
 
-  // ============ الإحصائيات ============
   const stats = {
     total, G,
     avg: (total/G).toFixed(1),
@@ -1003,15 +967,11 @@ function distribute(students, G, opts){
 }
 
 /* =====================================================================
-   القسم 9: طبقة التدقيق العامة
+   القسم 9: طبقة التدقيق
    ===================================================================== */
 function runAudit(){
-  const audit={
-    pass:true, totals:{}, perLevel:{},
-    duplicates:[], missing:[], mismatched:[], groupCountIssues:[], lockIssues:[]
-  };
+  const audit={pass:true, totals:{}, perLevel:{}, duplicates:[], missing:[], mismatched:[], groupCountIssues:[], lockIssues:[]};
   audit.totals.input=STATE.cur.length;
-
   let outTotal=0;
   const seenIds=new Map();
   LEVELS.forEach(lv=>{
@@ -1032,41 +992,27 @@ function runAudit(){
           outTotal++;
           lvAudit.outputCount++;
           if(seenIds.has(s.id)){
-            audit.duplicates.push({
-              id:s.id, name:s.name,
-              first:seenIds.get(s.id),
-              second:{level:lv,group:g.num}
-            });
+            audit.duplicates.push({id:s.id, name:s.name, first:seenIds.get(s.id), second:{level:lv,group:g.num}});
           }else{
             seenIds.set(s.id,{level:lv,group:g.num});
           }
           const lock = STATE.locks.get(s.id);
           if(lock){
             if(s.level!==lock.level || g.num!==lock.group){
-              audit.lockIssues.push({
-                id: s.id, name: s.name,
-                expected: { level: lock.level, group: lock.group },
-                actual: { level: lv, group: g.num }
-              });
+              audit.lockIssues.push({id: s.id, name: s.name, expected: { level: lock.level, group: lock.group }, actual: { level: lv, group: g.num }});
             }
           }
         });
       });
     }
-    if(lvAudit.inputCount!==lvAudit.outputCount){
-      lvAudit.matched=false;
-      audit.pass=false;
-    }
+    if(lvAudit.inputCount!==lvAudit.outputCount){ lvAudit.matched=false; audit.pass=false; }
     if(lvAudit.groupsActual!==OFFICIAL_GROUPS[lv]){
-      audit.groupCountIssues.push({
-        level:lv, expected:OFFICIAL_GROUPS[lv], actual:lvAudit.groupsActual
-      });
+      audit.groupCountIssues.push({level:lv, expected:OFFICIAL_GROUPS[lv], actual:lvAudit.groupsActual});
     }
     audit.perLevel[lv]=lvAudit;
   });
   audit.totals.output=outTotal;
   if(audit.totals.input!==audit.totals.output)audit.pass=false;
-
   const sourceMap=new Map();
   STATE.cur.forEach(s=>sourceMap.set(s.id,s));
   LEVELS.forEach(lv=>{
@@ -1076,133 +1022,71 @@ function runAudit(){
         const src=sourceMap.get(s.id);
         if(!src){ audit.missing.push({id:s.id,name:s.name,level:lv,group:g.num}); return; }
         if(src.name!==s.name||src.birth!==s.birth||src.reg!==s.reg){
-          audit.mismatched.push({
-            id:s.id, name:s.name,
-            field:src.name!==s.name?'الاسم':(src.birth!==s.birth?'تاريخ الميلاد':'رقم التسجيل')
-          });
+          audit.mismatched.push({id:s.id, name:s.name, field:src.name!==s.name?'الاسم':(src.birth!==s.birth?'تاريخ الميلاد':'رقم التسجيل')});
         }
       });
     });
   });
-  if(audit.duplicates.length||audit.missing.length||audit.mismatched.length||audit.lockIssues.length)
-    audit.pass=false;
+  if(audit.duplicates.length||audit.missing.length||audit.mismatched.length||audit.lockIssues.length) audit.pass=false;
   return audit;
 }
 
 /* =====================================================================
-   القسم 10: طبقة التحقق الآلي v6.0
+   القسم 10: التحقق الآلي
    ===================================================================== */
 function validateDistribution(){
   const report = { passed:true, issues:[], warnings:[], validOverflows:[] };
-
   LEVELS.forEach(lv => {
     const r = STATE.results[lv];
     if(!r) return;
-
     const G = r.stats.G;
-
-    // (1) كشف الأفواج الفارغة
     if(r.stats.total >= G){
       r.groups.forEach(g => {
         if(g.list.length === 0){
           report.passed = false;
-          report.issues.push({
-            type:'EMPTY_GROUP',
-            level: lv,
-            group: g.num,
-            message:`الفوج ${LEVEL_SHORT[lv]}${g.num} فارغ تماماً رغم توفر ${r.stats.total} تلميذاً لـ ${G} أفواج.`
-          });
+          report.issues.push({type:'EMPTY_GROUP', level: lv, group: g.num, message:`الفوج ${LEVEL_SHORT[lv]}${g.num} فارغ تماماً رغم توفر ${r.stats.total} تلميذاً لـ ${G} أفواج.`});
         }
       });
     }
-
-    // (2) كشف التفاوت الكبير
     if(r.stats.max - r.stats.min > 1){
       report.passed = false;
-      report.issues.push({
-        type:'IMBALANCE',
-        level: lv,
-        message:`تفاوت الأعداد في ${LEVEL_LABEL[lv]}: الأصغر=${r.stats.min}، الأكبر=${r.stats.max} (المسموح: ≤ 1).`
-      });
+      report.issues.push({type:'IMBALANCE', level: lv, message:`تفاوت الأعداد في ${LEVEL_LABEL[lv]}: الأصغر=${r.stats.min}، الأكبر=${r.stats.max} (المسموح: ≤ 1).`});
     }
-
-    // (3) فحص المسارات — مع تجاهل الحالات المشروعة
     r.groups.forEach(g => {
       g.list.forEach(s => {
-
-        // حالة 1: مُرقّى بمسار
         if(s.origin === 'promoted' && s.trackGroup){
           if(s.trackGroup > G){
-            report.validOverflows.push({
-              student: s.name, id: s.id,
-              oldLevel: s.oldLevel, oldGroup: s.trackGroup,
-              newGroup: g.num, level: lv
-            });
+            report.validOverflows.push({student: s.name, id: s.id, oldLevel: s.oldLevel, oldGroup: s.trackGroup, newGroup: g.num, level: lv});
             return;
           }
           const lock = STATE.locks.get(s.id);
           if(lock && lock.level === lv && lock.group === g.num) return;
-
           if(g.num !== s.trackGroup){
             report.passed = false;
-            report.issues.push({
-              type:'TRACK_VIOLATION',
-              level: lv,
-              student: s.name,
-              id: s.id,
-              expected: s.trackGroup,
-              actual: g.num,
-              message:`التلميذ ${s.name} مُرقّى من ${s.oldLevel} ${s.trackGroup} لكنه في الفوج ${g.num}.`
-            });
+            report.issues.push({type:'TRACK_VIOLATION', level: lv, student: s.name, id: s.id, message:`التلميذ ${s.name} مُرقّى من ${s.oldLevel} ${s.trackGroup} لكنه في الفوج ${g.num}.`});
           }
         }
-
-        // حالة 2: معيد بمسار
         if(s.origin === 'repeater' && s.trackGroup){
           if(s.trackGroup > G){
-            report.validOverflows.push({
-              student: s.name, id: s.id,
-              oldLevel: s.oldLevel, oldGroup: s.trackGroup,
-              newGroup: g.num, level: lv, isRepeater: true
-            });
+            report.validOverflows.push({student: s.name, id: s.id, oldLevel: s.oldLevel, oldGroup: s.trackGroup, newGroup: g.num, level: lv, isRepeater: true});
             return;
           }
           const lock = STATE.locks.get(s.id);
           if(lock && lock.level === lv && lock.group === g.num) return;
-
           if(g.num !== s.trackGroup){
-            report.warnings.push({
-              type:'REPEATER_TRACK_VIOLATION',
-              level: lv,
-              student: s.name,
-              id: s.id,
-              expected: s.trackGroup,
-              actual: g.num,
-              message:`المعيد ${s.name} كان في ${s.oldLevel} ${s.trackGroup} لكنه في الفوج ${g.num}.`
-            });
+            report.warnings.push({type:'REPEATER_TRACK_VIOLATION', level: lv, student: s.name, id: s.id, message:`المعيد ${s.name} كان في ${s.oldLevel} ${s.trackGroup} لكنه في الفوج ${g.num}.`});
           }
         }
-
-        // حالة 3: تثبيت يدوي
         const lock = STATE.locks.get(s.id);
         if(lock && lock.level === lv){
           if(g.num !== lock.group){
             report.passed = false;
-            report.issues.push({
-              type:'LOCK_VIOLATION',
-              level: lv,
-              student: s.name,
-              id: s.id,
-              expected: lock.group,
-              actual: g.num,
-              message:`التلميذ المثبّت ${s.name} يجب أن يكون في الفوج ${lock.group} لكنه في ${g.num}.`
-            });
+            report.issues.push({type:'LOCK_VIOLATION', level: lv, student: s.name, id: s.id, message:`التلميذ المثبّت ${s.name} يجب أن يكون في الفوج ${lock.group} لكنه في ${g.num}.`});
           }
         }
       });
     });
   });
-
   return report;
 }
 
@@ -1217,10 +1101,7 @@ function tryRun(){
 }
 function forceRedistribute(){
   if(!STATE.cur.length) return;
-  const opts={
-    strict:$('optStrict').checked,
-    balanceSystem:$('optSystem').checked
-  };
+  const opts={ strict:$('optStrict').checked, balanceSystem:$('optSystem').checked };
   STATE.results={};
   LEVELS.forEach(lv=>{
     const list=STATE.cur.filter(s=>s.level===lv);
@@ -1239,26 +1120,35 @@ function forceRedistribute(){
   autoSaveLocal();
 }
 
+function strictReset(){
+  if(!STATE.cur.length){ alert('⚠️ لا توجد بيانات.'); return; }
+  const locksCount = STATE.locks.size;
+  const msg = locksCount > 0
+    ? `⚠️ إعادة توزيع صارمة\n\nسيتم:\n• حذف ${locksCount} تثبيت يدوي\n• نقل التلاميذ لتحقيق التوازن التام (فرق ≤ 1)\n• عدم المساس بالمسارات المُرقّاة\n\nهل أنت متأكد؟`
+    : `⚠️ إعادة توزيع صارمة\n\nسيتم إعادة التوزيع لتحقيق التوازن التام.\n\nهل أنت متأكد؟`;
+  if(!confirm(msg)) return;
+  STATE.locks.clear();
+  forceRedistribute();
+  setSyncStatus('ok','تم إعادة التوزيع الصارمة');
+  alert('✅ تمت إعادة التوزيع بنجاح.');
+}
+
 /* =====================================================================
-   القسم 12: شريط الحالة العلوي
+   القسم 12: شريط الحالة
    ===================================================================== */
 function updateTopBarStats(){
   const students = STATE.cur.length;
   const locks = STATE.locks.size;
   let groups = 0;
-  LEVELS.forEach(lv=>{
-    if(STATE.results[lv]) groups += STATE.results[lv].stats.G;
-  });
+  LEVELS.forEach(lv=>{ if(STATE.results[lv]) groups += STATE.results[lv].stats.G; });
   const el1=$('statStudents'); if(el1) el1.textContent = students;
   const el2=$('statLocks'); if(el2) el2.textContent = locks;
   const el3=$('statGroups'); if(el3) el3.textContent = groups;
 }
 function setSyncStatus(type, text){
-  const el = $('syncStatus');
-  if(!el) return;
+  const el = $('syncStatus'); if(!el) return;
   el.className = 'sync-status '+type;
-  const t = $('syncStatusText');
-  if(t) t.textContent = text;
+  const t = $('syncStatusText'); if(t) t.textContent = text;
   if(type==='ok' || type==='err'){
     clearTimeout(el._timer);
     el._timer = setTimeout(()=>{
@@ -1276,10 +1166,7 @@ function openLogoViewer(){
   const div = document.createElement('div');
   div.id = 'logoViewer';
   const logo = $('brandLogo');
-  div.innerHTML = `
-    <span class="close-hint">اضغط في أي مكان للإغلاق ✕</span>
-    <img src="${logo.src}" alt="شعار DONIA LABS TECH">
-  `;
+  div.innerHTML = `<span class="close-hint">اضغط في أي مكان للإغلاق ✕</span><img src="${logo.src}" alt="شعار DONIA LABS TECH">`;
   div.onclick = ()=> div.remove();
   document.addEventListener('keydown', function esc(e){
     if(e.key==='Escape'){ div.remove(); document.removeEventListener('keydown', esc); }
@@ -1288,7 +1175,7 @@ function openLogoViewer(){
 }
 
 /* =====================================================================
-   القسم 14: حوار المزامنة مع GitHub
+   القسم 14: GitHub Sync
    ===================================================================== */
 function openSyncDialog(){
   const old = $('syncDialog'); if(old) old.remove();
@@ -1307,22 +1194,10 @@ function openSyncDialog(){
         4. انسخ الـ Token والصقه أدناه.
       </div>
       <div class="form-grid">
-        <div class="form-row">
-          <label>Personal Access Token (PAT)</label>
-          <input type="password" id="syncToken" placeholder="ghp_xxxxxxxxxxxxxxxx" value="${esc(creds.token||'')}" autocomplete="off">
-        </div>
-        <div class="form-row">
-          <label>اسم المستودع (owner/repo)</label>
-          <input type="text" id="syncRepo" placeholder="Donia-Labstech/SMART-CLASSE" value="${esc(creds.repo||'')}">
-        </div>
-        <div class="form-row">
-          <label>الفرع (Branch)</label>
-          <input type="text" id="syncBranch" value="${esc(creds.branch||'main')}">
-        </div>
-        <div class="form-row">
-          <label>مسار الملف</label>
-          <input type="text" id="syncPath" value="${esc(creds.path||'backup.json')}">
-        </div>
+        <div class="form-row"><label>Personal Access Token (PAT)</label><input type="password" id="syncToken" placeholder="ghp_xxxxxxxxxxxxxxxx" value="${esc(creds.token||'')}" autocomplete="off"></div>
+        <div class="form-row"><label>اسم المستودع (owner/repo)</label><input type="text" id="syncRepo" placeholder="Donia-Labstech/SMART-CLASSE" value="${esc(creds.repo||'')}"></div>
+        <div class="form-row"><label>الفرع (Branch)</label><input type="text" id="syncBranch" value="${esc(creds.branch||'main')}"></div>
+        <div class="form-row"><label>مسار الملف</label><input type="text" id="syncPath" value="${esc(creds.path||'backup.json')}"></div>
       </div>
       <div class="modal-actions" style="flex-wrap:wrap">
         <button class="danger" onclick="ghClearFromDialog()">🗑️ حذف الاعتماد</button>
@@ -1343,34 +1218,27 @@ function _readSyncCredsFromDialog(){
   };
 }
 function ghClearFromDialog(){
-  if(!confirm('حذف بيانات الاعتماد من المتصفح؟'))return;
+  if(!confirm('حذف بيانات الاعتماد؟'))return;
   localStorage.removeItem(GH_LS_KEY);
-  $('syncToken').value='';
-  $('syncRepo').value='';
+  $('syncToken').value=''; $('syncRepo').value='';
   setSyncStatus('idle','تم حذف الاعتماد');
 }
 async function ghTestFromDialog(){
-  const c = _readSyncCredsFromDialog();
-  saveGHCreds(c);
+  const c = _readSyncCredsFromDialog(); saveGHCreds(c);
   try{
     setSyncStatus('load','جارٍ الاتصال...');
     const res = await fetch(`https://api.github.com/repos/${c.repo}`, {
       headers: { 'Authorization': `token ${c.token}`, 'Accept': 'application/vnd.github+json' }
     });
     if(!res.ok) throw new Error('HTTP '+res.status);
-    setSyncStatus('ok','الاتصال ناجح ✅');
-    alert('✅ الاتصال بالمستودع ناجح.');
-  }catch(e){
-    setSyncStatus('err','فشل الاتصال');
-    alert('❌ فشل الاتصال:\n'+e.message);
-  }
+    setSyncStatus('ok','الاتصال ناجح ✅'); alert('✅ الاتصال ناجح.');
+  }catch(e){ setSyncStatus('err','فشل الاتصال'); alert('❌ فشل الاتصال:\n'+e.message); }
 }
 async function ghSaveFromDialog(){
-  if(!STATE.cur.length){ alert('⚠️ لا توجد بيانات لحفظها.'); return; }
-  const c = _readSyncCredsFromDialog();
-  saveGHCreds(c);
+  if(!STATE.cur.length){ alert('⚠️ لا توجد بيانات.'); return; }
+  const c = _readSyncCredsFromDialog(); saveGHCreds(c);
   try{
-    setSyncStatus('load','جارٍ الحفظ على GitHub...');
+    setSyncStatus('load','جارٍ الحفظ...');
     let sha = null;
     try{
       const r = await fetch(`https://api.github.com/repos/${c.repo}/contents/${encodeURIComponent(c.path)}?ref=${encodeURIComponent(c.branch)}`, {
@@ -1378,39 +1246,22 @@ async function ghSaveFromDialog(){
       });
       if(r.ok){ const j = await r.json(); sha = j.sha; }
     }catch(e){}
-
     const payload = serializeState();
     const content = btoa(unescape(encodeURIComponent(JSON.stringify(payload, null, 2))));
-    const body = {
-      message: `DONIA-CLASSE backup — ${new Date().toISOString()}`,
-      content, branch: c.branch
-    };
+    const body = { message: `DONIA-CLASSE backup — ${new Date().toISOString()}`, content, branch: c.branch };
     if(sha) body.sha = sha;
-
     const res = await fetch(`https://api.github.com/repos/${c.repo}/contents/${encodeURIComponent(c.path)}`, {
       method: 'PUT',
-      headers: {
-        'Authorization': `token ${c.token}`,
-        'Accept': 'application/vnd.github+json',
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Authorization': `token ${c.token}`, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     });
-    if(!res.ok){
-      const err = await res.json().catch(()=>({}));
-      throw new Error(err.message || 'HTTP '+res.status);
-    }
-    setSyncStatus('ok','تم الحفظ على GitHub ✅');
-    alert('✅ تم حفظ النسخة على GitHub بنجاح.');
+    if(!res.ok){ const err = await res.json().catch(()=>({})); throw new Error(err.message || 'HTTP '+res.status); }
+    setSyncStatus('ok','تم الحفظ ✅'); alert('✅ تم الحفظ بنجاح.');
     $('statLastSave').textContent = '💾 آخر حفظ: '+new Date().toLocaleTimeString('ar');
-  }catch(e){
-    setSyncStatus('err','فشل الحفظ');
-    alert('❌ فشل الحفظ على GitHub:\n'+e.message);
-  }
+  }catch(e){ setSyncStatus('err','فشل الحفظ'); alert('❌ فشل الحفظ:\n'+e.message); }
 }
 async function ghLoadFromDialog(){
-  const c = _readSyncCredsFromDialog();
-  saveGHCreds(c);
+  const c = _readSyncCredsFromDialog(); saveGHCreds(c);
   try{
     setSyncStatus('load','جارٍ الاسترجاع...');
     const res = await fetch(`https://api.github.com/repos/${c.repo}/contents/${encodeURIComponent(c.path)}?ref=${encodeURIComponent(c.branch)}`, {
@@ -1423,13 +1274,9 @@ async function ghLoadFromDialog(){
     deserializeState(parsed);
     if(!confirm(`تم قراءة النسخة:\n• التلاميذ: ${STATE.cur.length}\n• التثبيتات: ${STATE.locks.size}\n\nاستبدال الحالة الحالية؟`))return;
     forceRedistribute();
-    setSyncStatus('ok','تم الاسترجاع وإعادة التوزيع ✅');
-    alert('✅ تم استرجاع النسخة من GitHub وإعادة التوزيع.');
+    setSyncStatus('ok','تم الاسترجاع ✅'); alert('✅ تم الاسترجاع.');
     document.getElementById('syncDialog').remove();
-  }catch(e){
-    setSyncStatus('err','فشل الاسترجاع');
-    alert('❌ فشل الاسترجاع:\n'+e.message);
-  }
+  }catch(e){ setSyncStatus('err','فشل الاسترجاع'); alert('❌ فشل:\n'+e.message); }
 }
 
 /* =====================================================================
@@ -1439,35 +1286,27 @@ function renderLockedPanel(){
   const hasAny = STATE.locks.size>0;
   $('lockedCard').classList.toggle('hidden', !hasAny);
   if(!hasAny)return;
-
   const grouped = new Map();
   STATE.locks.forEach((lock, id)=>{
     const key = `${lock.level}|${lock.group}`;
     if(!grouped.has(key)) grouped.set(key, { level: lock.level, group: lock.group, ids: [] });
     grouped.get(key).ids.push(id);
   });
-
   let html = `<div class="locked-panel">
-    <h4>📌 تم تثبيت <b>${STATE.locks.size}</b> تلميذ يدوياً على أفواج محددة:</h4>
+    <h4>📌 تم تثبيت <b>${STATE.locks.size}</b> تلميذ يدوياً:</h4>
     <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">`;
-
   const sortedKeys = [...grouped.keys()].sort();
   sortedKeys.forEach(key=>{
     const g = grouped.get(key);
     const studs = g.ids.map(id=>STATE.cur.find(s=>s.id===id)).filter(Boolean);
     html += `<div style="background:rgba(255,255,255,.6);border-radius:8px;padding:8px 12px">
-      <div style="font-weight:800;color:#6b21a8;margin-bottom:6px">
-        📁 ${LEVEL_SHORT[g.level]}${g.group} — ${LEVEL_LABEL[g.level]} (${studs.length} تلميذ)
-      </div>
+      <div style="font-weight:800;color:#6b21a8;margin-bottom:6px">📁 ${LEVEL_SHORT[g.level]}${g.group} — ${LEVEL_LABEL[g.level]} (${studs.length})</div>
       <div class="items">`;
     studs.forEach(s=>{
-      html += `<span class="item">${esc(s.name)}
-        <button onclick="unlockOne('${esc(s.id)}')" title="فك التثبيت">✕</button>
-      </span>`;
+      html += `<span class="item">${esc(s.name)} <button onclick="unlockOne('${esc(s.id)}')" title="فك">✕</button></span>`;
     });
     html += `</div></div>`;
   });
-
   html += `</div>
     <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
       <button class="danger" onclick="unlockAll()">🔓 فك تثبيت الكل</button>
@@ -1476,30 +1315,14 @@ function renderLockedPanel(){
   </div>`;
   $('lockedBody').innerHTML = html;
 }
-function unlockOne(id){
-  STATE.locks.delete(id);
-  forceRedistribute();
-}
-function unlockAll(){
-  if(!confirm('هل تريد فك تثبيت جميع التلاميذ ('+STATE.locks.size+')؟'))return;
-  STATE.locks.clear();
-  forceRedistribute();
-}
+function unlockOne(id){ STATE.locks.delete(id); forceRedistribute(); }
+function unlockAll(){ if(!confirm('فك تثبيت الكل ('+STATE.locks.size+')؟'))return; STATE.locks.clear(); forceRedistribute(); }
 function exportLocks(){
-  if(!STATE.locks.size){alert('لا توجد تثبيتات لتصديرها');return;}
+  if(!STATE.locks.size){alert('لا توجد تثبيتات');return;}
   const rows=[];
   STATE.locks.forEach((lock,id)=>{
-    const s=STATE.cur.find(x=>x.id===id);
-    if(!s)return;
-    rows.push({
-      'رقم التعريف': s.id,
-      'اللقب والاسم': s.name,
-      'المستوى': LEVEL_LABEL[s.level],
-      'الفوج المُثبَّت': `${LEVEL_SHORT[lock.level]}${lock.group}`,
-      'تاريخ الميلاد': s.birth,
-      'النظام': s.system,
-      'رقم التسجيل': s.reg
-    });
+    const s=STATE.cur.find(x=>x.id===id); if(!s)return;
+    rows.push({'رقم التعريف': s.id,'اللقب والاسم': s.name,'المستوى': LEVEL_LABEL[s.level],'الفوج المُثبَّت': `${LEVEL_SHORT[lock.level]}${lock.group}`,'تاريخ الميلاد': s.birth,'النظام': s.system,'رقم التسجيل': s.reg});
   });
   const wb=XLSX.utils.book_new();
   const ws=XLSX.utils.json_to_sheet(rows);
@@ -1515,37 +1338,24 @@ function renderAudit(){
   $('auditCard').classList.remove('hidden');
   const a=STATE.audit;
   const v=STATE.validation;
-  const hasCriticalIssues = v && !v.passed;
+  const hasCritical = v && !v.passed;
   const hasWarnings = v && v.warnings.length>0;
-  const overallPass = a.pass && !hasCriticalIssues;
+  const overallPass = a.pass && !hasCritical;
 
-  let panelClass = 'pass';
-  let iconChar = '✓';
-  let titleText = 'التدقيق ناجح — مطابقة 100%';
-  if(!overallPass){
-    panelClass = 'fail';
-    iconChar = '✕';
-    titleText = '⚠️ فشل التدقيق — توجد مشاكل';
-  } else if(hasWarnings){
-    panelClass = 'warn';
-    iconChar = '!';
-    titleText = 'التدقيق ناجح — توجد تحذيرات';
-  }
+  let panelClass = 'pass', iconChar = '✓', titleText = 'التدقيق ناجح — مطابقة 100%';
+  if(!overallPass){ panelClass = 'fail'; iconChar = '✕'; titleText = '⚠️ فشل التدقيق'; }
+  else if(hasWarnings){ panelClass = 'warn'; iconChar = '!'; titleText = 'التدقيق ناجح — توجد تحذيرات'; }
 
-  let html=`<div class="audit-panel ${panelClass}">
-    <h3><span class="icon">${iconChar}</span>${titleText}</h3>`;
+  let html=`<div class="audit-panel ${panelClass}"><h3><span class="icon">${iconChar}</span>${titleText}</h3>`;
 
   if(overallPass && !hasWarnings){
-    html+=`<div style="font-size:13.5px;line-height:1.8">
-      تم التحقق من سلامة جميع البيانات بنجاح:
+    html+=`<div style="font-size:13.5px;line-height:1.8">تم التحقق بنجاح:
       <ul style="margin:8px 0;padding-inline-start:24px">
-        <li>✅ إجمالي المدخلات = إجمالي المخرجات (${a.totals.input} تلميذ)</li>
-        <li>✅ لا يوجد أي تكرار في أرقام التعريف</li>
-        <li>✅ جميع البيانات مطابقة للأصل حرفياً</li>
-        <li>✅ جميع المسارات محفوظة بنسبة 100%</li>
-        <li>✅ توزيع متوازن (فرق الأعداد ≤ 1)</li>
-        <li>✅ لا توجد أفواج فارغة</li>
-        <li>✅ ${STATE.locks.size>0?`جميع المُثبَّتين (${STATE.locks.size}) في أفواجهم المطلوبة`:'لا توجد تثبيتات يدوية'}</li>
+        <li>✅ إجمالي المدخلات = إجمالي المخرجات (${a.totals.input})</li>
+        <li>✅ لا يوجد أي تكرار</li>
+        <li>✅ جميع البيانات مطابقة</li>
+        <li>✅ المسارات محفوظة</li>
+        <li>✅ توزيع متوازن (فرق ≤ 1)</li>
       </ul>
     </div>`;
   }
@@ -1553,39 +1363,18 @@ function renderAudit(){
   const validOverflowCount = v ? v.validOverflows.length : 0;
 
   html+=`<div class="audit-grid">
-    <div class="audit-item ${a.totals.input===a.totals.output?'ok':'bad'}">
-      <div class="lbl">إجمالي المدخلات</div><div class="val">${a.totals.input} تلميذ</div>
-    </div>
-    <div class="audit-item ${a.totals.input===a.totals.output?'ok':'bad'}">
-      <div class="lbl">إجمالي المخرجات</div><div class="val">${a.totals.output} تلميذ</div>
-    </div>
-    <div class="audit-item ${a.duplicates.length===0?'ok':'bad'}">
-      <div class="lbl">تكرارات رقم التعريف</div><div class="val">${a.duplicates.length}</div>
-    </div>
-    <div class="audit-item ${a.missing.length===0?'ok':'bad'}">
-      <div class="lbl">تلاميذ مفقودون</div><div class="val">${a.missing.length}</div>
-    </div>
-    <div class="audit-item ${a.mismatched.length===0?'ok':'bad'}">
-      <div class="lbl">اختلافات بيانات</div><div class="val">${a.mismatched.length}</div>
-    </div>
-    <div class="audit-item ${a.lockIssues.length===0?'ok':'bad'}">
-      <div class="lbl">مشاكل التثبيت</div><div class="val">${a.lockIssues.length}</div>
-    </div>
-    <div class="audit-item ${v&&v.issues.length===0?'ok':'bad'}">
-      <div class="lbl">مشاكل هيكلية</div><div class="val">${v?v.issues.length:0}</div>
-    </div>
-    <div class="audit-item ${v&&v.warnings.length===0?'ok':'warn'}">
-      <div class="lbl">تحذيرات المسار</div><div class="val">${v?v.warnings.length:0}</div>
-    </div>
-    <div class="audit-item ok">
-      <div class="lbl">✅ إحالات مشروعة</div><div class="val">${validOverflowCount}</div>
-    </div>
-    <div class="audit-item ok">
-      <div class="lbl">📌 مُثبَّتون</div><div class="val">${STATE.locks.size}</div>
-    </div>
+    <div class="audit-item ${a.totals.input===a.totals.output?'ok':'bad'}"><div class="lbl">إجمالي المدخلات</div><div class="val">${a.totals.input}</div></div>
+    <div class="audit-item ${a.totals.input===a.totals.output?'ok':'bad'}"><div class="lbl">إجمالي المخرجات</div><div class="val">${a.totals.output}</div></div>
+    <div class="audit-item ${a.duplicates.length===0?'ok':'bad'}"><div class="lbl">تكرارات</div><div class="val">${a.duplicates.length}</div></div>
+    <div class="audit-item ${a.missing.length===0?'ok':'bad'}"><div class="lbl">مفقودون</div><div class="val">${a.missing.length}</div></div>
+    <div class="audit-item ${a.mismatched.length===0?'ok':'bad'}"><div class="lbl">اختلافات</div><div class="val">${a.mismatched.length}</div></div>
+    <div class="audit-item ${a.lockIssues.length===0?'ok':'bad'}"><div class="lbl">مشاكل التثبيت</div><div class="val">${a.lockIssues.length}</div></div>
+    <div class="audit-item ${v&&v.issues.length===0?'ok':'bad'}"><div class="lbl">مشاكل هيكلية</div><div class="val">${v?v.issues.length:0}</div></div>
+    <div class="audit-item ${v&&v.warnings.length===0?'ok':'warn'}"><div class="lbl">تحذيرات المسار</div><div class="val">${v?v.warnings.length:0}</div></div>
+    <div class="audit-item ok"><div class="lbl">✅ إحالات مشروعة</div><div class="val">${validOverflowCount}</div></div>
+    <div class="audit-item ok"><div class="lbl">📌 مُثبَّتون</div><div class="val">${STATE.locks.size}</div></div>
   </div>`;
 
-  // جدول المستويات
   html+=`<table style="width:100%;border-collapse:collapse;margin-top:14px;font-size:13px;background:#fff;border-radius:8px;overflow:hidden">
     <thead><tr style="background:#f1f5f9">
       <th style="padding:10px">المستوى</th><th style="padding:10px">مدخلات</th><th style="padding:10px">مخرجات</th>
@@ -1600,7 +1389,7 @@ function renderAudit(){
       <td style="padding:9px;text-align:center;border-bottom:1px solid #f1f5f9"><b>${LEVEL_LABEL[lv]}</b></td>
       <td style="padding:9px;text-align:center;border-bottom:1px solid #f1f5f9">${la.inputCount}</td>
       <td style="padding:9px;text-align:center;border-bottom:1px solid #f1f5f9">${la.outputCount}</td>
-      <td style="padding:9px;text-align:center;border-bottom:1px solid #f1f5f9;color:${ok?'#047857':'#b91c1c'};font-weight:800">${ok?'✓ مطابق':'✕ خطأ'}</td>
+      <td style="padding:9px;text-align:center;border-bottom:1px solid #f1f5f9;color:${ok?'#047857':'#b91c1c'};font-weight:800">${ok?'✓':'✕'}</td>
       <td style="padding:9px;text-align:center;border-bottom:1px solid #f1f5f9;color:${gcOk?'#047857':'#b91c1c'}">${la.groupsExpected} / ${la.groupsActual}</td>
       <td style="padding:9px;text-align:center;border-bottom:1px solid #f1f5f9">${la.minGroup}</td>
       <td style="padding:9px;text-align:center;border-bottom:1px solid #f1f5f9">${la.maxGroup}</td>
@@ -1610,63 +1399,33 @@ function renderAudit(){
     <td style="padding:9px;text-align:center">الإجمالي</td>
     <td style="padding:9px;text-align:center">${a.totals.input}</td>
     <td style="padding:9px;text-align:center">${a.totals.output}</td>
-    <td style="padding:9px;text-align:center;color:${a.totals.input===a.totals.output?'#047857':'#b91c1c'}">${a.totals.input===a.totals.output?'✓ مطابق':'✕ خطأ'}</td>
+    <td style="padding:9px;text-align:center;color:${a.totals.input===a.totals.output?'#047857':'#b91c1c'}">${a.totals.input===a.totals.output?'✓':'✕'}</td>
     <td colspan="3" style="padding:9px;text-align:center">—</td>
   </tr></tbody></table>`;
 
-  // عرض المشاكل الهيكلية
   if(v && v.issues.length){
-    html+=`<div style="margin-top:16px">
-      <h4 style="margin:0 0 8px;color:#b91c1c;font-size:14px">🔴 مشاكل هيكلية (${v.issues.length})</h4>
-      <div class="issue-list">`;
-    v.issues.forEach(it=>{
-      html+=`<div class="issue"><span class="badge-tag err">${it.type}</span>${esc(it.message)}</div>`;
-    });
+    html+=`<div style="margin-top:16px"><h4 style="margin:0 0 8px;color:#b91c1c;font-size:14px">🔴 مشاكل هيكلية (${v.issues.length})</h4><div class="issue-list">`;
+    v.issues.forEach(it=>{ html+=`<div class="issue"><span class="badge-tag err">${it.type}</span>${esc(it.message)}</div>`; });
     html+=`</div></div>`;
   }
-
-  // عرض التحذيرات
   if(v && v.warnings.length){
-    html+=`<div style="margin-top:16px">
-      <h4 style="margin:0 0 8px;color:#92400e;font-size:14px">⚠️ تحذيرات المسار (${v.warnings.length})</h4>
-      <div class="issue-list">`;
-    v.warnings.forEach(it=>{
-      html+=`<div class="issue warn"><span class="badge-tag warn">${it.type}</span>${esc(it.message)}</div>`;
-    });
+    html+=`<div style="margin-top:16px"><h4 style="margin:0 0 8px;color:#92400e;font-size:14px">⚠️ تحذيرات المسار (${v.warnings.length})</h4><div class="issue-list">`;
+    v.warnings.forEach(it=>{ html+=`<div class="issue warn"><span class="badge-tag warn">${it.type}</span>${esc(it.message)}</div>`; });
     html+=`</div></div>`;
   }
-
-  // عرض الإحالات المشروعة
   if(v && v.validOverflows.length){
-    html+=`<div style="margin-top:16px">
-      <h4 style="margin:0 0 8px;color:#3730a3;font-size:14px">✅ إحالات مشروعة (${v.validOverflows.length}) — تجاوز نطاق الخريطة</h4>
-      <div class="issue-list" style="max-height:240px">`;
-    v.validOverflows.forEach(it=>{
-      html+=`<div class="issue valid">
-        <b>${esc(it.student)}</b> — كان في ${esc(it.oldLevel)} ${it.oldGroup} → وُجّه إلى الفوج ${it.newGroup}
-      </div>`;
-    });
+    html+=`<div style="margin-top:16px"><h4 style="margin:0 0 8px;color:#3730a3;font-size:14px">✅ إحالات مشروعة (${v.validOverflows.length})</h4><div class="issue-list" style="max-height:240px">`;
+    v.validOverflows.forEach(it=>{ html+=`<div class="issue valid"><b>${esc(it.student)}</b> — كان في ${esc(it.oldLevel)} ${it.oldGroup} → وُجّه إلى ${it.newGroup}</div>`; });
     html+=`</div></div>`;
   }
-
-  // عرض المشاكل الأخرى
   if(a.duplicates.length || a.missing.length || a.mismatched.length || a.lockIssues.length){
     html+=`<div style="margin-top:16px"><h4 style="margin:0 0 8px;color:#b91c1c;font-size:14px">🔴 مشاكل أخرى</h4><div class="issue-list">`;
-    a.duplicates.forEach(d=>{
-      html+=`<div class="issue"><span class="badge-tag err">تكرار</span><b>${esc(d.name)}</b> — <code>${esc(d.id)}</code></div>`;
-    });
-    a.missing.forEach(m=>{
-      html+=`<div class="issue"><span class="badge-tag err">مفقود</span><b>${esc(m.name)}</b> — <code>${esc(m.id)}</code></div>`;
-    });
-    a.mismatched.forEach(m=>{
-      html+=`<div class="issue"><span class="badge-tag err">اختلاف</span><b>${esc(m.name)}</b> — ${m.field}</div>`;
-    });
-    a.lockIssues.forEach(m=>{
-      html+=`<div class="issue"><span class="badge-tag err">تثبيت</span><b>${esc(m.name)}</b> — متوقع ${m.expected.group}، فعلي ${m.actual.group}</div>`;
-    });
+    a.duplicates.forEach(d=>{ html+=`<div class="issue"><span class="badge-tag err">تكرار</span><b>${esc(d.name)}</b> — ${esc(d.id)}</div>`; });
+    a.missing.forEach(m=>{ html+=`<div class="issue"><span class="badge-tag err">مفقود</span><b>${esc(m.name)}</b> — ${esc(m.id)}</div>`; });
+    a.mismatched.forEach(m=>{ html+=`<div class="issue"><span class="badge-tag err">اختلاف</span><b>${esc(m.name)}</b> — ${m.field}</div>`; });
+    a.lockIssues.forEach(m=>{ html+=`<div class="issue"><span class="badge-tag err">تثبيت</span><b>${esc(m.name)}</b></div>`; });
     html+=`</div></div>`;
   }
-
   html+=`</div>`;
   $('auditBody').innerHTML=html;
 }
@@ -1761,9 +1520,7 @@ function renderLevelView(lv){
         <button onclick="exportAll()">⬇️ Excel — كل المستويات</button>
       </div>
       <div class="right">
-        <div class="search-wrap">
-          <input type="text" id="searchBox" placeholder="بحث بالاسم أو رقم التعريف...">
-        </div>
+        <div class="search-wrap"><input type="text" id="searchBox" placeholder="بحث بالاسم أو رقم التعريف..."></div>
       </div>
     </div>`;
 
@@ -1792,10 +1549,7 @@ function renderLevelView(lv){
           ${g.locked>0?`<div class="st lk"><b>${g.locked}</b><span>📌 مُثبَّت</span></div>`:''}
         </div>
         <div class="sc-toolbar">
-          <label>
-            <input type="checkbox" class="grp-check" data-lvl="${lv}" data-grp="${g.num}">
-            تحديد كل الفوج
-          </label>
+          <label><input type="checkbox" class="grp-check" data-lvl="${lv}" data-grp="${g.num}"> تحديد كل الفوج</label>
           ${groupSelected>0?`<span class="sel-count">${groupSelected} محدد</span>`:''}
         </div>
         <div class="sc-list">`;
@@ -1812,15 +1566,11 @@ function renderLevelView(lv){
         const lock=STATE.locks.get(s.id);
         tag=`<span class="tag-mini lock">📌 ${LEVEL_SHORT[lock.level]}${lock.group}</span>`;
       }else if(isOverflow){
-        tag=`<span class="tag-mini overflow">↗ تجاوز نطاق ${s.oldLevel} ${s.trackGroup}</span>`;
+        tag=`<span class="tag-mini overflow">↗ تجاوز ${s.oldLevel} ${s.trackGroup}</span>`;
       }else if(s.origin==='promoted'){
-        tag=s.trackGroup
-          ? `<span class="tag-mini keep">مسار ${s.oldLevel} ${s.trackGroup}</span>`
-          : `<span class="tag-mini moved">أُعيد توزيعه</span>`;
+        tag=s.trackGroup?`<span class="tag-mini keep">مسار ${s.oldLevel} ${s.trackGroup}</span>`:`<span class="tag-mini moved">أُعيد توزيعه</span>`;
       }else if(s.origin==='repeater'){
-        tag=s.trackGroup
-          ? `<span class="tag-mini rep">معيد · مسار ${s.oldLevel} ${s.trackGroup}</span>`
-          : `<span class="tag-mini rep">معيد</span>`;
+        tag=s.trackGroup?`<span class="tag-mini rep">معيد · ${s.oldLevel} ${s.trackGroup}</span>`:`<span class="tag-mini rep">معيد</span>`;
       }else if(s.origin==='manual'){
         tag=`<span class="tag-mini new">مُضاف يدوياً</span>`;
       }else{
@@ -1833,21 +1583,13 @@ function renderLevelView(lv){
           <div class="sr-num">${idx+1}</div>
           <div class="sr-main">
             <div class="sr-name">${esc(s.name)}${tag}</div>
-            <div class="sr-meta">
-              <span>${esc(s.birth||'—')}</span>
-              <span class="dot"></span>${sysBadge}
-              <span class="dot"></span><span>تسجيل: ${esc(s.reg||'—')}</span>
-            </div>
+            <div class="sr-meta"><span>${esc(s.birth||'—')}</span><span class="dot"></span>${sysBadge}<span class="dot"></span><span>تسجيل: ${esc(s.reg||'—')}</span></div>
           </div>
           <div class="sr-actions">
-            <button class="sr-act lk" title="${isLocked?'فك التثبيت':'تثبيت في هذا الفوج'}"
-              onclick="event.stopPropagation();toggleLock('${esc(s.id)}','${lv}',${g.num})">📌</button>
-            <button class="sr-act mv" title="نقل إلى فوج آخر"
-              onclick="event.stopPropagation();moveStudent('${esc(s.id)}')">↔</button>
-            <button class="sr-act del" title="حذف التلميذ"
-              onclick="event.stopPropagation();deleteStudent('${esc(s.id)}')">✕</button>
-            <div class="sr-gender ${gCls}" data-id="${esc(s.id)}" title="تغيير الجنس"
-              onclick="event.stopPropagation();toggleGender('${esc(s.id)}')">${gTxt}</div>
+            <button class="sr-act lk" title="${isLocked?'فك':'تثبيت'}" onclick="event.stopPropagation();toggleLock('${esc(s.id)}','${lv}',${g.num})">📌</button>
+            <button class="sr-act mv" title="نقل" onclick="event.stopPropagation();moveStudent('${esc(s.id)}')">↔</button>
+            <button class="sr-act del" title="حذف" onclick="event.stopPropagation();deleteStudent('${esc(s.id)}')">✕</button>
+            <div class="sr-gender ${gCls}" onclick="event.stopPropagation();toggleGender('${esc(s.id)}')">${gTxt}</div>
           </div>
         </div>`;
     });
@@ -1870,29 +1612,33 @@ function renderLevelView(lv){
     });
   }
 
+  // ⭐ ربط خانات تحديد التلاميذ — إصلاح جوهري
   box.querySelectorAll('.sr-check').forEach(cb=>{
-    cb.addEventListener('change', e=>{
-      const id = e.target.dataset.id;
-      if(e.target.checked) STATE.selection.add(id);
+    cb.addEventListener('change', function(e){
+      e.stopPropagation();
+      const id = this.dataset.id;
+      if(this.checked) STATE.selection.add(id);
       else STATE.selection.delete(id);
-      const row = e.target.closest('.student-row');
-      if(row) row.classList.toggle('selected', e.target.checked);
+      const row = this.closest('.student-row');
+      if(row) row.classList.toggle('selected', this.checked);
+      // ⭐ استدعاء فوري للشريط السفلي
       renderBulkBar();
     });
   });
 
   box.querySelectorAll('.grp-check').forEach(cb=>{
-    cb.addEventListener('change', e=>{
-      const lvSel = e.target.dataset.lvl;
-      const grpNum = parseInt(e.target.dataset.grp);
-      const r = STATE.results[lvSel];
-      if(!r) return;
-      const g = r.groups.find(x=>x.num===grpNum);
-      if(!g) return;
-      if(e.target.checked){
-        g.list.forEach(s=>STATE.selection.add(s.id));
+    cb.addEventListener('change', function(e){
+      e.stopPropagation();
+      const lvSel = this.dataset.lvl;
+      const grpNum = parseInt(this.dataset.grp);
+      const r2 = STATE.results[lvSel];
+      if(!r2) return;
+      const g2 = r2.groups.find(x=>x.num===grpNum);
+      if(!g2) return;
+      if(this.checked){
+        g2.list.forEach(s=>STATE.selection.add(s.id));
       }else{
-        g.list.forEach(s=>STATE.selection.delete(s.id));
+        g2.list.forEach(s=>STATE.selection.delete(s.id));
       }
       renderLevelView(STATE.activeLevel);
     });
@@ -1900,36 +1646,52 @@ function renderLevelView(lv){
 }
 
 /* =====================================================================
-   القسم 19: شريط العمليات الجماعية
+   القسم 19: ⭐ الشريط السفلي للعمليات الجماعية — الإصلاح الجوهري
    ===================================================================== */
 function renderBulkBar(){
   const bar = $('bulkBar');
+  if(!bar){ console.warn('bulkBar غير موجود'); return; }
+  
   const count = STATE.selection.size;
-  if(count===0){ bar.classList.remove('on'); return; }
+  
+  if(count === 0){
+    bar.classList.remove('on');
+    bar.style.display = 'none';
+    return;
+  }
+  
+  // إظهار الشريط
   bar.classList.add('on');
-  $('bulkCount').textContent = count;
-
+  bar.style.display = 'flex';
+  
+  const bulkCount = $('bulkCount');
+  if(bulkCount) bulkCount.textContent = count;
+  
   const selStudents = [...STATE.selection].map(id=>STATE.cur.find(s=>s.id===id)).filter(Boolean);
+  if(!selStudents.length) return;
+  
   const levels = [...new Set(selStudents.map(s=>s.level))];
   const lvSelect = $('bulkTargetLevel');
   const grpSelect = $('bulkTargetGroup');
+  if(!lvSelect || !grpSelect) return;
+  
   const prevLv = lvSelect.value;
   const prevGrp = grpSelect.value;
-  const singleLevel = levels.length===1 ? levels[0] : null;
-
-  lvSelect.innerHTML = levels.map(lv=>
+  const singleLevel = levels.length === 1 ? levels[0] : null;
+  
+  lvSelect.innerHTML = levels.map(lv =>
     `<option value="${lv}" ${(singleLevel===lv||prevLv===lv)?'selected':''}>${LEVEL_LABEL[lv]}</option>`
   ).join('');
-
+  
   const activeLv = lvSelect.value;
   const G = STATE.groupCount[activeLv]||OFFICIAL_GROUPS[activeLv]||1;
   grpSelect.innerHTML = '';
   for(let i=1;i<=G;i++){
     grpSelect.innerHTML += `<option value="${i}" ${String(i)===prevGrp?'selected':''}>${LEVEL_SHORT[activeLv]}${i}</option>`;
   }
-
-  lvSelect.onchange = ()=>{
-    const lv = lvSelect.value;
+  
+  lvSelect.onchange = function(){
+    const lv = this.value;
     const G2 = STATE.groupCount[lv]||OFFICIAL_GROUPS[lv]||1;
     grpSelect.innerHTML = '';
     for(let i=1;i<=G2;i++){
@@ -1937,6 +1699,7 @@ function renderBulkBar(){
     }
   };
 }
+
 function clearSelection(){
   STATE.selection.clear();
   renderLevelView(STATE.activeLevel);
@@ -1957,11 +1720,11 @@ function lockSelected(){
   const grpNum = parseInt($('bulkTargetGroup').value);
   const selStudents = [...STATE.selection].map(id=>STATE.cur.find(s=>s.id===id)).filter(Boolean);
   const levels = [...new Set(selStudents.map(s=>s.level))];
-  if(levels.length>1){ alert('⚠️ لا يمكن تثبيت تلاميذ من مستويات مختلفة.'); return; }
+  if(levels.length>1){ alert('⚠️ لا يمكن تثبيت من مستويات مختلفة.'); return; }
   const actualLv = levels[0];
   const G = STATE.groupCount[actualLv]||OFFICIAL_GROUPS[actualLv];
   if(grpNum<1 || grpNum>G){ alert(`⚠️ الفوج ${grpNum} خارج النطاق (1-${G}).`); return; }
-  if(!confirm(`📌 تثبيت ${selStudents.length} تلميذ في الفوج ${LEVEL_SHORT[actualLv]}${grpNum}?`))return;
+  if(!confirm(`📌 تثبيت ${selStudents.length} تلميذ في ${LEVEL_SHORT[actualLv]}${grpNum}?`))return;
   selStudents.forEach(s=>{
     STATE.locks.set(s.id, { level: actualLv, group: grpNum });
   });
@@ -1974,7 +1737,7 @@ function unlockSelected(){
   STATE.selection.forEach(id=>{
     if(STATE.locks.has(id)){ STATE.locks.delete(id); unlocked++; }
   });
-  if(unlocked===0){ alert('لا يوجد تلاميذ مُثبَّتون ضمن المحددين.'); return; }
+  if(unlocked===0){ alert('لا يوجد مُثبَّتون ضمن المحددين.'); return; }
   STATE.selection.clear();
   forceRedistribute();
 }
@@ -1988,7 +1751,7 @@ function transferSelected(){
   const grpNum = parseInt($('bulkTargetGroup').value);
   const selStudents = [...STATE.selection].map(id=>STATE.cur.find(s=>s.id===id)).filter(Boolean);
   const levels = [...new Set(selStudents.map(s=>s.level))];
-  if(levels.length>1){ alert('⚠️ لا يمكن النقل الجماعي عبر مستويات مختلفة.'); return; }
+  if(levels.length>1){ alert('⚠️ لا يمكن النقل عبر مستويات مختلفة.'); return; }
   const actualLv = levels[0];
   if(actualLv!==lvSelect){ alert(`⚠️ اختر مستوى «${LEVEL_LABEL[actualLv]}».`); return; }
   const G = STATE.groupCount[actualLv]||OFFICIAL_GROUPS[actualLv];
@@ -2060,27 +1823,15 @@ function moveStudent(id){
   }
   const options=[];
   for(let i=1;i<=G;i++)options.push(`<option value="${i}" ${i===currentGroup?'selected':''}>${LEVEL_SHORT[lv]}${i}</option>`);
-
   const div=document.createElement('div');
   div.className='modal-bg';
   div.innerHTML=`
     <div class="modal-box" style="max-width:420px">
       <h3>↔ نقل التلميذ</h3>
-      <p style="margin:0 0 14px;font-size:13.5px;color:#475569">
-        <b>${esc(st.name)}</b><br>
-        <span style="font-size:12px;color:#94a3b8">ID: ${esc(st.id)}</span>
-      </p>
-      <div class="form-row">
-        <label>الفوج الحالي</label>
-        <input type="text" value="${currentGroup?LEVEL_SHORT[lv]+currentGroup:'—'}" disabled>
-      </div>
-      <div class="form-row">
-        <label>الفوج الجديد</label>
-        <select id="moveTarget">${options.join('')}</select>
-      </div>
-      <div class="form-row">
-        <label><input type="checkbox" id="moveLock" style="width:auto;margin-inline-end:6px"> 📌 تثبيت في الفوج الجديد</label>
-      </div>
+      <p style="margin:0 0 14px;font-size:13.5px;color:#475569"><b>${esc(st.name)}</b><br><span style="font-size:12px;color:#94a3b8">ID: ${esc(st.id)}</span></p>
+      <div class="form-row"><label>الفوج الحالي</label><input type="text" value="${currentGroup?LEVEL_SHORT[lv]+currentGroup:'—'}" disabled></div>
+      <div class="form-row"><label>الفوج الجديد</label><select id="moveTarget">${options.join('')}</select></div>
+      <div class="form-row"><label><input type="checkbox" id="moveLock" style="width:auto;margin-inline-end:6px"> 📌 تثبيت في الفوج الجديد</label></div>
       <div class="modal-actions">
         <button onclick="this.closest('.modal-bg').remove()">إلغاء</button>
         <button class="pri" onclick="applyMove('${esc(id)}', this)">تأكيد النقل</button>
@@ -2125,11 +1876,7 @@ function deleteStudent(id){
   div.innerHTML=`
     <div class="modal-box" style="max-width:420px">
       <h3 style="color:#dc2626">⚠️ تأكيد الحذف</h3>
-      <p style="font-size:13.5px;color:#475569;line-height:1.8">
-        هل أنت متأكد من حذف:<br>
-        <b style="color:#1e293b">${esc(st.name)}</b><br>
-        <span style="font-size:12px;color:#94a3b8">ID: ${esc(st.id)}</span>
-      </p>
+      <p style="font-size:13.5px;color:#475569;line-height:1.8">حذف:<br><b style="color:#1e293b">${esc(st.name)}</b><br><span style="font-size:12px;color:#94a3b8">ID: ${esc(st.id)}</span></p>
       <div class="modal-actions">
         <button onclick="this.closest('.modal-bg').remove()">إلغاء</button>
         <button class="danger" onclick="applyDelete('${esc(id)}', this)">تأكيد الحذف</button>
@@ -2157,65 +1904,22 @@ $('btnAddStudent').onclick=function(){
     <div class="modal-box">
       <h3>➕ إضافة تلميذ جديد</h3>
       <div class="form-grid">
-        <div class="form-row">
-          <label>رقم التعريف *</label>
-          <input type="text" id="addId" placeholder="1101228010123456">
-        </div>
-        <div class="form-row">
-          <label>المستوى *</label>
-          <select id="addLevel">
-            ${LEVELS.map(lv=>`<option value="${lv}">${LEVEL_LABEL[lv]}</option>`).join('')}
-          </select>
-        </div>
+        <div class="form-row"><label>رقم التعريف *</label><input type="text" id="addId"></div>
+        <div class="form-row"><label>المستوى *</label><select id="addLevel">${LEVELS.map(lv=>`<option value="${lv}">${LEVEL_LABEL[lv]}</option>`).join('')}</select></div>
       </div>
-      <div class="form-row">
-        <label>اللقب والاسم *</label>
-        <input type="text" id="addName" placeholder="بن علي محمد">
+      <div class="form-row"><label>اللقب والاسم *</label><input type="text" id="addName"></div>
+      <div class="form-grid">
+        <div class="form-row"><label>تاريخ الميلاد</label><input type="date" id="addBirth"></div>
+        <div class="form-row"><label>الجنس *</label><select id="addGender"><option value="M">ذكر</option><option value="F">أنثى</option></select></div>
       </div>
       <div class="form-grid">
-        <div class="form-row">
-          <label>تاريخ الميلاد</label>
-          <input type="date" id="addBirth">
-        </div>
-        <div class="form-row">
-          <label>الجنس *</label>
-          <select id="addGender">
-            <option value="M">ذكر</option>
-            <option value="F">أنثى</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-grid">
-        <div class="form-row">
-          <label>النظام</label>
-          <select id="addSystem">
-            <option value="نصف داخلي">نصف داخلي</option>
-            <option value="خارجي">خارجي</option>
-            <option value="داخلي">داخلي</option>
-            <option value="غير محدد">غير محدد</option>
-          </select>
-        </div>
-        <div class="form-row">
-          <label>رقم التسجيل</label>
-          <input type="text" id="addReg">
-        </div>
-      </div>
-      <div class="form-row">
-        <label>📌 تثبيت مباشر في الفوج (اختياري)</label>
-        <select id="addLockGroup">
-          <option value="">— بدون تثبيت —</option>
-          ${LEVELS.map(lv=>{
-            const G=STATE.groupCount[lv]||OFFICIAL_GROUPS[lv];
-            const opts=[];
-            for(let i=1;i<=G;i++) opts.push(`<option value="${lv}|${i}">${LEVEL_SHORT[lv]}${i}</option>`);
-            return opts.join('');
-          }).join('')}
-        </select>
+        <div class="form-row"><label>النظام</label><select id="addSystem"><option value="نصف داخلي">نصف داخلي</option><option value="خارجي">خارجي</option><option value="داخلي">داخلي</option></select></div>
+        <div class="form-row"><label>رقم التسجيل</label><input type="text" id="addReg"></div>
       </div>
       <div id="addError" style="color:#dc2626;font-size:12.5px;font-weight:700;margin-top:8px"></div>
       <div class="modal-actions">
         <button onclick="this.closest('.modal-bg').remove()">إلغاء</button>
-        <button class="pri" onclick="applyAddStudent(this)">إضافة التلميذ</button>
+        <button class="pri" onclick="applyAddStudent(this)">إضافة</button>
       </div>
     </div>`;
   document.body.appendChild(div);
@@ -2228,23 +1932,12 @@ function applyAddStudent(btn){
   const gender=$('addGender').value;
   const system=$('addSystem').value;
   const reg=$('addReg').value.trim();
-  const lockVal=$('addLockGroup').value;
   const err=$('addError');
   err.textContent='';
   if(!id){err.textContent='❌ رقم التعريف مطلوب'; return;}
   if(!name){err.textContent='❌ اللقب والاسم مطلوب'; return;}
-  if(STATE.cur.find(x=>x.id===id)){err.textContent='❌ رقم التعريف موجود مسبقاً'; return;}
-
-  const newStudent={
-    id, name, birth, level,
-    fileGroup:0, system, reg,
-    gender, origin:'manual', trackGroup:null, moved:false, manual:true
-  };
-  STATE.cur.push(newStudent);
-  if(lockVal){
-    const [lockLv, lockGrp] = lockVal.split('|');
-    STATE.locks.set(id, { level: lockLv, group: parseInt(lockGrp) });
-  }
+  if(STATE.cur.find(x=>x.id===id)){err.textContent='❌ رقم التعريف موجود'; return;}
+  STATE.cur.push({id, name, birth, level, fileGroup:0, system, reg, gender, origin:'manual', trackGroup:null, moved:false, manual:true});
   btn.closest('.modal-bg').remove();
   tryRun();
 }
@@ -2261,20 +1954,16 @@ function openFullscreen(lv, groupNum){
     const isLocked=STATE.locks.has(s.id);
     const isOverflow = (s.origin==='promoted'||s.origin==='repeater') && s.trackGroup > G;
     let status='';
-    if(isLocked) status=`📌 مُثبَّت`;
-    else if(isOverflow) status=`↗ إحالة مشروعة (تجاوز نطاق ${s.oldLevel} ${s.trackGroup})`;
-    else if(s.origin==='promoted')status=s.trackGroup?`مُرقّى · مسار ${s.oldLevel} ${s.trackGroup}`:'مُرقّى';
-    else if(s.origin==='repeater')status=s.trackGroup?`معيد · مسار ${s.oldLevel} ${s.trackGroup}`:'معيد';
+    if(isLocked) status='📌 مُثبَّت';
+    else if(isOverflow) status=`↗ إحالة مشروعة (${s.oldLevel} ${s.trackGroup})`;
+    else if(s.origin==='promoted')status=s.trackGroup?`مُرقّى · ${s.oldLevel} ${s.trackGroup}`:'مُرقّى';
+    else if(s.origin==='repeater')status=s.trackGroup?`معيد · ${s.oldLevel} ${s.trackGroup}`:'معيد';
     else if(s.origin==='manual')status='مُضاف يدوياً';
     else status='جديد';
     return `<tr${isLocked?' style="background:#faf5ff"':''}${isOverflow?' style="background:#eef2ff"':''}>
-      <td>${i+1}</td>
-      <td style="font-family:monospace;font-size:12px">${esc(s.id)}</td>
-      <td class="name">${esc(s.name)}</td>
-      <td>${esc(s.birth||'—')}</td>
-      <td>${gTxt}</td>
-      <td>${esc(s.system||'—')}</td>
-      <td>${esc(s.reg||'—')}</td>
+      <td>${i+1}</td><td style="font-family:monospace;font-size:12px">${esc(s.id)}</td>
+      <td class="name">${esc(s.name)}</td><td>${esc(s.birth||'—')}</td>
+      <td>${gTxt}</td><td>${esc(s.system||'—')}</td><td>${esc(s.reg||'—')}</td>
       <td style="font-size:11.5px;color:#64748b">${esc(status)}</td>
     </tr>`;
   }).join('');
@@ -2282,13 +1971,13 @@ function openFullscreen(lv, groupNum){
   div.id='fullscreen';
   div.innerHTML=`
     <div class="fs-head">
-      <h3>📋 الفوج التربوي: ${LEVEL_SHORT[lv]}${groupNum} — ${LEVEL_LABEL[lv]}</h3>
+      <h3>📋 الفوج: ${LEVEL_SHORT[lv]}${groupNum} — ${LEVEL_LABEL[lv]}</h3>
       <div class="info">
         <span>العدد <b>${g.list.length}</b></span>
         <span>ذكور <b>${g.m}</b></span>
         <span>إناث <b>${g.f}</b></span>
         <span>معيدون <b>${g.reps}</b></span>
-        ${g.locked>0?`<span>📌 مُثبَّت <b>${g.locked}</b></span>`:''}
+        ${g.locked>0?`<span>📌 <b>${g.locked}</b></span>`:''}
       </div>
       <div style="display:flex;gap:8px">
         <button class="pri" onclick="printFullscreen()">🖨️ طباعة</button>
@@ -2298,14 +1987,10 @@ function openFullscreen(lv, groupNum){
     <div class="fs-body">
       <table class="fs-tbl">
         <thead><tr>
-          <th style="width:50px">ر.ت</th>
-          <th style="width:150px">رقم التعريف</th>
-          <th>اللقب والاسم</th>
-          <th style="width:110px">تاريخ الميلاد</th>
-          <th style="width:70px">الجنس</th>
-          <th style="width:110px">النظام</th>
-          <th style="width:100px">رقم التسجيل</th>
-          <th style="width:150px">الحالة / المسار</th>
+          <th style="width:50px">ر.ت</th><th style="width:150px">رقم التعريف</th>
+          <th>اللقب والاسم</th><th style="width:110px">تاريخ الميلاد</th>
+          <th style="width:70px">الجنس</th><th style="width:110px">النظام</th>
+          <th style="width:100px">رقم التسجيل</th><th style="width:150px">الحالة</th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>
@@ -2315,16 +2000,12 @@ function openFullscreen(lv, groupNum){
       <span>معاينة الفوج ${LEVEL_SHORT[lv]}${groupNum}</span>
     </div>`;
   document.addEventListener('keydown',function escHandler(e){
-    if(e.key==='Escape'){
-      const fs=document.getElementById('fullscreen');
-      if(fs){fs.remove(); document.removeEventListener('keydown',escHandler);}
-    }
+    if(e.key==='Escape'){ const fs=document.getElementById('fullscreen'); if(fs){fs.remove(); document.removeEventListener('keydown',escHandler);} }
   });
   document.body.appendChild(div);
 }
 function printFullscreen(){
-  const fs=document.getElementById('fullscreen');
-  if(!fs)return;
+  const fs=document.getElementById('fullscreen'); if(!fs)return;
   const head=fs.querySelector('.fs-head h3').textContent;
   const rows=fs.querySelectorAll('.fs-tbl tbody tr');
   const info=fs.querySelector('.fs-head .info').innerHTML;
@@ -2332,25 +2013,16 @@ function printFullscreen(){
   const dateStr=`${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
   let tbl=`<table class="pr-tbl">
     <thead><tr>
-      <th style="width:34px">ر.ت</th>
-      <th style="width:140px">رقم التعريف</th>
-      <th>اللقب والاسم</th>
-      <th style="width:80px">تاريخ الميلاد</th>
-      <th style="width:34px">ج</th>
-      <th style="width:80px">النظام</th>
-      <th style="width:70px">رقم التسجيل</th>
+      <th style="width:34px">ر.ت</th><th style="width:140px">رقم التعريف</th>
+      <th>اللقب والاسم</th><th style="width:80px">تاريخ الميلاد</th>
+      <th style="width:34px">ج</th><th style="width:80px">النظام</th><th style="width:70px">رقم التسجيل</th>
     </tr></thead><tbody>`;
   rows.forEach(tr=>{
     const tds=tr.querySelectorAll('td');
-    tbl+=`<tr>
-      <td>${tds[0].textContent}</td>
-      <td style="font-family:monospace;font-size:9.5px">${tds[1].textContent}</td>
-      <td class="name">${tds[2].textContent}</td>
-      <td>${tds[3].textContent}</td>
+    tbl+=`<tr><td>${tds[0].textContent}</td><td style="font-family:monospace;font-size:9.5px">${tds[1].textContent}</td>
+      <td class="name">${tds[2].textContent}</td><td>${tds[3].textContent}</td>
       <td>${tds[4].textContent==='ذكر'?'ذ':(tds[4].textContent==='أنثى'?'أ':'—')}</td>
-      <td>${tds[5].textContent}</td>
-      <td>${tds[6].textContent}</td>
-    </tr>`;
+      <td>${tds[5].textContent}</td><td>${tds[6].textContent}</td></tr>`;
   });
   tbl+=`</tbody></table>`;
   $('printContainer').innerHTML=`
@@ -2394,46 +2066,33 @@ function buildPrintHTML(levels){
       </div>
       <div class="pr-title">قوائم الأفواج — ${LEVEL_LABEL[lv]}</div>
       <div class="pr-summary">
-        <span>العدد: <b>${r.stats.total}</b></span>
-        <span>الأفواج: <b>${r.stats.G}</b></span>
-        <span>ذكور: <b>${r.stats.m}</b></span>
-        <span>إناث: <b>${r.stats.f}</b></span>
+        <span>العدد: <b>${r.stats.total}</b></span><span>الأفواج: <b>${r.stats.G}</b></span>
+        <span>ذكور: <b>${r.stats.m}</b></span><span>إناث: <b>${r.stats.f}</b></span>
         <span>معيدون: <b>${r.stats.rep}</b></span>
         ${r.stats.locked>0?`<span>مُثبَّتون: <b>${r.stats.locked}</b></span>`:''}
       </div>`;
     r.groups.forEach(g=>{
-      html+=`
-        <div class="pr-sec">
-          <div class="pr-sec-title">
-            <span>الفوج التربوي: ${LEVEL_SHORT[lv]}${g.num} — ${LEVEL_LABEL[lv]}</span>
-            <span class="l">
-              <span>العدد: ${g.list.length}</span><span>ذ: ${g.m}</span>
-              <span>أ: ${g.f}</span><span>معيدون: ${g.reps}</span>
-              ${g.locked>0?`<span>📌 ${g.locked}</span>`:''}
-            </span>
-          </div>
-          <table class="pr-tbl">
-            <thead><tr>
-              <th style="width:34px">ر.ت</th>
-              <th style="width:130px">رقم التعريف</th>
-              <th>اللقب والاسم</th>
-              <th style="width:80px">تاريخ الميلاد</th>
-              <th style="width:34px">ج</th>
-              <th style="width:80px">النظام</th>
-              <th style="width:70px">رقم التسجيل</th>
-            </tr></thead><tbody>`;
+      html+=`<div class="pr-sec">
+        <div class="pr-sec-title">
+          <span>الفوج: ${LEVEL_SHORT[lv]}${g.num} — ${LEVEL_LABEL[lv]}</span>
+          <span class="l">
+            <span>العدد: ${g.list.length}</span><span>ذ: ${g.m}</span>
+            <span>أ: ${g.f}</span><span>معيدون: ${g.reps}</span>
+            ${g.locked>0?`<span>📌 ${g.locked}</span>`:''}
+          </span>
+        </div>
+        <table class="pr-tbl">
+          <thead><tr>
+            <th style="width:34px">ر.ت</th><th style="width:130px">رقم التعريف</th>
+            <th>اللقب والاسم</th><th style="width:80px">تاريخ الميلاد</th>
+            <th style="width:34px">ج</th><th style="width:80px">النظام</th><th style="width:70px">رقم التسجيل</th>
+          </tr></thead><tbody>`;
       g.list.forEach((s,i)=>{
         const gTxt=s.gender==='M'?'ذ':(s.gender==='F'?'أ':'؟');
         const lockMark = STATE.locks.has(s.id) ? ' 📌' : '';
-        html+=`<tr>
-          <td>${i+1}</td>
-          <td style="font-family:monospace;font-size:9.5px">${esc(s.id)}</td>
-          <td class="name">${esc(s.name)}${lockMark}</td>
-          <td>${esc(s.birth||'')}</td>
-          <td>${gTxt}</td>
-          <td>${esc(s.system||'')}</td>
-          <td>${esc(s.reg||'')}</td>
-        </tr>`;
+        html+=`<tr><td>${i+1}</td><td style="font-family:monospace;font-size:9.5px">${esc(s.id)}</td>
+          <td class="name">${esc(s.name)}${lockMark}</td><td>${esc(s.birth||'')}</td>
+          <td>${gTxt}</td><td>${esc(s.system||'')}</td><td>${esc(s.reg||'')}</td></tr>`;
       });
       html+=`</tbody></table>
         <div class="pr-sign">
@@ -2446,13 +2105,10 @@ function buildPrintHTML(levels){
   html+=`</div>`;
   return html;
 }
-function printLevel(lv){
-  $('printContainer').innerHTML=buildPrintHTML([lv]);
-  setTimeout(()=>window.print(),80);
-}
+function printLevel(lv){ $('printContainer').innerHTML=buildPrintHTML([lv]); setTimeout(()=>window.print(),80); }
 function printAll(){
   const list=LEVELS.filter(lv=>STATE.results[lv]);
-  if(!list.length){ alert('⚠️ لا توجد بيانات للطباعة. حمّل الملفات أولاً.'); return; }
+  if(!list.length){ alert('⚠️ لا توجد بيانات.'); return; }
   $('printContainer').innerHTML=buildPrintHTML(list);
   setTimeout(()=>window.print(),80);
 }
@@ -2467,16 +2123,7 @@ function exportLevel(lv){
   r.groups.forEach(g=>{
     g.list.forEach(s=>{
       idx++;
-      rows.push({
-        'ر.ت':idx,'الفوج':`${LEVEL_SHORT[lv]}${g.num}`,
-        'رقم تعريف':s.id,'اللقب والاسم':s.name,
-        'تاريخ الميلاد':s.birth,
-        'الجنس':s.gender==='M'?'ذكر':(s.gender==='F'?'أنثى':'غير محدد'),
-        'النظام':s.system,'رقم التسجيل':s.reg,
-        'الحالة':s.origin==='promoted'?'مُرقّى':(s.origin==='repeater'?'معيد':(s.origin==='manual'?'مُضاف':'جديد')),
-        'المسار السابق':s.trackGroup?`${s.oldLevel||''} ${s.trackGroup}`:'—',
-        '📌 مُثبَّت': STATE.locks.has(s.id)?'نعم':'—'
-      });
+      rows.push({'ر.ت':idx,'الفوج':`${LEVEL_SHORT[lv]}${g.num}`,'رقم تعريف':s.id,'اللقب والاسم':s.name,'تاريخ الميلاد':s.birth,'الجنس':s.gender==='M'?'ذكر':(s.gender==='F'?'أنثى':'غير محدد'),'النظام':s.system,'رقم التسجيل':s.reg,'الحالة':s.origin==='promoted'?'مُرقّى':(s.origin==='repeater'?'معيد':(s.origin==='manual'?'مُضاف':'جديد')),'المسار السابق':s.trackGroup?`${s.oldLevel||''} ${s.trackGroup}`:'—','📌 مُثبَّت': STATE.locks.has(s.id)?'نعم':'—'});
     });
     rows.push({});
   });
@@ -2491,34 +2138,19 @@ function exportAll(){
   LEVELS.forEach(lv=>{
     const r=STATE.results[lv]; if(!r)return;
     r.groups.forEach(g=>{
-      sum.push({
-        'المستوى':LEVEL_LABEL[lv],'الفوج':`${LEVEL_SHORT[lv]}${g.num}`,
-        'العدد':g.list.length,'ذكور':g.m,'إناث':g.f,'غير محدد':g.u,
-        'معيدون':g.reps,'مُرقّون':g.prom,'📌 مُثبَّتون':g.locked||0,
-        'نصف داخلي':g.sys['نصف داخلي']||0,'خارجي':g.sys['خارجي']||0
-      });
+      sum.push({'المستوى':LEVEL_LABEL[lv],'الفوج':`${LEVEL_SHORT[lv]}${g.num}`,'العدد':g.list.length,'ذكور':g.m,'إناث':g.f,'غير محدد':g.u,'معيدون':g.reps,'مُرقّون':g.prom,'📌 مُثبَّتون':g.locked||0,'نصف داخلي':g.sys['نصف داخلي']||0,'خارجي':g.sys['خارجي']||0});
     });
   });
   const wsSum=XLSX.utils.json_to_sheet(sum);
   wsSum['!cols']=[{wch:15},{wch:10},{wch:8},{wch:8},{wch:8},{wch:10},{wch:9},{wch:9},{wch:11},{wch:12},{wch:10}];
   XLSX.utils.book_append_sheet(wb,wsSum,'إحصاء');
-
   LEVELS.forEach(lv=>{
     const r=STATE.results[lv]; if(!r)return;
     const rows=[]; let idx=0;
     r.groups.forEach(g=>{
       g.list.forEach(s=>{
         idx++;
-        rows.push({
-          'ر.ت':idx,'الفوج':`${LEVEL_SHORT[lv]}${g.num}`,
-          'رقم تعريف':s.id,'اللقب والاسم':s.name,
-          'تاريخ الميلاد':s.birth,
-          'الجنس':s.gender==='M'?'ذكر':(s.gender==='F'?'أنثى':'غير محدد'),
-          'النظام':s.system,'رقم التسجيل':s.reg,
-          'الحالة':s.origin==='promoted'?'مُرقّى':(s.origin==='repeater'?'معيد':(s.origin==='manual'?'مُضاف':'جديد')),
-          'المسار السابق':s.trackGroup?`${s.oldLevel||''} ${s.trackGroup}`:'—',
-          '📌 مُثبَّت': STATE.locks.has(s.id)?'نعم':'—'
-        });
+        rows.push({'ر.ت':idx,'الفوج':`${LEVEL_SHORT[lv]}${g.num}`,'رقم تعريف':s.id,'اللقب والاسم':s.name,'تاريخ الميلاد':s.birth,'الجنس':s.gender==='M'?'ذكر':(s.gender==='F'?'أنثى':'غير محدد'),'النظام':s.system,'رقم التسجيل':s.reg,'الحالة':s.origin==='promoted'?'مُرقّى':(s.origin==='repeater'?'معيد':(s.origin==='manual'?'مُضاف':'جديد')),'المسار السابق':s.trackGroup?`${s.oldLevel||''} ${s.trackGroup}`:'—','📌 مُثبَّت': STATE.locks.has(s.id)?'نعم':'—'});
       });
       rows.push({});
     });
@@ -2534,39 +2166,21 @@ function exportAll(){
    ===================================================================== */
 function serializeState(){
   return {
-    version: '6.0',
-    app: 'DONIA-CLASSE',
-    brand: BRAND,
-    school: SCHOOL,
+    version: '3.1', app: 'DONIA-CLASSE', brand: BRAND, school: SCHOOL,
     exportedAt: new Date().toISOString(),
-    groupCount: STATE.groupCount,
-    overrides: STATE.overrides,
+    groupCount: STATE.groupCount, overrides: STATE.overrides,
     locks: [...STATE.locks.entries()].map(([id, l])=>({id, level: l.level, group: l.group})),
-    cur: STATE.cur.map(s=>({
-      id:s.id, name:s.name, birth:s.birth, level:s.level,
-      fileGroup:s.fileGroup, system:s.system, reg:s.reg,
-      gender:s.gender, origin:s.origin, trackGroup:s.trackGroup,
-      oldLevel:s.oldLevel, manual:!!s.manual
-    })),
-    oldMap: STATE.oldMap,
-    surnames: [...STATE.surnames]
+    cur: STATE.cur.map(s=>({id:s.id, name:s.name, birth:s.birth, level:s.level, fileGroup:s.fileGroup, system:s.system, reg:s.reg, gender:s.gender, origin:s.origin, trackGroup:s.trackGroup, oldLevel:s.oldLevel, manual:!!s.manual})),
+    oldMap: STATE.oldMap, surnames: [...STATE.surnames]
   };
 }
 function deserializeState(data){
-  if(!data || data.app!=='DONIA-CLASSE'){
-    throw new Error('ملف النسخة الاحتياطية غير صالح');
-  }
+  if(!data || data.app!=='DONIA-CLASSE') throw new Error('ملف غير صالح');
   STATE.groupCount = Object.assign({}, OFFICIAL_GROUPS, data.groupCount||{});
   STATE.overrides = data.overrides||{};
   STATE.locks = new Map();
   (data.locks||[]).forEach(l=>STATE.locks.set(l.id, { level: l.level, group: l.group }));
-  STATE.cur = (data.cur||[]).map(s=>({
-    id:s.id, name:s.name, birth:s.birth||'', level:s.level,
-    fileGroup:s.fileGroup||0, system:s.system||'غير محدد',
-    reg:s.reg||'', gender:s.gender||'U',
-    origin:s.origin||'new', trackGroup:s.trackGroup||null,
-    oldLevel:s.oldLevel||null, manual:!!s.manual, moved:false
-  }));
+  STATE.cur = (data.cur||[]).map(s=>({id:s.id, name:s.name, birth:s.birth||'', level:s.level, fileGroup:s.fileGroup||0, system:s.system||'غير محدد', reg:s.reg||'', gender:s.gender||'U', origin:s.origin||'new', trackGroup:s.trackGroup||null, oldLevel:s.oldLevel||null, manual:!!s.manual, moved:false}));
   STATE.oldMap = data.oldMap||{};
   STATE.surnames = new Set(data.surnames||[]);
   STATE.selection = new Set();
@@ -2574,7 +2188,7 @@ function deserializeState(data){
   STATE.loadedOld = Object.keys(STATE.oldMap).length>0;
 }
 function exportBackupJSON(){
-  if(!STATE.cur.length){ alert('⚠️ لا توجد بيانات لحفظها.'); return; }
+  if(!STATE.cur.length){ alert('⚠️ لا توجد بيانات.'); return; }
   const data = serializeState();
   const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);
@@ -2586,89 +2200,50 @@ function exportBackupJSON(){
   URL.revokeObjectURL(url);
   $('statLastSave').textContent = '💾 آخر تصدير: '+new Date().toLocaleTimeString('ar');
 }
-function triggerImportBackup(){
-  $('backupInput').click();
-}
+function triggerImportBackup(){ $('backupInput').click(); }
 $('backupInput').addEventListener('change', async e=>{
-  const f = e.target.files[0];
-  if(!f)return;
+  const f = e.target.files[0]; if(!f)return;
   try{
     if(f.name.endsWith('.json') || f.type.includes('json')){
       const txt = await f.text();
       const data = JSON.parse(txt);
       deserializeState(data);
-      if(!confirm(`تم قراءة النسخة الاحتياطية:\n• التلاميذ: ${STATE.cur.length}\n• التثبيتات: ${STATE.locks.size}\n\nسيتم استبدال الحالة الحالية وإعادة التوزيع. متابعة؟`))return;
+      if(!confirm(`تم القراءة:\n• التلاميذ: ${STATE.cur.length}\n• التثبيتات: ${STATE.locks.size}\n\nمتابعة؟`))return;
       forceRedistribute();
-      setSyncStatus('ok','تم استرجاع النسخة وإعادة التوزيع');
-      alert('✅ تم استرجاع النسخة الاحتياطية وإعادة التوزيع بنجاح.');
+      alert('✅ تم الاسترجاع.');
     } else {
       const wb = await readWorkbook(f);
-      if(!wb.SheetNames.includes('التلاميذ')){
-        throw new Error('ملف Excel لا يحتوي على ورقة «التلاميذ»');
-      }
+      if(!wb.SheetNames.includes('التلاميذ')) throw new Error('لا توجد ورقة التلاميذ');
       const studRows = sheetToObjects(wb.Sheets['التلاميذ']);
       const lockRows = wb.SheetNames.includes('التثبيتات') ? sheetToObjects(wb.Sheets['التثبيتات']) : [];
       const metaRows = wb.SheetNames.includes('Meta') ? sheetToObjects(wb.Sheets['Meta']) : [];
-
-      if(!confirm(`تم قراءة النسخة (Excel):\n• التلاميذ: ${studRows.length}\n• التثبيتات: ${lockRows.length}\n\nمتابعة؟`))return;
-
+      if(!confirm(`القراءة:\n• التلاميذ: ${studRows.length}\n• التثبيتات: ${lockRows.length}\n\nمتابعة؟`))return;
       STATE.cur = []; STATE.locks = new Map(); STATE.overrides = {};
       STATE.oldMap = {}; STATE.surnames = new Set(); STATE.selection = new Set();
-
-      metaRows.forEach(m=>{
-        if(m.key==='groupCount' && m.value){
-          try{ STATE.groupCount = Object.assign({}, OFFICIAL_GROUPS, JSON.parse(m.value)); }catch(e){}
-        }
-      });
-
+      metaRows.forEach(m=>{ if(m.key==='groupCount' && m.value){ try{ STATE.groupCount = Object.assign({}, OFFICIAL_GROUPS, JSON.parse(m.value)); }catch(e){} } });
       studRows.forEach(r=>{
         const id = cleanId(r['رقم التعريف']); if(!id)return;
-        STATE.cur.push({
-          id,
-          name: String(r['اللقب والاسم']||'').trim(),
-          birth: String(r['تاريخ الميلاد']||'').trim(),
-          level: normLevel(r['المستوى'])||'أولى',
-          fileGroup: parseInt(r['رقم الفوج الأصلي'])||0,
-          system: String(r['النظام']||'غير محدد').trim(),
-          reg: String(r['رقم التسجيل']||'').trim(),
-          gender: String(r['الجنس']||'U').trim(),
-          origin: String(r['الحالة']||'new').trim(),
-          trackGroup: parseInt(r['مسار الفوج'])||null,
-          oldLevel: normLevel(r['مستوى سابق'])||null,
-          manual: String(r['مُضاف يدوياً']||'').trim()==='نعم',
-          moved:false
-        });
+        STATE.cur.push({id, name: String(r['اللقب والاسم']||'').trim(), birth: String(r['تاريخ الميلاد']||'').trim(), level: normLevel(r['المستوى'])||'أولى', fileGroup: parseInt(r['رقم الفوج الأصلي'])||0, system: String(r['النظام']||'غير محدد').trim(), reg: String(r['رقم التسجيل']||'').trim(), gender: String(r['الجنس']||'U').trim(), origin: String(r['الحالة']||'new').trim(), trackGroup: parseInt(r['مسار الفوج'])||null, oldLevel: normLevel(r['مستوى سابق'])||null, manual: String(r['مُضاف يدوياً']||'').trim()==='نعم', moved:false});
       });
-
       lockRows.forEach(r=>{
         const id = cleanId(r['رقم التعريف']); if(!id)return;
         const grp = String(r['الفوج المُثبَّت']||'');
         let lv2 = null, gn = 0;
-        LEVELS.forEach(x=>{
-          if(grp.startsWith(LEVEL_SHORT[x])){
-            lv2 = x;
-            gn = parseInt(grp.slice(LEVEL_SHORT[x].length))||0;
-          }
-        });
+        LEVELS.forEach(x=>{ if(grp.startsWith(LEVEL_SHORT[x])){ lv2 = x; gn = parseInt(grp.slice(LEVEL_SHORT[x].length))||0; } });
         if(lv2 && gn>0) STATE.locks.set(id, { level: lv2, group: gn });
       });
-
       STATE.loadedCur = STATE.cur.length>0;
-      STATE.loadedOld = false;
       forceRedistribute();
-      setSyncStatus('ok','تم استرجاع Excel وإعادة التوزيع');
-      alert('✅ تم استرجاع النسخة (Excel) وإعادة التوزيع بنجاح.');
+      alert('✅ تم الاسترجاع.');
     }
-  }catch(err){
-    alert('❌ فشل استرجاع النسخة: '+err.message);
-  }
+  }catch(err){ alert('❌ فشل: '+err.message); }
   e.target.value='';
 });
 
 /* =====================================================================
-   القسم 28: الحفظ التلقائي المحلي
+   القسم 28: الحفظ التلقائي
    ===================================================================== */
-const LS_KEY = 'DONIA-CLASSE-state-v6';
+const LS_KEY = 'DONIA-CLASSE-state-v31';
 let autoSaveTimer = null;
 function autoSaveLocal(){
   if(!STATE.loadedCur)return;
@@ -2676,7 +2251,7 @@ function autoSaveLocal(){
   autoSaveTimer = setTimeout(()=>{
     try{
       localStorage.setItem(LS_KEY, JSON.stringify(serializeState()));
-      $('statLastSave').textContent = '💾 آخر حفظ تلقائي: '+new Date().toLocaleTimeString('ar');
+      $('statLastSave').textContent = '💾 آخر حفظ: '+new Date().toLocaleTimeString('ar');
     }catch(e){}
   }, 800);
 }
@@ -2691,9 +2266,6 @@ function loadLocalIfExists(){
   }catch(e){ return false; }
 }
 
-/* =====================================================================
-   القسم 29: بيانات اعتماد GitHub
-   ===================================================================== */
 const GH_LS_KEY = 'DONIA-CLASSE-github';
 function loadGHCreds(){
   try{
@@ -2701,18 +2273,16 @@ function loadGHCreds(){
     return raw ? JSON.parse(raw) : { token:'', repo:'Donia-Labstech/SMART-CLASSE', branch:'main', path:'backup.json' };
   }catch(e){ return { token:'', repo:'Donia-Labstech/SMART-CLASSE', branch:'main', path:'backup.json' }; }
 }
-function saveGHCreds(c){
-  try{ localStorage.setItem(GH_LS_KEY, JSON.stringify(c)); }catch(e){}
-}
+function saveGHCreds(c){ try{ localStorage.setItem(GH_LS_KEY, JSON.stringify(c)); }catch(e){} }
 
 /* =====================================================================
-   القسم 30: ربط الأحداث
+   القسم 29: ربط الأحداث
    ===================================================================== */
 window.addEventListener('xlsx-ready', initApp);
 window.addEventListener('xlsx-failed', function(){
   const bar=$('libStatus');
   bar.className='err';
-  bar.innerHTML='❌ تعذّر تحميل مكتبة Excel — يرجى الاتصال بالإنترنت';
+  bar.innerHTML='❌ تعذّر تحميل مكتبة Excel';
   showHelpModal();
 });
 
@@ -2727,41 +2297,30 @@ function initApp(){
   setTimeout(()=>bar.style.display='none',1500);
   bindUploads();
   bindLogoClick();
-  
-  // ✅ استرجاع الحالة المحلية + إعادة التوزيع الإجبارية
   if(loadLocalIfExists()){
     setTimeout(()=>{
-      console.log('📦 تم استرجاع الحالة المحلية:', STATE.cur.length, 'تلميذ');
-      console.log('📌 التثبيتات:', STATE.locks.size);
-      console.log('🔄 إعادة التوزيع الإجبارية...');
       forceRedistribute();
-      setSyncStatus('ok', 'تم إعادة التوزيع');
+      setSyncStatus('ok','تم استرجاع الحالة المحلية');
     }, 400);
   }
 }
-
-function bindLogoClick(){
-  const logo = $('brandLogo');
-  if(logo) logo.addEventListener('click', openLogoViewer);
-}
+function bindLogoClick(){ const logo = $('brandLogo'); if(logo) logo.addEventListener('click', openLogoViewer); }
 
 function bindUploads(){
   const setMsg=(id,txt,cls)=>{ $(id).innerHTML=txt?`<div class="msg ${cls}">${txt}</div>`:''; };
-
   $('fileCur').addEventListener('change',async e=>{
     const f=e.target.files[0]; if(!f)return;
     try{
       setMsg('msgCur','⏳ جارٍ القراءة...','ok');
       const wb=await readWorkbook(f);
       STATE.cur=parseCurrent(wb);
-      if(!STATE.cur.length){setMsg('msgCur','✖ لم يتم العثور على بيانات صالحة','err');return;}
+      if(!STATE.cur.length){setMsg('msgCur','✖ لا توجد بيانات','err');return;}
       STATE.loadedCur=true;
       $('dropCur').classList.add('on');
       setMsg('msgCur',`✔ ${STATE.cur.length} تلميذ`,'ok');
       tryRun();
     }catch(err){setMsg('msgCur','✖ خطأ: '+err.message,'err');}
   });
-
   $('fileOld').addEventListener('change',async e=>{
     const f=e.target.files[0]; if(!f)return;
     try{
@@ -2775,7 +2334,6 @@ function bindUploads(){
       tryRun();
     }catch(err){setMsg('msgOld','✖ خطأ: '+err.message,'err');}
   });
-
   $('btnRun').onclick=()=>forceRedistribute();
   $('optStrict').onchange=()=>forceRedistribute();
   $('optSystem').onchange=()=>forceRedistribute();
@@ -2784,27 +2342,15 @@ function bindUploads(){
 function showHelpModal(){
   const old=document.getElementById('helpModal'); if(old)old.remove();
   const div=document.createElement('div');
-  div.id='helpModal';
-  div.className='modal-bg';
-  div.innerHTML=`
-    <div class="modal-box">
-      <h3 style="color:#dc2626">⚠️ تعذّر تحميل مكتبة قراءة Excel</h3>
-      <p>التطبيق يحتاج مكتبة <b>SheetJS</b>، وفشل تحميلها من جميع المصادر.</p>
-      <ol style="line-height:1.9;font-size:13.5px">
-        <li>تأكّد من اتصالك بالإنترنت ثم أعد فتح الملف.</li>
-        <li>إذا استمر الخطأ، حمّل الملف يدوياً من:
-          <code style="background:#f1f5f9;padding:2px 7px;border-radius:5px;font-family:monospace;font-size:12px">https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js</code>
-          واحفظه بجانب HTML باسم <code>xlsx.full.min.js</code>.</li>
-      </ol>
-      <div class="modal-actions">
-        <button onclick="location.reload()">🔄 إعادة المحاولة</button>
-        <button class="pri" onclick="document.getElementById('helpModal').remove()">إغلاق</button>
-      </div>
-    </div>`;
+  div.id='helpModal'; div.className='modal-bg';
+  div.innerHTML=`<div class="modal-box">
+    <h3 style="color:#dc2626">⚠️ تعذّر تحميل SheetJS</h3>
+    <p>تأكد من اتصالك بالإنترنت وأعد فتح الصفحة.</p>
+    <div class="modal-actions"><button class="pri" onclick="location.reload()">🔄 إعادة</button></div>
+  </div>`;
   document.body.appendChild(div);
 }
 
-/* تشغيل أولي */
 renderSettings();
 </script>
 </body>
