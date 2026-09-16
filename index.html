@@ -53,12 +53,9 @@
   --txt:#1f2937; --muted:#64748b;
   --male:#2563eb; --female:#db2777; --unk:#d97706;
   --lock:#7c3aed;
-  /* ألوان الشعار */
   --brand-gold:#d4a017;
   --brand-gold2:#f5c518;
   --brand-blue:#0066ff;
-  --brand-blue2:#0a1f44;
-  --brand-black:#000000;
   --sh:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
   --sh2:0 4px 12px rgba(0,0,0,.08);
 }
@@ -82,206 +79,79 @@ input[type=text],input[type=number],input[type=date],input[type=password],select
 input:focus,select:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(30,90,168,.1)}
 .hidden{display:none!important}
 
-/* ============================================================
-   الشريط الأفقي العلوي (Sticky Navbar) — Sticky Top Bar
-   ============================================================ */
+/* ============ الشريط الأفقي العلوي ============ */
 .top-bar{
-  position:sticky;
-  top:0;
-  z-index:9000;
+  position:sticky;top:0;z-index:9000;
   background:linear-gradient(135deg,#0a1f44 0%,#0f2a5f 40%,#051530 100%);
   color:#fff;
   box-shadow:0 4px 20px rgba(0,0,0,.35);
   border-bottom:2px solid var(--brand-gold);
-  padding:0;
-  transition:box-shadow .3s;
 }
 .top-bar-inner{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  padding:10px 20px;
-  flex-wrap:wrap;
-  max-width:1800px;
-  margin:0 auto;
+  display:flex;align-items:center;gap:14px;padding:10px 20px;
+  flex-wrap:wrap;max-width:1800px;margin:0 auto;
 }
-
-/* ---- الشعار ---- */
 .brand-zone{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  flex-shrink:0;
-  padding-inline-end:14px;
-  border-inline-end:1px solid rgba(212,160,23,.3);
+  display:flex;align-items:center;gap:12px;flex-shrink:0;
+  padding-inline-end:14px;border-inline-end:1px solid rgba(212,160,23,.3);
 }
 .brand-logo{
-  width:48px;
-  height:48px;
-  object-fit:contain;
-  border-radius:50%;
-  cursor:zoom-in;
-  transition:transform .25s, box-shadow .25s;
+  width:48px;height:48px;object-fit:contain;border-radius:50%;
+  cursor:zoom-in;transition:transform .25s, box-shadow .25s;
   background:radial-gradient(circle, rgba(212,160,23,.15), transparent 70%);
-  padding:2px;
-  box-shadow:0 0 0 1px rgba(212,160,23,.4), 0 2px 8px rgba(0,0,0,.4);
+  padding:2px;box-shadow:0 0 0 1px rgba(212,160,23,.4), 0 2px 8px rgba(0,0,0,.4);
 }
-.brand-logo:hover{
-  transform:scale(1.08);
-  box-shadow:0 0 0 2px var(--brand-gold), 0 4px 16px rgba(212,160,23,.6);
-}
-.brand-text{
-  display:flex;
-  flex-direction:column;
-  line-height:1.15;
-  min-width:0;
-}
+.brand-logo:hover{transform:scale(1.08);box-shadow:0 0 0 2px var(--brand-gold), 0 4px 16px rgba(212,160,23,.6)}
+.brand-text{display:flex;flex-direction:column;line-height:1.15;min-width:0}
 .brand-text .t1{
-  font-size:14.5px;
-  font-weight:900;
-  letter-spacing:.3px;
+  font-size:14.5px;font-weight:900;letter-spacing:.3px;
   background:linear-gradient(135deg,#fff 30%, var(--brand-gold2) 70%);
-  -webkit-background-clip:text;
-  background-clip:text;
-  -webkit-text-fill-color:transparent;
-  color:var(--brand-gold);
-  white-space:nowrap;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:var(--brand-gold);white-space:nowrap;
 }
-.brand-text .t2{
-  font-size:10.5px;
-  font-weight:700;
-  color:var(--brand-gold);
-  letter-spacing:1.2px;
-  text-transform:uppercase;
-  margin-top:1px;
-}
-.brand-text .t3{
-  font-size:9.5px;
-  color:rgba(255,255,255,.65);
-  font-weight:500;
-  margin-top:2px;
-  white-space:nowrap;
-}
+.brand-text .t2{font-size:10.5px;font-weight:700;color:var(--brand-gold);letter-spacing:1.2px;text-transform:uppercase;margin-top:1px}
+.brand-text .t3{font-size:9.5px;color:rgba(255,255,255,.65);font-weight:500;margin-top:2px;white-space:nowrap}
 .brand-text a{
-  color:var(--brand-gold2);
-  text-decoration:none;
-  font-weight:700;
-  font-size:10.5px;
-  margin-top:3px;
-  display:inline-flex;
-  align-items:center;
-  gap:4px;
-  padding:2px 8px;
-  background:rgba(212,160,23,.12);
-  border:1px solid rgba(212,160,23,.3);
-  border-radius:12px;
-  align-self:flex-start;
-  transition:.15s;
+  color:var(--brand-gold2);text-decoration:none;font-weight:700;font-size:10.5px;
+  margin-top:3px;display:inline-flex;align-items:center;gap:4px;
+  padding:2px 8px;background:rgba(212,160,23,.12);
+  border:1px solid rgba(212,160,23,.3);border-radius:12px;
+  align-self:flex-start;transition:.15s;
 }
-.brand-text a:hover{
-  background:rgba(212,160,23,.25);
-  color:#fff;
-}
-
-/* ---- أزرار العمليات الأفقية ---- */
-.actions-zone{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  align-items:center;
-  flex:1;
-  min-width:0;
-}
+.brand-text a:hover{background:rgba(212,160,23,.25);color:#fff}
+.actions-zone{display:flex;gap:8px;flex-wrap:wrap;align-items:center;flex:1;min-width:0}
 .h-act{
-  display:inline-flex;
-  align-items:center;
-  gap:7px;
-  padding:8px 14px;
-  font-size:12.5px;
-  font-weight:700;
-  border-radius:10px;
-  border:1px solid rgba(212,160,23,.35);
-  background:rgba(255,255,255,.06);
-  color:#fff;
-  cursor:pointer;
-  transition:.2s;
-  white-space:nowrap;
-  position:relative;
-  backdrop-filter:blur(6px);
+  display:inline-flex;align-items:center;gap:7px;padding:8px 14px;
+  font-size:12.5px;font-weight:700;border-radius:10px;
+  border:1px solid rgba(212,160,23,.35);background:rgba(255,255,255,.06);
+  color:#fff;cursor:pointer;transition:.2s;white-space:nowrap;
+  position:relative;backdrop-filter:blur(6px);
 }
-.h-act:hover{
-  background:rgba(212,160,23,.18);
-  border-color:var(--brand-gold);
-  transform:translateY(-1px);
-  box-shadow:0 4px 12px rgba(212,160,23,.25);
-}
+.h-act:hover{background:rgba(212,160,23,.18);border-color:var(--brand-gold);transform:translateY(-1px);box-shadow:0 4px 12px rgba(212,160,23,.25)}
 .h-act:active{transform:translateY(0)}
 .h-act .ico{font-size:15px;line-height:1}
-.h-act.pri{
-  background:linear-gradient(135deg,var(--brand-gold),#b8860b);
-  border-color:var(--brand-gold);
-  color:#0a1f44;
-  font-weight:800;
-}
-.h-act.pri:hover{
-  background:linear-gradient(135deg,#f5c518,#d4a017);
-  box-shadow:0 4px 14px rgba(245,197,24,.45);
-}
-.h-act.sync{
-  background:linear-gradient(135deg,rgba(0,102,255,.25), rgba(0,102,255,.15));
-  border-color:rgba(0,102,255,.6);
-}
-.h-act.sync:hover{
-  background:linear-gradient(135deg,rgba(0,102,255,.4), rgba(0,102,255,.25));
-  box-shadow:0 4px 12px rgba(0,102,255,.35);
-}
-
-/* ---- Tooltips ---- */
+.h-act.pri{background:linear-gradient(135deg,var(--brand-gold),#b8860b);border-color:var(--brand-gold);color:#0a1f44;font-weight:800}
+.h-act.pri:hover{background:linear-gradient(135deg,#f5c518,#d4a017);box-shadow:0 4px 14px rgba(245,197,24,.45)}
+.h-act.sync{background:linear-gradient(135deg,rgba(0,102,255,.25), rgba(0,102,255,.15));border-color:rgba(0,102,255,.6)}
+.h-act.sync:hover{background:linear-gradient(135deg,rgba(0,102,255,.4), rgba(0,102,255,.25));box-shadow:0 4px 12px rgba(0,102,255,.35)}
 .h-act[data-tooltip]:hover::after{
-  content:attr(data-tooltip);
-  position:absolute;
-  top:calc(100% + 8px);
-  right:50%;
-  transform:translateX(50%);
-  background:#0a1f44;
-  color:#fff;
-  font-size:11.5px;
-  font-weight:600;
-  padding:6px 10px;
-  border-radius:6px;
-  white-space:nowrap;
-  border:1px solid var(--brand-gold);
-  box-shadow:0 4px 12px rgba(0,0,0,.4);
-  z-index:100;
-  pointer-events:none;
-  animation:fadeIn .2s;
+  content:attr(data-tooltip);position:absolute;top:calc(100% + 8px);right:50%;
+  transform:translateX(50%);background:#0a1f44;color:#fff;font-size:11.5px;
+  font-weight:600;padding:6px 10px;border-radius:6px;white-space:nowrap;
+  border:1px solid var(--brand-gold);box-shadow:0 4px 12px rgba(0,0,0,.4);
+  z-index:100;pointer-events:none;animation:fadeIn .2s;
 }
 .h-act[data-tooltip]:hover::before{
-  content:"";
-  position:absolute;
-  top:100%;
-  right:50%;
-  transform:translateX(50%);
-  border:6px solid transparent;
-  border-bottom-color:var(--brand-gold);
-  pointer-events:none;
-  z-index:101;
+  content:"";position:absolute;top:100%;right:50%;transform:translateX(50%);
+  border:6px solid transparent;border-bottom-color:var(--brand-gold);
+  pointer-events:none;z-index:101;
 }
 @keyframes fadeIn{ from{opacity:0; transform:translate(50%,-4px)} to{opacity:1; transform:translate(50%,0)} }
-
-/* ---- حالة المزامنة ---- */
 .sync-status{
-  display:inline-flex;
-  align-items:center;
-  gap:5px;
-  padding:5px 12px;
-  border-radius:20px;
-  font-size:11.5px;
-  font-weight:700;
-  background:rgba(255,255,255,.1);
-  border:1px solid rgba(255,255,255,.2);
-  color:#fff;
-  transition:.2s;
+  display:inline-flex;align-items:center;gap:5px;padding:5px 12px;
+  border-radius:20px;font-size:11.5px;font-weight:700;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  color:#fff;transition:.2s;
 }
 .sync-status.idle{background:rgba(148,163,184,.25); color:#cbd5e1}
 .sync-status.ok{background:rgba(16,185,129,.25); color:#6ee7b7; border-color:rgba(16,185,129,.5)}
@@ -290,36 +160,19 @@ input:focus,select:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(30,90
 .sync-status .dot{width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 6px currentColor}
 .sync-status.load .dot{animation:pulse 1s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
-
-/* ---- شريط ثانوي: معلومات المستخدم ---- */
 .sub-bar{
   background:linear-gradient(135deg,rgba(0,102,255,.15), rgba(10,31,68,.9));
-  padding:6px 20px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  font-size:11.5px;
-  color:rgba(255,255,255,.85);
-  border-top:1px solid rgba(212,160,23,.2);
-  flex-wrap:wrap;
+  padding:6px 20px;display:flex;align-items:center;justify-content:space-between;
+  gap:12px;font-size:11.5px;color:rgba(255,255,255,.85);
+  border-top:1px solid rgba(212,160,23,.2);flex-wrap:wrap;
 }
-.sub-bar .info-item{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-}
+.sub-bar .info-item{display:inline-flex;align-items:center;gap:6px}
 .sub-bar .info-item b{color:var(--brand-gold2);font-weight:800}
 .sub-bar .sep{opacity:.3}
 
-/* ---- باقي التطبيق ---- */
 header.app-header{
   background:linear-gradient(135deg,#1e3a8a,#1e5aa8 40%,#2e7dd1);
-  color:#fff;
-  padding:16px 24px;
-  box-shadow:var(--sh2);
-  position:relative;
-  overflow:hidden;
+  color:#fff;padding:16px 24px;box-shadow:var(--sh2);position:relative;overflow:hidden;
 }
 header.app-header h1{margin:0;font-size:19px;font-weight:800}
 header.app-header p{margin:4px 0 0;font-size:13px;opacity:.92}
@@ -380,6 +233,8 @@ body.lib-ready #libStatus{transform:translateY(-200%)}
 @media(max-width:820px){.section-grid{grid-template-columns:1fr}}
 .section-card{background:#fff;border-radius:12px;border:1px solid var(--border);box-shadow:var(--sh);overflow:hidden;display:flex;flex-direction:column;transition:.2s}
 .section-card:hover{box-shadow:var(--sh2)}
+.section-card.empty{outline:2px solid #dc2626;outline-offset:-2px}
+.section-card.unbalanced{outline:2px solid #fbbf24;outline-offset:-2px}
 .sc-head{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer}
 .sc-head .num{font-size:17px;font-weight:800}
 .sc-head .num small{font-weight:600;opacity:.85;font-size:12px;margin-inline-start:6px}
@@ -435,6 +290,44 @@ body.lib-ready #libStatus{transform:translateY(-200%)}
 .warnbox{background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1px solid #fde68a;border-radius:10px;padding:12px 16px;font-size:12.5px;color:#92400e;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start}
 .warnbox .ico{flex:0 0 20px;font-size:16px}
 
+.audit-panel{border-radius:12px;padding:18px 22px;margin-bottom:18px;border:2px solid}
+.audit-panel.pass{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#10b981;color:#065f46}
+.audit-panel.fail{background:linear-gradient(135deg,#fef2f2,#fee2e2);border-color:#dc2626;color:#991b1b}
+.audit-panel.warn{background:linear-gradient(135deg,#fffbeb,#fef3c7);border-color:#f59e0b;color:#92400e}
+.audit-panel h3{margin:0 0 12px;font-size:17px;display:flex;align-items:center;gap:10px;font-weight:800}
+.audit-panel .icon{width:32px;height:32px;line-height:32px;text-align:center;border-radius:50%;font-size:20px;font-weight:900;color:#fff;flex-shrink:0}
+.audit-panel.pass .icon{background:#10b981}
+.audit-panel.fail .icon{background:#dc2626}
+.audit-panel.warn .icon{background:#f59e0b}
+.audit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:12px}
+.audit-item{background:rgba(255,255,255,.7);border-radius:8px;padding:10px 14px;font-size:13px}
+.audit-item .lbl{font-size:11.5px;font-weight:700;opacity:.85;margin-bottom:3px}
+.audit-item .val{font-size:15px;font-weight:800}
+.audit-item.ok .val{color:#047857}
+.audit-item.bad .val{color:#b91c1c}
+.audit-item.warn .val{color:#b45309}
+
+.issue-list{margin-top:14px;background:#fff;border-radius:8px;padding:10px 14px;font-size:12.5px;max-height:280px;overflow-y:auto}
+.issue-list .issue{padding:8px 10px;border-bottom:1px solid #fecaca;color:#7f1d1d;border-radius:6px;margin-bottom:4px;background:#fef2f2}
+.issue-list .issue.warn{padding:8px 10px;border-bottom:1px solid #fde68a;color:#92400e;border-radius:6px;margin-bottom:4px;background:#fffbeb}
+.issue-list .issue:last-child{border-bottom:none;margin-bottom:0}
+.issue-list .issue .badge-tag{display:inline-block;padding:1px 8px;border-radius:10px;font-size:10.5px;font-weight:800;margin-inline-end:6px}
+.issue-list .issue .badge-tag.err{background:#fee2e2;color:#991b1b}
+.issue-list .issue .badge-tag.warn{background:#fef3c7;color:#92400e}
+
+.settings-table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;margin-bottom:10px}
+.settings-table th{background:#f8fafc;color:#334155;font-weight:700;padding:10px 12px;text-align:center;border-bottom:2px solid var(--border);font-size:12px}
+.settings-table td{padding:10px 12px;text-align:center;border-bottom:1px solid #f1f5f9}
+.settings-table tr:hover{background:#f8fafc}
+.settings-table input[type=number]{width:70px;padding:5px;border:1px solid #cbd5e1;border-radius:6px;text-align:center;font-weight:700;color:var(--pri)}
+.settings-table .prom{color:#0369a1;font-weight:700}
+.settings-table .rep{color:#b45309;font-weight:700}
+.settings-table .new{color:#7c3aed;font-weight:700}
+.ctrl-bar{display:flex;gap:14px;flex-wrap:wrap;align-items:center;padding:12px 0;margin-top:8px;border-top:1px solid var(--border)}
+.ctrl-bar label{display:flex;gap:7px;align-items:center;cursor:pointer;font-size:13px;font-weight:600;color:#334155}
+.ctrl-bar input[type=checkbox]{width:16px;height:16px;accent-color:var(--pri);cursor:pointer}
+.hint{font-size:12px;color:var(--muted);margin-top:6px}
+
 #bulkBar{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(135deg,#1e3a8a,#1e5aa8);color:#fff;padding:14px 24px;box-shadow:0 -4px 16px rgba(0,0,0,.2);z-index:8000;display:none;align-items:center;gap:16px;flex-wrap:wrap}
 #bulkBar.on{display:flex}
 #bulkBar .info{font-size:13.5px;font-weight:700}
@@ -483,162 +376,46 @@ body.lib-ready #libStatus{transform:translateY(-200%)}
 .admin-bar .title{font-weight:800;color:#6d28d9;font-size:13.5px;display:flex;align-items:center;gap:6px}
 .admin-bar .spacer{flex:1}
 
-.gh-panel{background:linear-gradient(135deg,#f8fafc,#f1f5f9);border:1px solid #cbd5e1;border-radius:12px;padding:16px 20px;margin-top:14px}
-.gh-panel h4{margin:0 0 12px;font-size:14px;color:#334155;display:flex;align-items:center;gap:8px}
-.gh-panel .gh-note{background:#eff6ff;border-inline-start:4px solid var(--pri);padding:10px 14px;border-radius:8px;font-size:12.5px;color:#1e40af;margin-bottom:12px;line-height:1.7}
-.gh-panel .gh-note code{background:#dbeafe;padding:1px 6px;border-radius:4px;font-family:Consolas,monospace;font-size:11.5px}
-.gh-panel .gh-form{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
-@media(max-width:620px){.gh-panel .gh-form{grid-template-columns:1fr}}
-.gh-panel .gh-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.gh-status{font-size:12.5px;font-weight:700;padding:6px 12px;border-radius:8px;display:inline-flex;align-items:center;gap:6px}
-.gh-status.idle{background:#f1f5f9;color:#64748b}
-.gh-status.ok{background:#dcfce7;color:#166534}
-.gh-status.err{background:#fee2e2;color:#991b1b}
-.gh-status.load{background:#fef3c7;color:#92400e}
-
 #printContainer{display:none}
-
-/* ============================================================
-   القواعد الصارمة للطباعة — إخفاء كل ما هو UI/Branding
-   ============================================================ */
 @media print{
-  /* إخفاء كل شيء ما عدا حاوية الطباعة */
   body>*{display:none!important}
-  .top-bar,
-  .sub-bar,
-  #bulkBar,
-  #libStatus,
-  .no-print,
-  .admin-bar,
-  .gh-panel,
-  header.app-header,
-  main,
-  footer{display:none!important}
+  .top-bar,.sub-bar,#bulkBar,#libStatus,.no-print,.admin-bar,header.app-header,main,footer{display:none!important}
   #printContainer{display:block!important;background:#fff;margin:0;padding:0}
-
-  /* ضبط هوامش الصفحة */
-  @page{
-    size:A4 portrait;
-    margin:15mm 10mm;
-  }
-
+  @page{size:A4 portrait;margin:15mm 10mm}
   .pr-doc{font-family:"Segoe UI",Tahoma,Arial,sans-serif;color:#000;font-size:11pt}
-
-  /* الترويسة الرسمية */
-  .pr-head{
-    text-align:center;
-    margin-bottom:10mm;
-    padding-bottom:4mm;
-    border-bottom:2.5px solid #000;
-    page-break-inside:avoid;
-    page-break-after:avoid;
-  }
+  .pr-head{text-align:center;margin-bottom:10mm;padding-bottom:4mm;border-bottom:2.5px solid #000;page-break-inside:avoid;page-break-after:avoid}
   .pr-head .r1{font-size:12pt;font-weight:800;letter-spacing:.5px;margin-bottom:1mm}
   .pr-head .r2{font-size:10.5pt;font-weight:600;margin-bottom:3mm}
   .pr-head .r3{font-size:13pt;font-weight:800;margin:3mm 0 1mm;color:#000}
   .pr-head .r4{font-size:10pt;font-weight:600;margin-top:1mm}
-
-  .pr-title{
-    text-align:center;
-    font-size:12.5pt;
-    font-weight:800;
-    margin:5mm 0 4mm;
-    padding:3mm;
-    background:#1e5aa8;
-    color:#fff;
-    border-radius:2px;
-    page-break-inside:avoid;
-    page-break-after:avoid;
-  }
-
-  .pr-summary{
-    display:flex;
-    justify-content:center;
-    gap:6mm;
-    font-size:9.5pt;
-    margin-bottom:5mm;
-    padding:2.5mm;
-    border:1px solid #666;
-    background:#f5f5f5;
-    page-break-inside:avoid;
-    page-break-after:avoid;
-    flex-wrap:wrap;
-  }
+  .pr-title{text-align:center;font-size:12.5pt;font-weight:800;margin:5mm 0 4mm;padding:3mm;background:#1e5aa8;color:#fff;border-radius:2px;page-break-inside:avoid;page-break-after:avoid}
+  .pr-summary{display:flex;justify-content:center;gap:6mm;font-size:9.5pt;margin-bottom:5mm;padding:2.5mm;border:1px solid #666;background:#f5f5f5;page-break-inside:avoid;page-break-after:avoid;flex-wrap:wrap}
   .pr-summary span{white-space:nowrap}
   .pr-summary b{color:#1e5aa8;font-weight:800}
-
-  .pr-sec{
-    page-break-inside:avoid;
-    page-break-after:always;
-    margin-bottom:0;
-    padding-top:0;
-  }
+  .pr-sec{page-break-inside:avoid;page-break-after:always;margin-bottom:0;padding-top:0}
   .pr-sec:last-child{page-break-after:auto}
-
-  .pr-sec-title{
-    font-size:11.5pt;
-    font-weight:800;
-    padding:2.5mm 3mm;
-    background:#1e5aa8;
-    color:#fff;
-    margin-bottom:3mm;
-    display:flex;
-    justify-content:space-between;
-    page-break-after:avoid;
-    border-radius:2px;
-  }
+  .pr-sec-title{font-size:11.5pt;font-weight:800;padding:2.5mm 3mm;background:#1e5aa8;color:#fff;margin-bottom:3mm;display:flex;justify-content:space-between;page-break-after:avoid;border-radius:2px}
   .pr-sec-title .l{display:flex;gap:5mm;font-size:9.5pt;font-weight:600}
-
-  table.pr-tbl{
-    width:100%;
-    border-collapse:collapse;
-    font-size:9.5pt;
-    page-break-inside:auto;
-  }
+  table.pr-tbl{width:100%;border-collapse:collapse;font-size:9.5pt;page-break-inside:auto}
   table.pr-tbl thead{display:table-header-group}
   table.pr-tbl thead tr{page-break-inside:avoid;page-break-after:avoid}
   table.pr-tbl tbody tr{page-break-inside:avoid}
-  table.pr-tbl th,table.pr-tbl td{
-    border:1px solid #333;
-    padding:1.5mm 2mm;
-    text-align:center;
-    vertical-align:middle;
-  }
-  table.pr-tbl th{
-    background:#dbeafe;
-    font-weight:800;
-    font-size:9pt;
-  }
-  table.pr-tbl td.name{
-    text-align:right;
-    padding-right:3mm;
-    font-weight:700;
-  }
+  table.pr-tbl th,table.pr-tbl td{border:1px solid #333;padding:1.5mm 2mm;text-align:center;vertical-align:middle}
+  table.pr-tbl th{background:#dbeafe;font-weight:800;font-size:9pt}
+  table.pr-tbl td.name{text-align:right;padding-right:3mm;font-weight:700}
   table.pr-tbl tbody tr:nth-child(even) td{background:#f9fafb}
-
-  .pr-sign{
-    margin-top:8mm;
-    display:flex;
-    justify-content:space-between;
-    font-size:10.5pt;
-    font-weight:700;
-    page-break-inside:avoid;
-  }
+  .pr-sign{margin-top:8mm;display:flex;justify-content:space-between;font-size:10.5pt;font-weight:700;page-break-inside:avoid}
   .pr-sign>div{text-align:center;min-width:60mm}
   .pr-sign .line{margin-top:15mm;border-top:1.2px solid #000;padding-top:1.5mm}
-
-  /* إخفاء الروابط */
   a[href]:after{content:""!important}
   a{color:#000!important;text-decoration:none!important}
 }
 
-/* ============== عارض الشعار (Lightbox) ============== */
 #logoViewer{position:fixed;inset:0;background:rgba(5,10,25,.92);z-index:10000;display:flex;align-items:center;justify-content:center;padding:30px;backdrop-filter:blur(8px);cursor:zoom-out}
 #logoViewer img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:50%;box-shadow:0 0 0 3px rgba(212,160,23,.6),0 20px 60px rgba(0,0,0,.7);animation:zoomIn .3s}
 @keyframes zoomIn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
 #logoViewer .close-hint{position:absolute;top:20px;right:24px;color:#fff;font-size:13px;font-weight:700;background:rgba(255,255,255,.15);padding:8px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.25)}
 
-/* ============== أزرار صغيرة للشاشة الصغيرة ============== */
 @media(max-width:900px){
   .brand-text .t3{display:none}
   .brand-text .t2{font-size:9px}
@@ -657,90 +434,46 @@ body.lib-ready #libStatus{transform:translateY(-200%)}
 </head>
 <body>
 
-<!-- ============================================================
-     الشريط الأفقي العلوي — Sticky Top Navbar
-     ============================================================ -->
 <nav class="top-bar no-print" role="navigation" aria-label="شريط الأدوات الرئيسي">
   <div class="top-bar-inner">
-
-    <!-- 🎨 الشعار + الهوية -->
     <div class="brand-zone">
-      <img
-        id="brandLogo"
-        class="brand-logo"
-        alt="DONIA LABS TECH — مختبر الأفكار الذكية"
+      <img id="brandLogo" class="brand-logo" alt="DONIA LABS TECH"
         title="اضغط لتكبير الشعار"
-        src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'>
-          <defs>
-            <radialGradient id='bg' cx='50%25' cy='50%25' r='70%25'>
-              <stop offset='0%25' stop-color='%230a1f44'/>
-              <stop offset='100%25' stop-color='%23000000'/>
-            </radialGradient>
-            <linearGradient id='gold' x1='0%25' y1='0%25' x2='100%25' y2='100%25'>
-              <stop offset='0%25' stop-color='%23f5c518'/>
-              <stop offset='50%25' stop-color='%23d4a017'/>
-              <stop offset='100%25' stop-color='%23b8860b'/>
-            </linearGradient>
-            <linearGradient id='blue' x1='0%25' y1='0%25' x2='100%25' y2='100%25'>
-              <stop offset='0%25' stop-color='%230066ff'/>
-              <stop offset='100%25' stop-color='%23003db3'/>
-            </linearGradient>
-          </defs>
-          <circle cx='100' cy='100' r='96' fill='url(%23bg)' stroke='url(%23gold)' stroke-width='4'/>
-          <circle cx='100' cy='100' r='84' fill='none' stroke='url(%23blue)' stroke-width='2' opacity='0.7'/>
-          <path d='M 55 120 L 100 60 L 145 120 L 120 120 L 100 90 L 80 120 Z' fill='url(%23blue)' stroke='url(%23gold)' stroke-width='1'/>
-          <text x='100' y='150' font-family='Arial' font-size='14' font-weight='900' fill='url(%23gold)' text-anchor='middle' letter-spacing='1'>DONIA</text>
-          <text x='100' y='168' font-family='Arial' font-size='9' font-weight='700' fill='%23ffffff' text-anchor='middle' letter-spacing='2'>LABS TECH</text>
-        </svg>"
-      >
+        src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><defs><radialGradient id='bg' cx='50%25' cy='50%25' r='70%25'><stop offset='0%25' stop-color='%230a1f44'/><stop offset='100%25' stop-color='%23000000'/></radialGradient><linearGradient id='gold' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%23f5c518'/><stop offset='50%25' stop-color='%23d4a017'/><stop offset='100%25' stop-color='%23b8860b'/></linearGradient><linearGradient id='blue' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%230066ff'/><stop offset='100%25' stop-color='%23003db3'/></linearGradient></defs><circle cx='100' cy='100' r='96' fill='url(%23bg)' stroke='url(%23gold)' stroke-width='4'/><circle cx='100' cy='100' r='84' fill='none' stroke='url(%23blue)' stroke-width='2' opacity='0.7'/><path d='M 55 120 L 100 60 L 145 120 L 120 120 L 100 90 L 80 120 Z' fill='url(%23blue)' stroke='url(%23gold)' stroke-width='1'/><text x='100' y='150' font-family='Arial' font-size='14' font-weight='900' fill='url(%23gold)' text-anchor='middle' letter-spacing='1'>DONIA</text><text x='100' y='168' font-family='Arial' font-size='9' font-weight='700' fill='%23ffffff' text-anchor='middle' letter-spacing='2'>LABS TECH</text></svg>">
       <div class="brand-text">
         <span class="t1">DONIA LABS TECH</span>
         <span class="t2">Smart Ideas Lab</span>
         <span class="t3">مختبر الأفكار الذكية والتكنولوجيا المتقدمة</span>
-        <a href="https://donialabstech.online/" target="_blank" rel="noopener" title="زيارة الموقع الرسمي">
-          🌐 donialabstech.online
-        </a>
+        <a href="https://donialabstech.online/" target="_blank" rel="noopener" title="زيارة الموقع الرسمي">🌐 donialabstech.online</a>
       </div>
     </div>
-
-    <!-- 🔘 أزرار العمليات الأفقية -->
     <div class="actions-zone" role="toolbar">
-
-      <button class="h-act sync" id="btnSync" data-tooltip="مزامنة الحالة مع GitHub (حفظ / استرجاع)" onclick="openSyncDialog()" title="مزامنة GitHub">
+      <button class="h-act sync" id="btnSync" data-tooltip="مزامنة الحالة مع GitHub" onclick="openSyncDialog()">
         <span class="ico">☁️</span>
         <span class="label-full">مزامنة GitHub</span>
         <span class="label-mid">مزامنة</span>
       </button>
-
-      <button class="h-act pri" id="btnExport" data-tooltip="تنزيل نسخة احتياطية كاملة بصيغة JSON" onclick="exportBackupJSON()" title="تصدير نسخة احتياطية">
+      <button class="h-act pri" id="btnExport" data-tooltip="تنزيل نسخة احتياطية JSON" onclick="exportBackupJSON()">
         <span class="ico">📥</span>
         <span class="label-full">تصدير نسخة احتياطية</span>
         <span class="label-mid">تصدير</span>
       </button>
-
-      <button class="h-act pri" id="btnImport" data-tooltip="استرجاع حالة عمل سابقة من ملف JSON" onclick="triggerImportBackup()" title="استرجاع نسخة احتياطية">
+      <button class="h-act pri" id="btnImport" data-tooltip="استرجاع حالة عمل سابقة" onclick="triggerImportBackup()">
         <span class="ico">📤</span>
         <span class="label-full">استرجاع نسخة احتياطية</span>
         <span class="label-mid">استرجاع</span>
       </button>
-
-      <button class="h-act" id="btnPrint" data-tooltip="فتح معاينة الطباعة للأفواج" onclick="printAll()" title="طباعة / معاينة">
+      <button class="h-act" id="btnPrint" data-tooltip="فتح معاينة الطباعة" onclick="printAll()">
         <span class="ico">🖨️</span>
         <span class="label-full">طباعة / معاينة</span>
         <span class="label-mid">طباعة</span>
       </button>
-
     </div>
-
-    <!-- حالة المزامنة -->
     <span class="sync-status idle" id="syncStatus" title="حالة المزامنة">
       <span class="dot"></span>
       <span id="syncStatusText">غير متصل</span>
     </span>
-
   </div>
-
-  <!-- شريط فرعي: معلومات الحالة -->
   <div class="sub-bar">
     <span class="info-item">📊 <b id="statStudents">0</b> تلميذ</span>
     <span class="sep">•</span>
@@ -752,15 +485,11 @@ body.lib-ready #libStatus{transform:translateY(-200%)}
   </div>
 </nav>
 
-<!-- شريط حالة التحميل -->
 <div id="libStatus" class="loading">
   <span class="spin"></span>
   <span>جارٍ تحميل مكتبة قراءة ملفات Excel (SheetJS)...</span>
 </div>
 
-<!-- ============================================================
-     الهيدر الأساسي — محفوظ كما هو
-     ============================================================ -->
 <header class="app-header">
   <h1>📚 DONIA-CLASSE — نظام توزيع التلاميذ 2027</h1>
   <p>متوسطة بوضريسة محمد الأمين — المسيلة · السنة الدراسية 2026 / 2027</p>
@@ -771,6 +500,7 @@ body.lib-ready #libStatus{transform:translateY(-200%)}
     <span>🔀 نقل جماعي</span>
     <span>💾 نسخ احتياطي</span>
     <span>☁️ مزامنة GitHub</span>
+    <span>✅ تحقق آلي v4.0</span>
   </div>
 </header>
 
@@ -916,7 +646,7 @@ function guessGender(given){
 const STATE={
   cur:[], oldMap:{}, surnames:new Set(),
   groupCount:Object.assign({},OFFICIAL_GROUPS),
-  overrides:{}, results:{}, audit:null,
+  overrides:{}, results:{}, audit:null, validation:null,
   activeLevel:null,
   loadedCur:false, loadedOld:false,
   locks: new Map(),
@@ -1047,7 +777,7 @@ function enrich(){
 }
 
 /* =====================================================================
-   القسم 8: الخوارزمية الحتمية — محفوظة 100%
+   القسم 8: الخوارزمية الحتمية v4.0
    ===================================================================== */
 function addTo(g,s){
   g.list.push(s);
@@ -1086,10 +816,22 @@ function deterministicSort(arr){
     return c!==0 ? c : a.id.localeCompare(b.id);
   });
 }
-function distribute(students,G,opts){
-  const groups=[];
-  for(let i=0;i<G;i++)groups.push({num:i+1,list:[],m:0,f:0,u:0,reps:0,prom:0,locked:0,sys:{}});
 
+/* =====================================================================
+   دالة التوزيع الحتمية v4.0
+   ✅ حتمية 100%
+   ✅ حفظ المسار بأولوية مطلقة
+   ✅ موازنة صارمة (لا فوج فارغ، لا تفاوت > 1)
+   ✅ حماية المُثبّتين من إعادة التوزيع
+   ===================================================================== */
+function distribute(students,G,opts){
+  // (1) تهيئة الأفواج
+  const groups=[];
+  for(let i=0;i<G;i++){
+    groups.push({num:i+1,list:[],m:0,f:0,u:0,reps:0,prom:0,locked:0,sys:{}});
+  }
+
+  // (2) حساب المستهدفات
   const total=students.length;
   const totM=students.filter(s=>s.gender==='M').length;
   const totF=students.filter(s=>s.gender==='F').length;
@@ -1104,38 +846,60 @@ function distribute(students,G,opts){
   };
   sysKeys.forEach(k=>ctx.sysTarget[k]=sysTot[k]/G);
 
-  const lockedStudents=[];
-  const freeStudents=[];
+  // (3) التصنيف حسب أولوية المسار
+  const TIER = { LOCKED:0, PROMOTED:1, REPEATER:2, MANUAL:3, FREE:4 };
+  const classified = { 0:[], 1:[], 2:[], 3:[], 4:[] };
+
   students.forEach(s=>{
     const lock = STATE.locks.get(s.id);
+
+    // (0) مثبّت يدوياً
     if(lock && lock.level === s.level && lock.group >= 1 && lock.group <= G){
-      lockedStudents.push(s);
-    }else{
-      freeStudents.push(s);
+      classified[TIER.LOCKED].push(s);
+      return;
     }
+    // (1) مُرقّى بمسار صالح
+    if(s.origin === 'promoted' && s.trackGroup >= 1 && s.trackGroup <= G){
+      classified[TIER.PROMOTED].push(s);
+      return;
+    }
+    // (2) معيد بمسار صالح
+    if(s.origin === 'repeater' && s.trackGroup >= 1 && s.trackGroup <= G){
+      classified[TIER.REPEATER].push(s);
+      return;
+    }
+    // (3) مُضاف يدوياً
+    if(s.origin === 'manual'){
+      classified[TIER.MANUAL].push(s);
+      return;
+    }
+    // (4) جديد أو فقد مساره
+    classified[TIER.FREE].push(s);
   });
-  deterministicSort(lockedStudents).forEach(s=>{
+
+  // (4) التطبيق حسب الأولوية — المثبّتون والمُرقّون أولاً
+  deterministicSort(classified[0]).forEach(s=>{
     const lock = STATE.locks.get(s.id);
     addTo(groups[lock.group-1], s);
   });
-
-  const pKeep=[],pFree=[],rKeep=[],rFree=[],newbies=[];
-  freeStudents.forEach(s=>{
-    if(s.origin==='promoted'&&s.trackGroup){
-      (s.trackGroup>=1&&s.trackGroup<=G?pKeep:pFree).push(s);
-    }else if(s.origin==='repeater'&&s.trackGroup){
-      (s.trackGroup>=1&&s.trackGroup<=G?rKeep:rFree).push(s);
-    }else newbies.push(s);
+  deterministicSort(classified[1]).forEach(s=>{
+    addTo(groups[s.trackGroup-1], s);
+  });
+  deterministicSort(classified[2]).forEach(s=>{
+    addTo(groups[s.trackGroup-1], s);
   });
 
-  deterministicSort(pKeep).forEach(s=>addTo(groups[s.trackGroup-1],s));
-  deterministicSort(rKeep).forEach(s=>addTo(groups[s.trackGroup-1],s));
-
-  const freePool=[];
-  deterministicSort(rFree).forEach(s=>freePool.push(s));
+  // (5) تجهيز القائمة الحرة (معيد بلا مسار + مُرقّى بلا مسار + جديد + يدوي)
+  const freePool = [];
+  const repeaterLost = classified[4].filter(s=>s.origin==='repeater');
+  const promotedLost = classified[4].filter(s=>s.origin==='promoted');
+  const newbies      = classified[4].filter(s=>s.origin==='new');
+  deterministicSort(promotedLost).forEach(s=>freePool.push(s));
+  deterministicSort(repeaterLost).forEach(s=>freePool.push(s));
   deterministicSort(newbies).forEach(s=>freePool.push(s));
-  deterministicSort(pFree).forEach(s=>freePool.push(s));
+  deterministicSort(classified[3]).forEach(s=>freePool.push(s));
 
+  // تشذير الجنس: ذكور/إناث/غير محدد بالتناوب
   const mArr=[],fArr=[],uArr=[];
   freePool.forEach(s=>{
     if(s.gender==='M')mArr.push(s);
@@ -1150,6 +914,7 @@ function distribute(students,G,opts){
     if(uArr[i])interleaved.push(uArr[i]);
   }
 
+  // (6) التعيين الحتمي — اختر الفوج الأقل تكلفة، مع قراءة حتمية عند التساوي
   interleaved.forEach(s=>{
     let best=null,bs=Infinity;
     for(const g of groups){
@@ -1164,42 +929,64 @@ function distribute(students,G,opts){
     addTo(best,s);
   });
 
-  if(!opts.strict){
-    let guard=0;
-    while(guard++<5000){
-      let mxG=groups[0],mnG=groups[0];
-      for(const g of groups){
-        if(g.list.length>mxG.list.length)mxG=g;
-        if(g.list.length<mnG.list.length)mnG=g;
-      }
-      if(mxG.list.length-mnG.list.length<=1)break;
-      const candidates=mxG.list.filter(s=>!s.trackGroup && !STATE.locks.has(s.id))
-        .sort((a,b)=>a.name.localeCompare(b.name,'ar'));
-      if(!candidates.length)break;
-      const s=candidates[0];
-      removeFrom(mxG,s); s.moved=true; addTo(mnG,s);
+  // (7) الموازنة النهائية الصارمة — تُنفَّذ دائماً، لا تلمس المحميين
+  const isProtected = (s) => {
+    if(STATE.locks.has(s.id)) return true;
+    if(s.origin === 'promoted' && s.trackGroup) return true;
+    if(s.origin === 'repeater' && s.trackGroup) return true;
+    return false;
+  };
+
+  let guard = 0;
+  const maxIter = G * total * 2;
+  while(guard++ < maxIter){
+    let mxG = groups[0], mnG = groups[0];
+    for(const g of groups){
+      if(g.list.length > mxG.list.length) mxG = g;
+      if(g.list.length < mnG.list.length) mnG = g;
     }
+    if(mxG.list.length - mnG.list.length <= 1) break;
+
+    const candidates = mxG.list
+      .filter(s => !isProtected(s))
+      .sort((a,b)=>{
+        const c = a.name.localeCompare(b.name,'ar');
+        return c!==0 ? c : a.id.localeCompare(b.id);
+      });
+
+    if(!candidates.length) break;
+    const s = candidates[0];
+    removeFrom(mxG, s);
+    s.moved = true;
+    addTo(mnG, s);
   }
 
-  groups.forEach(g=>g.list.sort((a,b)=>a.name.localeCompare(b.name,'ar')));
+  // (8) الترتيب النهائي داخل كل فوج
+  groups.forEach(g=>{
+    g.list.sort((a,b)=> a.name.localeCompare(b.name,'ar'));
+  });
+
+  // (9) الإحصائيات
   const stats={
-    total,G, avg:(total/G).toFixed(1),
-    m:totM, f:totF, u:total-totM-totF, rep:totRep,
-    locked: lockedStudents.length,
-    min:Math.min(...groups.map(g=>g.list.length)),
-    max:Math.max(...groups.map(g=>g.list.length))
+    total, G,
+    avg: (total/G).toFixed(1),
+    m: totM, f: totF, u: total-totM-totF,
+    rep: totRep,
+    locked: classified[0].length,
+    min: Math.min(...groups.map(g=>g.list.length)),
+    max: Math.max(...groups.map(g=>g.list.length))
   };
+
   return {groups,stats};
 }
 
 /* =====================================================================
-   القسم 9: لوحة التدقيق
+   القسم 9: طبقة التحقق الآلي v4.0
    ===================================================================== */
 function runAudit(){
   const audit={
     pass:true, totals:{}, perLevel:{},
-    duplicates:[], missing:[], mismatched:[], groupCountIssues:[],
-    lockIssues:[]
+    duplicates:[], missing:[], mismatched:[], groupCountIssues:[], lockIssues:[]
   };
   audit.totals.input=STATE.cur.length;
 
@@ -1281,6 +1068,95 @@ function runAudit(){
 }
 
 /* =====================================================================
+   طبقة التحقق المتقدمة — تكشف المشاكل الهيكلية
+   ===================================================================== */
+function validateDistribution(){
+  const report = { passed:true, issues:[], warnings:[] };
+
+  LEVELS.forEach(lv=>{
+    const r = STATE.results[lv];
+    if(!r) return;
+
+    const G = r.stats.G;
+
+    // (1) كشف الأفواج الفارغة (إذا كان عدد التلاميذ ≥ عدد الأفواج)
+    if(r.stats.total >= G){
+      r.groups.forEach(g=>{
+        if(g.list.length === 0){
+          report.passed = false;
+          report.issues.push({
+            type:'EMPTY_GROUP',
+            level: lv,
+            group: g.num,
+            message:`الفوج ${LEVEL_SHORT[lv]}${g.num} فارغ تماماً رغم توفر ${r.stats.total} تلميذاً لـ ${G} أفواج.`
+          });
+        }
+      });
+    }
+
+    // (2) كشف التفاوت الكبير (أكثر من 1)
+    if(r.stats.max - r.stats.min > 1){
+      report.passed = false;
+      report.issues.push({
+        type:'IMBALANCE',
+        level: lv,
+        message:`تفاوت الأعداد في ${LEVEL_LABEL[lv]}: الأصغر=${r.stats.min}, الأكبر=${r.stats.max} (المسموح: ≤ 1).`
+      });
+    }
+
+    // (3) كشف انتهاكات المسار للمُرقّين
+    r.groups.forEach(g=>{
+      g.list.forEach(s=>{
+        if(s.origin === 'promoted' && s.trackGroup){
+          if(g.num !== s.trackGroup){
+            report.passed = false;
+            report.issues.push({
+              type:'TRACK_VIOLATION',
+              level: lv,
+              student: s.name,
+              id: s.id,
+              expected: s.trackGroup,
+              actual: g.num,
+              message:`التلميذ ${s.name} مُرقّى من ${s.oldLevel} ${s.trackGroup} لكنه في الفوج ${g.num}.`
+            });
+          }
+        }
+        if(s.origin === 'repeater' && s.trackGroup){
+          if(g.num !== s.trackGroup){
+            report.warnings.push({
+              type:'REPEATER_TRACK_VIOLATION',
+              level: lv,
+              student: s.name,
+              id: s.id,
+              expected: s.trackGroup,
+              actual: g.num,
+              message:`المعيد ${s.name} كان في ${s.oldLevel} ${s.trackGroup} لكنه في الفوج ${g.num}.`
+            });
+          }
+        }
+        const lock = STATE.locks.get(s.id);
+        if(lock && lock.level === lv){
+          if(g.num !== lock.group){
+            report.passed = false;
+            report.issues.push({
+              type:'LOCK_VIOLATION',
+              level: lv,
+              student: s.name,
+              id: s.id,
+              expected: lock.group,
+              actual: g.num,
+              message:`التلميذ المثبّت ${s.name} يجب أن يكون في الفوج ${lock.group} لكنه في ${g.num}.`
+            });
+          }
+        }
+      });
+    });
+  });
+
+  return report;
+}
+
+/* =====================================================================
    القسم 10: التشغيل
    ===================================================================== */
 function tryRun(){
@@ -1301,7 +1177,8 @@ function runDistribution(){
     const G=STATE.groupCount[lv]||OFFICIAL_GROUPS[lv];
     STATE.results[lv]=distribute(list,G,opts);
   });
-  STATE.audit=runAudit();
+  STATE.audit = runAudit();
+  STATE.validation = validateDistribution();
   renderAudit();
   renderLockedPanel();
   renderResults();
@@ -1331,7 +1208,6 @@ function setSyncStatus(type, text){
   const t = $('syncStatusText');
   if(t) t.textContent = text;
   if(type==='ok' || type==='err'){
-    // إرجاع الحالة إلى idle بعد 5 ثوان
     clearTimeout(el._timer);
     el._timer = setTimeout(()=>{
       el.className = 'sync-status idle';
@@ -1341,7 +1217,7 @@ function setSyncStatus(type, text){
 }
 
 /* =====================================================================
-   القسم 12: عارض الشعار (Lightbox)
+   القسم 12: عارض الشعار
    ===================================================================== */
 function openLogoViewer(){
   const old = $('logoViewer'); if(old) old.remove();
@@ -1371,12 +1247,12 @@ function openSyncDialog(){
   div.innerHTML = `
     <div class="modal-box" style="max-width:640px">
       <h3>☁️ مزامنة البيانات مع GitHub</h3>
-      <div class="gh-note" style="background:#eff6ff;border-inline-start:4px solid #1e5aa8;padding:12px 14px;border-radius:8px;font-size:12.5px;color:#1e40af;margin-bottom:14px;line-height:1.8">
-        <b>📌 كيفية الحصول على Personal Access Token (PAT):</b><br>
+      <div style="background:#eff6ff;border-inline-start:4px solid #1e5aa8;padding:12px 14px;border-radius:8px;font-size:12.5px;color:#1e40af;margin-bottom:14px;line-height:1.8">
+        <b>📌 للحصول على Personal Access Token (Classic):</b><br>
         1. اذهب إلى <code style="background:#dbeafe;padding:1px 6px;border-radius:4px">https://github.com/settings/tokens</code><br>
-        2. اضغط <b>Generate new token (classic)</b><br>
-        3. اختر صلاحية <code style="background:#dbeafe;padding:1px 6px;border-radius:4px">repo</code><br>
-        4. انسخ الـ Token والصقه أدناه (يُخزَّن محلياً فقط).
+        2. اختر تبويب <b>Tokens (classic)</b> ← Generate new token (classic)<br>
+        3. فعّل صلاحية <code style="background:#dbeafe;padding:1px 6px;border-radius:4px">repo</code> كاملة<br>
+        4. انسخ الـ Token والصقه أدناه.
       </div>
       <div class="form-grid">
         <div class="form-row">
@@ -1385,7 +1261,7 @@ function openSyncDialog(){
         </div>
         <div class="form-row">
           <label>اسم المستودع (owner/repo)</label>
-          <input type="text" id="syncRepo" placeholder="username/students-distribution" value="${esc(creds.repo||'')}">
+          <input type="text" id="syncRepo" placeholder="Donia-Labstech/SMART-CLASSE" value="${esc(creds.repo||'')}">
         </div>
         <div class="form-row">
           <label>الفرع (Branch)</label>
@@ -1393,11 +1269,11 @@ function openSyncDialog(){
         </div>
         <div class="form-row">
           <label>مسار الملف</label>
-          <input type="text" id="syncPath" value="${esc(creds.path||'data/backup.json')}">
+          <input type="text" id="syncPath" value="${esc(creds.path||'backup.json')}">
         </div>
       </div>
       <div class="modal-actions" style="flex-wrap:wrap">
-        <button class="danger" onclick="ghClearFromDialog()">🗑️ حذف بيانات الاعتماد</button>
+        <button class="danger" onclick="ghClearFromDialog()">🗑️ حذف الاعتماد</button>
         <button onclick="ghTestFromDialog()">🔍 اختبار الاتصال</button>
         <button class="pri" onclick="ghLoadFromDialog()">⬇️ استرجاع من GitHub</button>
         <button class="pri" style="background:linear-gradient(135deg,#d4a017,#b8860b)" onclick="ghSaveFromDialog()">☁️ حفظ في GitHub</button>
@@ -1411,7 +1287,7 @@ function _readSyncCredsFromDialog(){
     token: $('syncToken').value.trim(),
     repo: $('syncRepo').value.trim(),
     branch: $('syncBranch').value.trim()||'main',
-    path: $('syncPath').value.trim()||'data/backup.json'
+    path: $('syncPath').value.trim()||'backup.json'
   };
 }
 function ghClearFromDialog(){
@@ -1443,7 +1319,6 @@ async function ghSaveFromDialog(){
   saveGHCreds(c);
   try{
     setSyncStatus('load','جارٍ الحفظ على GitHub...');
-    // الحصول على sha إن وجد
     let sha = null;
     try{
       const r = await fetch(`https://api.github.com/repos/${c.repo}/contents/${encodeURIComponent(c.path)}?ref=${encodeURIComponent(c.branch)}`, {
@@ -1521,7 +1396,7 @@ function renderLockedPanel(){
   });
 
   let html = `<div class="locked-panel">
-    <h4>📌 تم تثبيت <b>${STATE.locks.size}</b> تلميذ يدوياً على أفواج محددة — هؤلاء محجوزون ولن تُغيّرهم الخوارزمية:</h4>
+    <h4>📌 تم تثبيت <b>${STATE.locks.size}</b> تلميذ يدوياً على أفواج محددة:</h4>
     <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">`;
 
   const sortedKeys = [...grouped.keys()].sort();
@@ -1534,8 +1409,7 @@ function renderLockedPanel(){
       </div>
       <div class="items">`;
     studs.forEach(s=>{
-      html += `<span class="item">
-        ${esc(s.name)}
+      html += `<span class="item">${esc(s.name)}
         <button onclick="unlockOne('${esc(s.id)}')" title="فك التثبيت">✕</button>
       </span>`;
     });
@@ -1583,31 +1457,45 @@ function exportLocks(){
 }
 
 /* =====================================================================
-   القسم 15: لوحة التدقيق
+   القسم 15: لوحة التدقيق (مع عرض طبقة التحقق)
    ===================================================================== */
 function renderAudit(){
   $('auditCard').classList.remove('hidden');
   const a=STATE.audit;
-  const pass=a.pass;
+  const v=STATE.validation;
+  const hasCriticalIssues = v && !v.passed;
+  const hasWarnings = v && v.warnings.length>0;
+  const overallPass = a.pass && !hasCriticalIssues;
 
-  let html=`<div class="audit-panel ${pass?'pass':'fail'}">
-    <h3><span class="icon">${pass?'✓':'✕'}</span>
-      ${pass?'التدقيق ناجح — مطابقة 100%':'⚠️ فشل التدقيق — توجد فروقات'}
-    </h3>`;
+  let panelClass = 'pass';
+  let iconChar = '✓';
+  let titleText = 'التدقيق ناجح — مطابقة 100%';
+  if(!overallPass){
+    panelClass = 'fail';
+    iconChar = '✕';
+    titleText = '⚠️ فشل التدقيق — توجد مشاكل';
+  } else if(hasWarnings){
+    panelClass = 'warn';
+    iconChar = '!';
+    titleText = 'التدقيق ناجح — توجد تحذيرات';
+  }
 
-  if(pass){
+  let html=`<div class="audit-panel ${panelClass}">
+    <h3><span class="icon">${iconChar}</span>${titleText}</h3>`;
+
+  if(overallPass && !hasWarnings){
     html+=`<div style="font-size:13.5px;line-height:1.8">
       تم التحقق من سلامة جميع البيانات بنجاح:
       <ul style="margin:8px 0;padding-inline-start:24px">
         <li>✅ إجمالي المدخلات = إجمالي المخرجات (${a.totals.input} تلميذ)</li>
         <li>✅ لا يوجد أي تكرار في أرقام التعريف</li>
-        <li>✅ جميع الأسماء وتواريخ الميلاد وأرقام التسجيل مطابقة للأصل حرفياً</li>
-        <li>✅ ${STATE.locks.size>0?`جميع التلاميذ المُثبَّتين (${STATE.locks.size}) في أفواجهم المطلوبة`:'لا توجد تثبيتات يدوية'}</li>
-        <li>✅ عدد الأفواج مطابق للخريطة المدرسية الرسمية</li>
+        <li>✅ جميع البيانات مطابقة للأصل حرفياً</li>
+        <li>✅ جميع المسارات محفوظة بنسبة 100%</li>
+        <li>✅ توزيع متوازن (فرق الأعداد ≤ 1)</li>
+        <li>✅ لا توجد أفواج فارغة</li>
+        <li>✅ ${STATE.locks.size>0?`جميع المُثبَّتين (${STATE.locks.size}) في أفواجهم المطلوبة`:'لا توجد تثبيتات يدوية'}</li>
       </ul>
     </div>`;
-  }else{
-    html+=`<div style="font-size:13.5px;line-height:1.8">تم كشف المشاكل التالية:</div>`;
   }
 
   html+=`<div class="audit-grid">
@@ -1618,10 +1506,10 @@ function renderAudit(){
       <div class="lbl">إجمالي المخرجات</div><div class="val">${a.totals.output} تلميذ</div>
     </div>
     <div class="audit-item ${a.duplicates.length===0?'ok':'bad'}">
-      <div class="lbl">تكرارات</div><div class="val">${a.duplicates.length}</div>
+      <div class="lbl">تكرارات رقم التعريف</div><div class="val">${a.duplicates.length}</div>
     </div>
     <div class="audit-item ${a.missing.length===0?'ok':'bad'}">
-      <div class="lbl">مفقودون</div><div class="val">${a.missing.length}</div>
+      <div class="lbl">تلاميذ مفقودون</div><div class="val">${a.missing.length}</div>
     </div>
     <div class="audit-item ${a.mismatched.length===0?'ok':'bad'}">
       <div class="lbl">اختلافات بيانات</div><div class="val">${a.mismatched.length}</div>
@@ -1629,45 +1517,86 @@ function renderAudit(){
     <div class="audit-item ${a.lockIssues.length===0?'ok':'bad'}">
       <div class="lbl">مشاكل التثبيت</div><div class="val">${a.lockIssues.length}</div>
     </div>
-    <div class="audit-item ${a.groupCountIssues.length===0?'ok':'bad'}">
-      <div class="lbl">مشاكل الخريطة</div><div class="val">${a.groupCountIssues.length}</div>
+    <div class="audit-item ${v&&v.issues.length===0?'ok':'bad'}">
+      <div class="lbl">مشاكل هيكلية</div><div class="val">${v?v.issues.length:0}</div>
+    </div>
+    <div class="audit-item ${v&&v.warnings.length===0?'ok':'warn'}">
+      <div class="lbl">تحذيرات المسار</div><div class="val">${v?v.warnings.length:0}</div>
     </div>
     <div class="audit-item ok">
       <div class="lbl">📌 مُثبَّتون</div><div class="val">${STATE.locks.size}</div>
     </div>
   </div>`;
 
-  html+=`<table class="audit-table">
-    <thead><tr>
-      <th>المستوى</th><th>مدخلات</th><th>مخرجات</th><th>الحالة</th>
-      <th>الأفواج (متوقع/فعلي)</th><th>أصغر</th><th>أكبر</th>
+  // جدول المستويات
+  html+=`<table class="audit-table" style="width:100%;border-collapse:collapse;margin-top:14px;font-size:13px;background:#fff;border-radius:8px;overflow:hidden">
+    <thead><tr style="background:#f1f5f9">
+      <th style="padding:10px">المستوى</th><th style="padding:10px">مدخلات</th><th style="padding:10px">مخرجات</th>
+      <th style="padding:10px">الحالة</th><th style="padding:10px">الأفواج (متوقع/فعلي)</th>
+      <th style="padding:10px">أصغر</th><th style="padding:10px">أكبر</th>
     </tr></thead><tbody>`;
   LEVELS.forEach(lv=>{
     const la=a.perLevel[lv]; if(!la)return;
     const gcOk=la.groupsActual===la.groupsExpected;
     const ok=la.matched&&gcOk;
     html+=`<tr>
-      <td><b>${LEVEL_LABEL[lv]}</b></td>
-      <td>${la.inputCount}</td>
-      <td>${la.outputCount}</td>
-      <td class="${ok?'ok':'bad'}">${ok?'✓':'✕'}</td>
-      <td class="${gcOk?'ok':'bad'}">${la.groupsExpected} / ${la.groupsActual}</td>
-      <td>${la.minGroup}</td><td>${la.maxGroup}</td>
+      <td style="padding:9px;text-align:center;border-bottom:1px solid #f1f5f9"><b>${LEVEL_LABEL[lv]}</b></td>
+      <td style="padding:9px;text-align:center;border-bottom:1px solid #f1f5f9">${la.inputCount}</td>
+      <td style="padding:9px;text-align:center;border-bottom:1px solid #f1f5f9">${la.outputCount}</td>
+      <td style="padding:9px;text-align:center;border-bottom:1px solid #f1f5f9;color:${ok?'#047857':'#b91c1c'};font-weight:800">${ok?'✓ مطابق':'✕ خطأ'}</td>
+      <td style="padding:9px;text-align:center;border-bottom:1px solid #f1f5f9;color:${gcOk?'#047857':'#b91c1c'}">${la.groupsExpected} / ${la.groupsActual}</td>
+      <td style="padding:9px;text-align:center;border-bottom:1px solid #f1f5f9">${la.minGroup}</td>
+      <td style="padding:9px;text-align:center;border-bottom:1px solid #f1f5f9">${la.maxGroup}</td>
     </tr>`;
   });
-  html+=`<tr class="total">
-    <td>الإجمالي</td><td>${a.totals.input}</td><td>${a.totals.output}</td>
-    <td class="${a.totals.input===a.totals.output?'ok':'bad'}">${a.totals.input===a.totals.output?'✓':'✕'}</td>
-    <td colspan="3">—</td>
+  html+=`<tr style="background:#f8fafc;font-weight:800;color:#1e5aa8">
+    <td style="padding:9px;text-align:center">الإجمالي</td>
+    <td style="padding:9px;text-align:center">${a.totals.input}</td>
+    <td style="padding:9px;text-align:center">${a.totals.output}</td>
+    <td style="padding:9px;text-align:center;color:${a.totals.input===a.totals.output?'#047857':'#b91c1c'}">${a.totals.input===a.totals.output?'✓ مطابق':'✕ خطأ'}</td>
+    <td colspan="3" style="padding:9px;text-align:center">—</td>
   </tr></tbody></table>`;
 
-  if(a.duplicates.length){
-    html+=`<div style="margin-top:16px"><h4 style="margin:0 0 8px;color:#b91c1c">🔴 تكرارات (${a.duplicates.length})</h4><div class="dup-list">`;
-    a.duplicates.forEach(d=>{
-      html+=`<div class="dup-row"><b>${esc(d.name)}</b> — <code>${esc(d.id)}</code> (${LEVEL_SHORT[d.first.level]}${d.first.group} / ${LEVEL_SHORT[d.second.level]}${d.second.group})</div>`;
+  // عرض المشاكل الهيكلية
+  if(v && v.issues.length){
+    html+=`<div style="margin-top:16px">
+      <h4 style="margin:0 0 8px;color:#b91c1c;font-size:14px">🔴 مشاكل هيكلية (${v.issues.length})</h4>
+      <div class="issue-list">`;
+    v.issues.forEach(it=>{
+      html+=`<div class="issue"><span class="badge-tag err">${it.type}</span>${esc(it.message)}</div>`;
     });
     html+=`</div></div>`;
   }
+
+  // عرض التحذيرات
+  if(v && v.warnings.length){
+    html+=`<div style="margin-top:16px">
+      <h4 style="margin:0 0 8px;color:#92400e;font-size:14px">⚠️ تحذيرات المسار (${v.warnings.length})</h4>
+      <div class="issue-list">`;
+    v.warnings.forEach(it=>{
+      html+=`<div class="issue warn"><span class="badge-tag warn">${it.type}</span>${esc(it.message)}</div>`;
+    });
+    html+=`</div></div>`;
+  }
+
+  // عرض المشاكل الأخرى
+  if(a.duplicates.length || a.missing.length || a.mismatched.length || a.lockIssues.length){
+    html+=`<div style="margin-top:16px"><h4 style="margin:0 0 8px;color:#b91c1c;font-size:14px">🔴 مشاكل أخرى</h4><div class="issue-list">`;
+    a.duplicates.forEach(d=>{
+      html+=`<div class="issue"><span class="badge-tag err">تكرار</span><b>${esc(d.name)}</b> — <code>${esc(d.id)}</code></div>`;
+    });
+    a.missing.forEach(m=>{
+      html+=`<div class="issue"><span class="badge-tag err">مفقود</span><b>${esc(m.name)}</b> — <code>${esc(m.id)}</code></div>`;
+    });
+    a.mismatched.forEach(m=>{
+      html+=`<div class="issue"><span class="badge-tag err">اختلاف</span><b>${esc(m.name)}</b> — ${m.field}</div>`;
+    });
+    a.lockIssues.forEach(m=>{
+      html+=`<div class="issue"><span class="badge-tag err">تثبيت</span><b>${esc(m.name)}</b> — متوقع ${m.expected.group}، فعلي ${m.actual.group}</div>`;
+    });
+    html+=`</div></div>`;
+  }
+
   html+=`</div>`;
   $('auditBody').innerHTML=html;
 }
@@ -1771,11 +1700,13 @@ function renderLevelView(lv){
   let cards=`<div class="section-grid" id="sectionsGrid">`;
   r.groups.forEach(g=>{
     const total=g.list.length;
-    const over=total>r.stats.avg*1.2?' style="outline:2px solid #fbbf24;outline-offset:-2px"':'';
+    let cardClass = 'section-card';
+    if(total === 0 && r.stats.total >= r.stats.G) cardClass += ' empty';
+    else if(total > r.stats.avg * 1.2) cardClass += ' unbalanced';
     const groupSelected = g.list.filter(s=>STATE.selection.has(s.id)).length;
 
     cards+=`
-      <div class="section-card"${over} data-num="${g.num}">
+      <div class="${cardClass}" data-num="${g.num}">
         <div class="sc-head">
           <div class="num">${LEVEL_SHORT[lv]}${g.num}<small>— الفوج ${g.num}</small></div>
           <div style="display:flex;gap:6px;align-items:center">
@@ -2011,6 +1942,7 @@ function transferSelected(){
 
   STATE.selection.clear();
   STATE.audit = runAudit();
+  STATE.validation = validateDistribution();
   renderAudit();
   renderLockedPanel();
   renderResults();
@@ -2105,6 +2037,7 @@ function applyMove(id, btn){
   if(doLock) STATE.locks.set(id, { level: st.level, group: targetNum });
   btn.closest('.modal-bg').remove();
   STATE.audit=runAudit();
+  STATE.validation = validateDistribution();
   renderAudit();
   renderLockedPanel();
   renderResults();
@@ -2442,10 +2375,7 @@ function printLevel(lv){
 }
 function printAll(){
   const list=LEVELS.filter(lv=>STATE.results[lv]);
-  if(!list.length){
-    alert('⚠️ لا توجد بيانات للطباعة. حمّل الملفات أولاً.');
-    return;
-  }
+  if(!list.length){ alert('⚠️ لا توجد بيانات للطباعة. حمّل الملفات أولاً.'); return; }
   $('printContainer').innerHTML=buildPrintHTML(list);
   setTimeout(()=>window.print(),80);
 }
@@ -2527,7 +2457,7 @@ function exportAll(){
    ===================================================================== */
 function serializeState(){
   return {
-    version: '3.1',
+    version: '4.0',
     app: 'DONIA-CLASSE',
     brand: BRAND,
     school: SCHOOL,
@@ -2567,10 +2497,7 @@ function deserializeState(data){
   STATE.loadedOld = Object.keys(STATE.oldMap).length>0;
 }
 function exportBackupJSON(){
-  if(!STATE.cur.length){
-    alert('⚠️ لا توجد بيانات لحفظها. حمّل الملفات أولاً.');
-    return;
-  }
+  if(!STATE.cur.length){ alert('⚠️ لا توجد بيانات لحفظها.'); return; }
   const data = serializeState();
   const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);
@@ -2598,7 +2525,6 @@ $('backupInput').addEventListener('change', async e=>{
       setSyncStatus('ok','تم استرجاع النسخة');
       alert('✅ تم استرجاع النسخة الاحتياطية بنجاح.');
     } else {
-      // Excel backup (يحتاج ورقة التلاميذ)
       const wb = await readWorkbook(f);
       if(!wb.SheetNames.includes('التلاميذ')){
         throw new Error('ملف Excel لا يحتوي على ورقة «التلاميذ»');
@@ -2665,7 +2591,7 @@ $('backupInput').addEventListener('change', async e=>{
 /* =====================================================================
    القسم 27: الحفظ التلقائي المحلي
    ===================================================================== */
-const LS_KEY = 'DONIA-CLASSE-state-v3';
+const LS_KEY = 'DONIA-CLASSE-state-v4';
 let autoSaveTimer = null;
 function autoSaveLocal(){
   if(!STATE.loadedCur)return;
@@ -2689,14 +2615,14 @@ function loadLocalIfExists(){
 }
 
 /* =====================================================================
-   القسم 28: بيانات اعتماد GitHub (Local Storage)
+   القسم 28: بيانات اعتماد GitHub
    ===================================================================== */
 const GH_LS_KEY = 'DONIA-CLASSE-github';
 function loadGHCreds(){
   try{
     const raw = localStorage.getItem(GH_LS_KEY);
-    return raw ? JSON.parse(raw) : { token:'', repo:'', branch:'main', path:'data/backup.json' };
-  }catch(e){ return { token:'', repo:'', branch:'main', path:'data/backup.json' }; }
+    return raw ? JSON.parse(raw) : { token:'', repo:'Donia-Labstech/SMART-CLASSE', branch:'main', path:'backup.json' };
+  }catch(e){ return { token:'', repo:'Donia-Labstech/SMART-CLASSE', branch:'main', path:'backup.json' }; }
 }
 function saveGHCreds(c){
   try{ localStorage.setItem(GH_LS_KEY, JSON.stringify(c)); }catch(e){}
