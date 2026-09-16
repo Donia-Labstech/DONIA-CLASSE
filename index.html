@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DONIA-CLASSE v5.0 — نظام توزيع التلاميذ</title>
+<title>DONIA-CLASSE v5.1 — نظام توزيع التلاميذ</title>
 <meta name="author" content="DONIALABSTECH">
 <script>
 (function(){
@@ -77,6 +77,7 @@ input:focus,select:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(30,90
 .h-act.pri{background:linear-gradient(135deg,var(--gold),#b8860b);border-color:var(--gold);color:#0a1f44;font-weight:800}
 .h-act.sync{background:linear-gradient(135deg,rgba(0,102,255,.25),rgba(0,102,255,.15));border-color:rgba(0,102,255,.6)}
 .h-act.force{background:linear-gradient(135deg,rgba(220,38,38,.3),rgba(220,38,38,.18));border-color:rgba(220,38,38,.7)}
+.h-act.forceLevel{background:linear-gradient(135deg,rgba(245,158,11,.3),rgba(245,158,11,.18));border-color:rgba(245,158,11,.7)}
 .h-act .ico{font-size:15px;line-height:1}
 .sync-status{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;font-size:11.5px;font-weight:700;background:rgba(148,163,184,.25);color:#cbd5e1;border:1px solid rgba(255,255,255,.2)}
 .sync-status.ok{background:rgba(16,185,129,.25);color:#6ee7b7;border-color:rgba(16,185,129,.5)}
@@ -160,7 +161,8 @@ main{max-width:1600px;margin:16px auto;padding:0 16px}
 .sc-toolbar label{display:flex;gap:5px;align-items:center;cursor:pointer;font-weight:700;color:#475569}
 .sc-toolbar input[type=checkbox]{width:14px;height:14px;accent-color:var(--pri)}
 .sc-toolbar .sel-count{background:var(--pri);color:#fff;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:700}
-.sc-toolbar .move-whole{background:linear-gradient(135deg,#d4a017,#b8860b);color:#fff;border:none;padding:2px 8px;border-radius:6px;font-size:10.5px;font-weight:700;cursor:pointer}
+.sc-toolbar .move-whole{background:linear-gradient(135deg,#d4a017,#b8860b);color:#fff;border:none;padding:3px 9px;border-radius:6px;font-size:10.5px;font-weight:700;cursor:pointer}
+.sc-toolbar .move-whole:hover{background:linear-gradient(135deg,#f5c518,#d4a017)}
 .sc-list{flex:1;overflow-y:auto;max-height:560px;padding:4px 0}
 .student-row{display:flex;align-items:flex-start;gap:8px;padding:7px 12px;border-bottom:1px solid #f1f5f9;font-size:12.5px;position:relative}
 .student-row:hover{background:#f8fafc}
@@ -194,7 +196,6 @@ main{max-width:1600px;margin:16px auto;padding:0 16px}
 .sr-gender.f{background:#fce7f3;color:var(--female)}
 .sr-gender.u{background:#fef3c7;color:var(--unk)}
 
-/* ============ لوحة التدقيق ============ */
 .audit-panel{border-radius:12px;padding:18px 22px;margin-bottom:18px;border:2px solid}
 .audit-panel.pass{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#10b981;color:#065f46}
 .audit-panel.fail{background:linear-gradient(135deg,#fef2f2,#fee2e2);border-color:#dc2626;color:#991b1b}
@@ -217,7 +218,6 @@ main{max-width:1600px;margin:16px auto;padding:0 16px}
 .issue-list .issue:last-child{border-bottom:none}
 .issue-list .issue .badge-tag{display:inline-block;padding:1px 8px;border-radius:10px;font-size:10.5px;font-weight:800;margin-inline-end:6px;background:#fee2e2;color:#991b1b}
 
-/* ============ الجداول ============ */
 .settings-table{width:100%;border-collapse:collapse;font-size:13px}
 .settings-table th{background:#f8fafc;color:#334155;font-weight:700;padding:10px;text-align:center;border-bottom:2px solid var(--border);font-size:12px}
 .settings-table td{padding:10px;text-align:center;border-bottom:1px solid #f1f5f9}
@@ -230,7 +230,6 @@ main{max-width:1600px;margin:16px auto;padding:0 16px}
 .ctrl-bar input[type=checkbox]{width:16px;height:16px;accent-color:var(--pri);cursor:pointer}
 .hint{font-size:12px;color:var(--muted);margin-top:6px}
 
-/* ============ ⭐⭐ الشريط السفلي — ثابت في HTML ============ */
 #bulkBar{
   position:fixed;bottom:0;left:0;right:0;
   background:linear-gradient(135deg,#1e3a8a,#1e5aa8);
@@ -256,14 +255,12 @@ main{max-width:1600px;margin:16px auto;padding:0 16px}
 #bulkBar button.force{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border-color:#b45309}
 #bulkBar button.whole{background:linear-gradient(135deg,#10b981,#059669);color:#fff;border-color:#047857}
 
-/* ============ لوحة التثبيت ============ */
 .locked-panel{background:linear-gradient(135deg,#faf5ff,#f3e8ff);border:1px solid #d8b4fe;border-radius:10px;padding:12px 16px;font-size:13px;color:#6b21a8}
 .locked-panel h4{margin:0 0 8px;font-size:13.5px}
 .locked-panel .items{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
 .locked-panel .item{background:#fff;border:1px solid #c4b5fd;padding:3px 10px;border-radius:20px;font-size:12px;display:flex;align-items:center;gap:6px;font-weight:600}
 .locked-panel .item button{background:transparent;border:none;padding:0;color:#dc2626;font-weight:800;cursor:pointer;font-size:14px}
 
-/* ============ Modals ============ */
 .modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.65);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px}
 .modal-box{background:#fff;border-radius:14px;max-width:600px;width:100%;padding:24px;max-height:88vh;overflow-y:auto}
 .modal-box h3{margin:0 0 16px;color:var(--pri);font-size:17px;font-weight:800}
@@ -278,7 +275,6 @@ main{max-width:1600px;margin:16px auto;padding:0 16px}
 .preview-box .after{color:#059669;font-weight:800}
 .preview-box .arrow{color:#94a3b8;padding:0 6px}
 
-/* ============ Fullscreen ============ */
 #fullscreen{position:fixed;inset:0;background:#f1f5f9;z-index:9500;display:flex;flex-direction:column}
 #fullscreen .fs-head{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px}
 #fullscreen .fs-head h3{margin:0;font-size:18px;font-weight:800}
@@ -292,7 +288,6 @@ main{max-width:1600px;margin:16px auto;padding:0 16px}
 #fullscreen table.fs-tbl tr:nth-child(even) td{background:#fafcff}
 #fullscreen .fs-footer{padding:12px 22px;background:#fff;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted)}
 
-/* ============ Status ============ */
 #libStatus{position:fixed;top:120px;left:0;right:0;z-index:8500;padding:10px 18px;font-size:13px;font-weight:700;text-align:center;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 #libStatus.loading{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#fff}
 #libStatus.ok{background:linear-gradient(135deg,#10b981,#059669);color:#fff;display:none}
@@ -300,7 +295,6 @@ main{max-width:1600px;margin:16px auto;padding:0 16px}
 #libStatus .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ============ Print ============ */
 #printContainer{display:none}
 @media print{
   body>*{display:none!important}
@@ -352,8 +346,9 @@ main{max-width:1600px;margin:16px auto;padding:0 16px}
       <button class="h-act pri" onclick="exportBackupJSON()"><span class="ico">📥</span>تصدير</button>
       <button class="h-act pri" onclick="triggerImportBackup()"><span class="ico">📤</span>استرجاع</button>
       <button class="h-act" onclick="printAll()"><span class="ico">🖨️</span>طباعة</button>
-      <button class="h-act force" onclick="openForceRedistributeDialog()"><span class="ico">🔀</span>توزيع قسري</button>
-      <button class="h-act" onclick="runDiagnostics()" title="تشخيص النظام"><span class="ico">🔧</span>تشخيص</button>
+      <button class="h-act force" onclick="openForceRedistributeDialog()" title="توزيع قسري على كل المستويات"><span class="ico">🔀</span>قسري الكل</button>
+      <button class="h-act forceLevel" onclick="openForceRedistributeLevelDialog()" title="توزيع قسري على المستوى النشط فقط"><span class="ico">📊</span>قسري مستوى</button>
+      <button class="h-act" onclick="runDiagnostics()" title="تشخيص"><span class="ico">🔧</span>تشخيص</button>
     </div>
     <span class="sync-status" id="syncStatus">غير متصل</span>
   </div>
@@ -376,14 +371,15 @@ main{max-width:1600px;margin:16px auto;padding:0 16px}
 </div>
 
 <header class="app-header">
-  <h1>📚 DONIA-CLASSE v5.0 — نظام توزيع التلاميذ 2027</h1>
+  <h1>📚 DONIA-CLASSE v5.1 — نظام توزيع التلاميذ 2027</h1>
   <p>متوسطة بوضريسة محمد الأمين — المسيلة · السنة الدراسية 2026 / 2027</p>
   <div class="badges">
-    <span>🏫 الخريطة: أولى 12 · ثانية 8 · ثالثة 5 · رابعة 6</span>
+    <span>🏫 أولى 12 · ثانية 8 · ثالثة 5 · رابعة 6</span>
     <span>🔒 صفر فقدان بيانات</span>
     <span>📌 تثبيت يدوي</span>
-    <span>🔀 نقل جماعي محسّن</span>
-    <span>🔓 توزيع قسري</span>
+    <span>🔀 نقل جماعي</span>
+    <span>📊 قسري مستوى</span>
+    <span>🔓 قسري فوج</span>
   </div>
 </header>
 
@@ -456,7 +452,6 @@ main{max-width:1600px;margin:16px auto;padding:0 16px}
 
 <div id="printContainer"></div>
 
-<!-- ⭐⭐ الشريط السفلي — ثابت في HTML، يظهر/يختفي بـ CSS فقط -->
 <div id="bulkBar">
   <div class="info">📌 محدد: <b id="bulkCount">0</b> تلميذ</div>
   <div class="actions">
@@ -485,30 +480,15 @@ const LEVEL_SHORT = {'أولى':'1م','ثانية':'2م','ثالثة':'3م','ر�
 const OFFICIAL_GROUPS = {'أولى':12,'ثانية':8,'ثالثة':5,'رابعة':6};
 const SCHOOL = { wilaya:'المسيلة', name:'متوسطة بوضريسة محمد الأمين', year:'2026 / 2027' };
 
-/* =====================================================================
-   STATE
-   ===================================================================== */
 const STATE = {
-  cur: [],
-  oldMap: {},
-  surnames: new Set(),
+  cur: [], oldMap: {}, surnames: new Set(),
   groupCount: Object.assign({}, OFFICIAL_GROUPS),
-  overrides: {},
-  results: {},
-  audit: null,
-  validation: null,
-  activeLevel: null,
-  loadedCur: false,
-  loadedOld: false,
-  locks: new Map(),
-  selection: new Set(),
-  distMode: 'flexible'
+  overrides: {}, results: {}, audit: null, validation: null,
+  activeLevel: null, loadedCur: false, loadedOld: false,
+  locks: new Map(), selection: new Set(), distMode: 'flexible'
 };
 const $ = id => document.getElementById(id);
 
-/* =====================================================================
-   UTILS
-   ===================================================================== */
 const DIAC = /[\u064B-\u0652\u0640\u0670]/g;
 const normAr = s => String(s||'').replace(DIAC,'').replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ؤ/g,'و').replace(/ئ/g,'ي').replace(/\s+/g,' ').trim();
 function normLevel(s){
@@ -529,9 +509,6 @@ function fmtDate(v){
 }
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-/* =====================================================================
-   GENDER DICTIONARY
-   ===================================================================== */
 const FEMALE_RAW = `نعيمة تسنيم سيرين حسناء رهف إيمان مروة ريتاج صباح هدى هاجر أروى ميسون نورهان أسيل ياسمين سلسبيل سلمى ملك ألاء روان مارية كوثر مرام بشرى سجود لجين أشواق حنان إكرام تقوى توبة عبير مريم سارة آية رحمة أميمة نور شيماء لينا سندس رميصاء خلود ندى يسرى إيناس حنين رحاب نسيمة أريج نسرين ذكرى عائشة مايا رتيل فضيلة ميسم وصال هبة حياة سهير شهد ريماس دعاء رؤيا أبرار عزيزة ضحى جود منار ملاك نرجس صابرة سجى فاطمة الزهراء خديجة زينب كريمة شهيناز منى نجلة لبنى رجاء يقين أنفال إسراء إنتصار انتصار آمال أمال أميرة هيفاء هناء صفاء وفاء سناء أسماء بسمة حورية خولة رقية زهرة سعاد سمية شروق صبرين نادية نوال هالة وداد يسرا أحلام احلام سهام عايدة نجوى سمر نهاد ريم دينة شهيرة نجلاء نجاة جيهان ماية دانية سديم رنا رنيم لميس لمياء ليلى لينة مسعودة منال ميساء نهال نهى هديل هيام يمينة بثينة ثريا جميلة حبيبة حفصة حليمة دلال رزان رغد سلوى شذى صابرين صافية علياء غادة فاتن فريدة لطيفة لؤلؤة ميس نصيرة إخلاص أمينة وفية سعيدة حميدة راضية زهية صونية سونية فتيحة فوزية حسيبة رشيدة زبيدة نجية وردة وريدة آمنة أنيسة بادية ثورية زليخة سعدية عفاف مليكة نزهة ياقوت إلهام الزهرة شافية صليحة طاوس عالية غنية لويزة محجوبة نورة هنية وسيلة ياسمينة رحيمة شريفة صفية طيبة كنزة جنة دينا داليا راوية رشا رفيقة رمال روز سامية سليمة سهى شادية شفيقة شمس مامة مباركة ماجدة مها منيبة`;
 const MALE_RAW = `محمد أحمد يوسف عبدالرحمان الرحمان الرحمن الله الحق الحي حبيب عماد سراج هيثم فاروق الصديق وائل الحليم يونس أشرف وسيم مؤيد أكرم إسماعيل خليل اللطيف هشام علي شمس النور زكرياء زكريا زين منصف مبارك باديس هارون يعقوب أيمن أنيس تيم أمجد زكي سامي معتز آدم أمير الصمد الجليل إدريس جواد يحيى يحي حمزة فؤاد ساعد زياد خير خليفة الطيب فارس إبراهيم صالح حسام أسامة شهاب ياسر ليث نصر بدر خالد إسلام الفتاح بلال إياد نجيب حاتم مراد هاني الباسط عيسى تميم وليد أمين علاء رياض المالك محب معاذ صلاح لؤي شعيب سفيان السلام حمودي رمزي بوبكر منير حذيفة أنس إلياس معتصم بشار ريان أيوب بهاء فاتح ثامر قيس طارق وحيد شاكر رفيق إسحاق باسم جابر المنعم الوهاب فهد معمر أدهم المختار فضيل الهادي براء ياسين مهدي هادي عمار مروان إيهاب حسين حسان رامي رضا سعد سليم سمير شادي صابر صهيب طيب عادل عامر عثمان عدنان عصام فتحي فريد كريم كمال لطفي ماجد مالك محسن محفوظ مختار مصطفى نبيل نذير يزيد بشير جلال حيدر رابح رائد رشيد سعيد سليمان شريف شعبان صديق عاطف عطية عقبة عمر غانم قاسم لقمان ماهر محمود موسى هاشم عابد طلحة ضرار جبريل نضال عبدالحق عبدالحي عبدالرحمان عبدالله عبدالرحيم عبدالنور عبدالوهاب عبدالجليل عبدالصمد عبدالرؤوف عبدالفتاح عبدالمالك عبدالمنعم عبدالعالي عبدالهادي عبداللطيف عبدالحميد عبدالسلام عبدالغفور عبدالناصر عبدالباسط عبدالرشيد الحميد العزيز المجيد القادر الكريم العلي العظيم`;
 const FEMALE = new Set(FEMALE_RAW.split(/\s+/).filter(Boolean).map(normAr));
@@ -556,9 +533,6 @@ function guessGender(given){
   return 'U';
 }
 
-/* =====================================================================
-   EXCEL READING
-   ===================================================================== */
 function sheetToObjects(ws){
   const aoa = XLSX.utils.sheet_to_json(ws, {header:1, defval:'', raw:true, blankrows:false});
   let hdr = -1;
@@ -670,9 +644,6 @@ function enrich(){
   });
 }
 
-/* =====================================================================
-   GROUP UTILS
-   ===================================================================== */
 function addTo(g, s){
   g.list.push(s);
   if(s.gender === 'M') g.m++;
@@ -716,9 +687,6 @@ function deterministicSort(arr){
   });
 }
 
-/* =====================================================================
-   ⭐⭐ CORE: DISTRIBUTE (v5.0)
-   ===================================================================== */
 function distribute(students, G, opts){
   const groups = [];
   for(let i = 0; i < G; i++){
@@ -742,7 +710,6 @@ function distribute(students, G, opts){
   
   const mode = opts.mode || 'flexible';
   
-  // تصنيف
   const lockedList = [];
   const promotedList = [];
   const repeaterList = [];
@@ -755,7 +722,6 @@ function distribute(students, G, opts){
       lockedList.push(s); return;
     }
     if(mode === 'force'){
-      // في القسري: لا نميّز المسارات
       if(s.origin === 'manual') manualList.push(s);
       else freeList.push(s);
       return;
@@ -772,24 +738,19 @@ function distribute(students, G, opts){
     freeList.push(s);
   });
   
-  // 1) Locked
   deterministicSort(lockedList).forEach(s => {
     const lock = STATE.locks.get(s.id);
     addTo(groups[lock.group - 1], s);
   });
-  
-  // 2) Promoted + Repeater (track preserved)
   deterministicSort(promotedList).forEach(s => addTo(groups[s.trackGroup - 1], s));
   deterministicSort(repeaterList).forEach(s => addTo(groups[s.trackGroup - 1], s));
   
-  // 3) Free list
   const freePool = [];
   deterministicSort(freeList.filter(s=>s.origin === 'repeater')).forEach(s=>freePool.push(s));
   deterministicSort(freeList.filter(s=>s.origin === 'promoted')).forEach(s=>freePool.push(s));
   deterministicSort(freeList.filter(s=>s.origin === 'new' || !s.origin)).forEach(s=>freePool.push(s));
   deterministicSort(manualList).forEach(s=>freePool.push(s));
   
-  // تشذير الجنس
   const mArr = [], fArr = [], uArr = [];
   freePool.forEach(s => {
     if(s.gender === 'M') mArr.push(s);
@@ -815,7 +776,6 @@ function distribute(students, G, opts){
     addTo(best, s);
   });
   
-  // 4) موازنة صارمة
   const isProtected = (s) => {
     if(STATE.locks.has(s.id)) return true;
     if(mode === 'force') return false;
@@ -849,7 +809,6 @@ function distribute(students, G, opts){
     }
   }
   
-  // 5) علاج الأفواج الفارغة
   if(total >= G){
     let guard2 = 0;
     while(guard2++ < 500){
@@ -894,14 +853,8 @@ function distribute(students, G, opts){
   return { groups, stats };
 }
 
-/* =====================================================================
-   AUDIT
-   ===================================================================== */
 function runAudit(){
-  const audit = {
-    pass: true, totals: {}, perLevel: {},
-    duplicates: [], missing: [], mismatched: [], groupCountIssues: [], lockIssues: []
-  };
+  const audit = { pass: true, totals: {}, perLevel: {}, duplicates: [], missing: [], mismatched: [], groupCountIssues: [], lockIssues: [] };
   audit.totals.input = STATE.cur.length;
   let outTotal = 0;
   const seenIds = new Map();
@@ -923,15 +876,10 @@ function runAudit(){
         g.list.forEach(s => {
           outTotal++;
           lvAudit.outputCount++;
-          if(seenIds.has(s.id)){
-            audit.duplicates.push({id: s.id, name: s.name});
-          } else {
-            seenIds.set(s.id, {level: lv, group: g.num});
-          }
+          if(seenIds.has(s.id)) audit.duplicates.push({id: s.id, name: s.name});
+          else seenIds.set(s.id, {level: lv, group: g.num});
           const lock = STATE.locks.get(s.id);
-          if(lock && (s.level !== lock.level || g.num !== lock.group)){
-            audit.lockIssues.push({id: s.id, name: s.name});
-          }
+          if(lock && (s.level !== lock.level || g.num !== lock.group)) audit.lockIssues.push({id: s.id, name: s.name});
         });
       });
     }
@@ -940,7 +888,6 @@ function runAudit(){
   });
   audit.totals.output = outTotal;
   if(audit.totals.input !== audit.totals.output) audit.pass = false;
-  
   return audit;
 }
 
@@ -986,15 +933,9 @@ function validateDistribution(){
   return report;
 }
 
-/* =====================================================================
-   REDISTRIBUTE
-   ===================================================================== */
 function forceRedistribute(){
   if(!STATE.cur.length){ console.warn('لا توجد بيانات'); return; }
-  const opts = {
-    balanceSystem: $('optSystem').checked,
-    mode: STATE.distMode
-  };
+  const opts = { balanceSystem: $('optSystem').checked, mode: STATE.distMode };
   STATE.results = {};
   LEVELS.forEach(lv => {
     const list = STATE.cur.filter(s=>s.level === lv);
@@ -1012,12 +953,8 @@ function forceRedistribute(){
   autoSaveLocal();
 }
 
-/* =====================================================================
-   RENDER: TOP BAR STATS
-   ===================================================================== */
 function updateTopBarStats(){
-  let groups = 0;
-  let broken = 0;
+  let groups = 0, broken = 0;
   LEVELS.forEach(lv => { if(STATE.results[lv]) groups += STATE.results[lv].stats.G; });
   STATE.cur.forEach(s => { if(s.brokenTrack) broken++; });
   $('statStudents').textContent = STATE.cur.length;
@@ -1034,13 +971,9 @@ function setSyncStatus(type, text){
   }
 }
 
-/* =====================================================================
-   RENDER: SETTINGS
-   ===================================================================== */
 function renderSettings(){
   $('settingsCard').classList.remove('hidden');
   $('mapInfo').innerHTML = `<b>🏫 الخريطة:</b> أولى=${OFFICIAL_GROUPS['أولى']} · ثانية=${OFFICIAL_GROUPS['ثانية']} · ثالثة=${OFFICIAL_GROUPS['ثالثة']} · رابعة=${OFFICIAL_GROUPS['رابعة']}`;
-  
   let html = `<table class="settings-table"><thead><tr>
     <th>المستوى</th><th>العدد</th><th>الأفواج</th><th>معدل</th>
     <th>مُرقّون</th><th>معيدون</th><th>📌 مُثبَّتون</th><th>🔓 مكسور</th><th>الحالة</th>
@@ -1072,7 +1005,6 @@ function renderSettings(){
   });
   html += `</tbody></table>`;
   $('settingsBody').innerHTML = html;
-  
   $('settingsBody').querySelectorAll('.gInput').forEach(inp => {
     inp.addEventListener('change', e => {
       STATE.groupCount[e.target.dataset.lvl] = Math.max(1, parseInt(e.target.value)||1);
@@ -1081,13 +1013,9 @@ function renderSettings(){
   });
 }
 
-/* =====================================================================
-   RENDER: AUDIT
-   ===================================================================== */
 function renderAudit(){
   $('auditCard').classList.remove('hidden');
-  const a = STATE.audit;
-  const v = STATE.validation;
+  const a = STATE.audit, v = STATE.validation;
   const hasCritical = v && !v.passed;
   const hasWarnings = v && v.warnings.length > 0;
   const overallPass = a.pass && !hasCritical;
@@ -1097,25 +1025,17 @@ function renderAudit(){
   else if(hasWarnings){ panelClass = 'warn'; iconChar = '!'; titleText = 'التدقيق ناجح — تحذيرات'; }
   
   let html = `<div class="audit-panel ${panelClass}"><h3><span class="icon">${iconChar}</span>${titleText}</h3>`;
-  
   const brokenTracksCount = v ? v.brokenTracks.length : 0;
   const validOverflowCount = v ? v.validOverflows.length : 0;
   
   html += `<div class="audit-grid">
-    <div class="audit-item ${a.totals.input === a.totals.output ? 'ok' : 'bad'}">
-      <div class="lbl">المدخلات</div><div class="val">${a.totals.input}</div></div>
-    <div class="audit-item ${a.totals.input === a.totals.output ? 'ok' : 'bad'}">
-      <div class="lbl">المخرجات</div><div class="val">${a.totals.output}</div></div>
-    <div class="audit-item ${a.duplicates.length === 0 ? 'ok' : 'bad'}">
-      <div class="lbl">تكرارات</div><div class="val">${a.duplicates.length}</div></div>
-    <div class="audit-item ${v && v.issues.length === 0 ? 'ok' : 'bad'}">
-      <div class="lbl">مشاكل هيكلية</div><div class="val">${v ? v.issues.length : 0}</div></div>
-    <div class="audit-item ok">
-      <div class="lbl">✅ إحالات</div><div class="val">${validOverflowCount}</div></div>
-    <div class="audit-item ${brokenTracksCount > 0 ? 'warn' : 'ok'}">
-      <div class="lbl">🔓 مسارات مكسورة</div><div class="val">${brokenTracksCount}</div></div>
-    <div class="audit-item ok">
-      <div class="lbl">📌 مُثبَّتون</div><div class="val">${STATE.locks.size}</div></div>
+    <div class="audit-item ${a.totals.input === a.totals.output ? 'ok' : 'bad'}"><div class="lbl">المدخلات</div><div class="val">${a.totals.input}</div></div>
+    <div class="audit-item ${a.totals.input === a.totals.output ? 'ok' : 'bad'}"><div class="lbl">المخرجات</div><div class="val">${a.totals.output}</div></div>
+    <div class="audit-item ${a.duplicates.length === 0 ? 'ok' : 'bad'}"><div class="lbl">تكرارات</div><div class="val">${a.duplicates.length}</div></div>
+    <div class="audit-item ${v && v.issues.length === 0 ? 'ok' : 'bad'}"><div class="lbl">مشاكل</div><div class="val">${v ? v.issues.length : 0}</div></div>
+    <div class="audit-item ok"><div class="lbl">✅ إحالات</div><div class="val">${validOverflowCount}</div></div>
+    <div class="audit-item ${brokenTracksCount > 0 ? 'warn' : 'ok'}"><div class="lbl">🔓 مكسورة</div><div class="val">${brokenTracksCount}</div></div>
+    <div class="audit-item ok"><div class="lbl">📌 مُثبَّتون</div><div class="val">${STATE.locks.size}</div></div>
   </div>`;
   
   if(v && v.issues.length){
@@ -1123,7 +1043,6 @@ function renderAudit(){
     v.issues.forEach(it => { html += `<div class="issue"><span class="badge-tag">${it.type}</span>${esc(it.message)}</div>`; });
     html += `</div></div>`;
   }
-  
   if(v && v.brokenTracks.length){
     html += `<div style="margin-top:16px"><h4 style="color:#dc2626;font-size:14px">🔓 مسارات مكسورة (${v.brokenTracks.length})</h4><div class="issue-list" style="max-height:240px">`;
     v.brokenTracks.slice(0, 100).forEach(it => {
@@ -1132,26 +1051,20 @@ function renderAudit(){
     if(v.brokenTracks.length > 100) html += `<div style="text-align:center;padding:8px;color:#64748b">... و ${v.brokenTracks.length - 100} آخرون</div>`;
     html += `</div></div>`;
   }
-  
   html += `</div>`;
   $('auditBody').innerHTML = html;
 }
 
-/* =====================================================================
-   RENDER: LOCKED PANEL
-   ===================================================================== */
 function renderLockedPanel(){
   const hasAny = STATE.locks.size > 0;
   $('lockedCard').classList.toggle('hidden', !hasAny);
   if(!hasAny) return;
-  
   const grouped = new Map();
   STATE.locks.forEach((lock, id) => {
     const key = `${lock.level}|${lock.group}`;
     if(!grouped.has(key)) grouped.set(key, {level: lock.level, group: lock.group, ids: []});
     grouped.get(key).ids.push(id);
   });
-  
   let html = `<div class="locked-panel"><h4>📌 تم تثبيت ${STATE.locks.size} تلميذ:</h4>`;
   [...grouped.keys()].sort().forEach(key => {
     const g = grouped.get(key);
@@ -1166,9 +1079,6 @@ function renderLockedPanel(){
   $('lockedBody').innerHTML = html;
 }
 
-/* =====================================================================
-   RENDER: RESULTS
-   ===================================================================== */
 function renderResults(){
   $('resultCard').classList.remove('hidden');
   const tabs = $('tabs');
@@ -1176,7 +1086,6 @@ function renderResults(){
   const available = LEVELS.filter(lv => STATE.results[lv]);
   if(!available.length) return;
   if(!STATE.activeLevel || !STATE.results[STATE.activeLevel]) STATE.activeLevel = available[0];
-  
   available.forEach(lv => {
     const r = STATE.results[lv];
     const b = document.createElement('button');
@@ -1185,15 +1094,12 @@ function renderResults(){
     b.onclick = () => { STATE.activeLevel = lv; renderResults(); };
     tabs.appendChild(b);
   });
-  
   renderLevelView(STATE.activeLevel);
 }
 
 function renderLevelView(lv){
   const r = STATE.results[lv];
   const box = $('levelView');
-  
-  // KPI
   const kpis = `
     <div class="kpi-row">
       <div class="kpi"><div class="v">${r.stats.total}</div><div class="l">إجمالي</div></div>
@@ -1206,7 +1112,6 @@ function renderLevelView(lv){
       <div class="kpi p-ok"><div class="v">${r.stats.min}–${r.stats.max}</div><div class="l">الأدنى/الأعلى</div></div>
     </div>`;
   
-  // Bar
   const bar = `
     <div class="level-bar">
       <div class="left">
@@ -1214,23 +1119,19 @@ function renderLevelView(lv){
         <button onclick="printAll()">🖨️ طباعة الكل</button>
         <button onclick="exportLevel('${lv}')">⬇️ Excel</button>
         <button onclick="exportAll()">⬇️ Excel الكل</button>
+        <button class="warn" onclick="openForceRedistributeLevelDialog()" style="background:linear-gradient(135deg,#f59e0b,#d97706)">📊 قسري لهذا المستوى</button>
       </div>
       <div class="right">
-        <div class="search-wrap">
-          <input type="text" id="searchBox" placeholder="بحث...">
-        </div>
+        <div class="search-wrap"><input type="text" id="searchBox" placeholder="بحث..."></div>
       </div>
     </div>`;
   
-  // Cards container
   let cards = '<div class="section-grid" id="sectionsGrid">';
-  
   r.groups.forEach(g => {
     const total = g.list.length;
     let cardClass = 'section-card';
     if(total === 0 && r.stats.total >= r.stats.G) cardClass += ' empty';
     else if(r.stats.max - r.stats.min > 1 && total === r.stats.max) cardClass += ' unbalanced';
-    
     const groupSelected = g.list.filter(s => STATE.selection.has(s.id)).length;
     
     cards += `
@@ -1239,7 +1140,7 @@ function renderLevelView(lv){
           <div class="num">${LEVEL_SHORT[lv]}${g.num}<small>— الفوج ${g.num}</small></div>
           <div style="display:flex;gap:6px;align-items:center">
             <div class="total">${total} تلميذ${g.locked > 0 ? ` · 📌${g.locked}` : ''}</div>
-            <button class="expand" onclick="openFullscreen('${lv}',${g.num})">⛶ تكبير</button>
+            <button class="expand" onclick="openFullscreen('${lv}',${g.num})">⛶</button>
           </div>
         </div>
         <div class="sc-stats">
@@ -1251,7 +1152,8 @@ function renderLevelView(lv){
         </div>
         <div class="sc-toolbar">
           <label><input type="checkbox" class="grp-check" data-lvl="${lv}" data-grp="${g.num}"> تحديد الكل</label>
-          <button class="move-whole" onclick="moveWholeGroupDialog('${lv}',${g.num})">📦 نقل الفوج</button>
+          <button class="move-whole" onclick="moveWholeGroupDialog('${lv}',${g.num})">📦 نقل</button>
+          <button class="move-whole" style="background:linear-gradient(135deg,#dc2626,#b91c1c)" onclick="openForceRedistributeGroupDialog('${lv}',${g.num})" title="توزيع قسري لهذا الفوج فقط">🔓 قسري فوج</button>
           ${groupSelected > 0 ? `<span class="sel-count">${groupSelected} محدد</span>` : ''}
         </div>
         <div class="sc-list">`;
@@ -1300,19 +1202,17 @@ function renderLevelView(lv){
           </div>
           <div class="sr-actions">
             <button class="sr-act lk" title="${isLocked ? 'فك' : 'تثبيت'}" onclick="toggleLock('${esc(s.id)}','${lv}',${g.num})">📌</button>
-            <button class="sr-act mv" title="نقل" onclick="moveStudent('${esc(s.id)}')">↔</button>
-            <button class="sr-act del" title="حذف" onclick="deleteStudent('${esc(s.id)}')">✕</button>
+            <button class="sr-act mv" onclick="moveStudent('${esc(s.id)}')">↔</button>
+            <button class="sr-act del" onclick="deleteStudent('${esc(s.id)}')">✕</button>
             <div class="sr-gender ${gCls}" onclick="toggleGender('${esc(s.id)}')">${gTxt}</div>
           </div>
         </div>`;
     });
-    
     cards += `</div></div>`;
   });
   cards += '</div>';
   box.innerHTML = kpis + bar + cards;
   
-  // Search
   const sb = $('searchBox');
   if(sb){
     sb.addEventListener('input', () => {
@@ -1323,38 +1223,21 @@ function renderLevelView(lv){
     });
   }
   
-  // ⭐ ربط checkboxes — مباشر وبسيط
   attachStudentCheckboxes();
   attachGroupCheckboxes();
 }
 
-/* =====================================================================
-   ⭐⭐ EVENT HANDLERS للـ checkboxes — منفصلة وواضحة
-   ===================================================================== */
 function attachStudentCheckboxes(){
-  const checkboxes = document.querySelectorAll('.sr-check');
-  console.log('🔧 ربط ' + checkboxes.length + ' checkbox');
-  
-  checkboxes.forEach(cb => {
-    // إزالة أي مستمع سابق
+  document.querySelectorAll('.sr-check').forEach(cb => {
     const newCb = cb.cloneNode(true);
     cb.parentNode.replaceChild(newCb, cb);
-    
     newCb.addEventListener('change', function(e){
       e.stopPropagation();
       const id = this.dataset.id;
-      console.log('✓ تغيير checkbox: ' + id + ' → ' + this.checked);
-      
-      if(this.checked){
-        STATE.selection.add(id);
-      } else {
-        STATE.selection.delete(id);
-      }
-      
+      if(this.checked) STATE.selection.add(id);
+      else STATE.selection.delete(id);
       const row = this.closest('.student-row');
       if(row) row.classList.toggle('selected', this.checked);
-      
-      // ⭐ استدعاء مباشر
       updateBulkBar();
     });
   });
@@ -1364,7 +1247,6 @@ function attachGroupCheckboxes(){
   document.querySelectorAll('.grp-check').forEach(cb => {
     const newCb = cb.cloneNode(true);
     cb.parentNode.replaceChild(newCb, cb);
-    
     newCb.addEventListener('change', function(e){
       e.stopPropagation();
       const lv = this.dataset.lvl;
@@ -1373,65 +1255,42 @@ function attachGroupCheckboxes(){
       if(!r) return;
       const g = r.groups.find(x => x.num === grpNum);
       if(!g) return;
-      
-      if(this.checked){
-        g.list.forEach(s => STATE.selection.add(s.id));
-      } else {
-        g.list.forEach(s => STATE.selection.delete(s.id));
-      }
-      
+      if(this.checked) g.list.forEach(s => STATE.selection.add(s.id));
+      else g.list.forEach(s => STATE.selection.delete(s.id));
       renderLevelView(STATE.activeLevel);
     });
   });
 }
 
-/* =====================================================================
-   ⭐⭐ BULK BAR — الدالة الحاسمة
-   ===================================================================== */
 function updateBulkBar(){
   const bar = $('bulkBar');
-  if(!bar){
-    console.error('❌ bulkBar غير موجود!');
-    return;
-  }
-  
+  if(!bar) return;
   const count = STATE.selection.size;
-  console.log('🔄 updateBulkBar: count=' + count);
-  
   if(count === 0){
     bar.classList.remove('on');
     bar.style.display = 'none';
     return;
   }
-  
-  // إظهار
   bar.classList.add('on');
   bar.style.display = 'flex';
-  
   $('bulkCount').textContent = count;
   
   const selStudents = [...STATE.selection].map(id => STATE.cur.find(s => s.id === id)).filter(Boolean);
   if(!selStudents.length) return;
-  
   const levels = [...new Set(selStudents.map(s => s.level))];
   const lvSelect = $('bulkTargetLevel');
   const grpSelect = $('bulkTargetGroup');
-  
   const prevLv = lvSelect.value;
   const prevGrp = grpSelect.value;
   const singleLevel = levels.length === 1 ? levels[0] : null;
   
-  lvSelect.innerHTML = levels.map(lv => 
-    `<option value="${lv}" ${(singleLevel === lv || prevLv === lv) ? 'selected' : ''}>${LEVEL_LABEL[lv]}</option>`
-  ).join('');
-  
+  lvSelect.innerHTML = levels.map(lv => `<option value="${lv}" ${(singleLevel === lv || prevLv === lv) ? 'selected' : ''}>${LEVEL_LABEL[lv]}</option>`).join('');
   const activeLv = lvSelect.value;
   const G = STATE.groupCount[activeLv] || OFFICIAL_GROUPS[activeLv] || 1;
   grpSelect.innerHTML = '';
   for(let i=1;i<=G;i++){
     grpSelect.innerHTML += `<option value="${i}" ${String(i) === prevGrp ? 'selected' : ''}>${LEVEL_SHORT[activeLv]}${i}</option>`;
   }
-  
   lvSelect.onchange = function(){
     const lv = this.value;
     const G2 = STATE.groupCount[lv] || OFFICIAL_GROUPS[lv] || 1;
@@ -1440,13 +1299,8 @@ function updateBulkBar(){
       grpSelect.innerHTML += `<option value="${i}">${LEVEL_SHORT[lv]}${i}</option>`;
     }
   };
-  
-  console.log('✅ الشريط السفلي مرئي');
 }
 
-/* =====================================================================
-   ⭐⭐ EVENT DELEGATION على document — احتياطي دائم
-   ===================================================================== */
 document.addEventListener('change', function(e){
   if(e.target.classList.contains('sr-check')){
     const id = e.target.dataset.id;
@@ -1459,9 +1313,6 @@ document.addEventListener('change', function(e){
   }
 });
 
-/* =====================================================================
-   BULK BAR BUTTONS — ربط مباشر في initApp
-   ===================================================================== */
 function bindBulkBarButtons(){
   const btnLock = $('btnLockSel');
   const btnTransfer = $('btnTransferSel');
@@ -1470,7 +1321,6 @@ function bindBulkBarButtons(){
   const btnUnlock = $('btnUnlockSel');
   const btnDelete = $('btnDeleteSel');
   const btnClear = $('btnClearSel');
-  
   if(btnLock) btnLock.onclick = lockSelected;
   if(btnTransfer) btnTransfer.onclick = transferSelected;
   if(btnForce) btnForce.onclick = transferSelectedForce;
@@ -1478,13 +1328,8 @@ function bindBulkBarButtons(){
   if(btnUnlock) btnUnlock.onclick = unlockSelected;
   if(btnDelete) btnDelete.onclick = deleteSelected;
   if(btnClear) btnClear.onclick = clearSelection;
-  
-  console.log('✅ تم ربط أزرار الشريط السفلي');
 }
 
-/* =====================================================================
-   ACTIONS
-   ===================================================================== */
 function lockSelected(){
   if(STATE.selection.size === 0){ alert('لم تحدد أي تلميذ'); return; }
   const lv = $('bulkTargetLevel').value;
@@ -1496,9 +1341,7 @@ function lockSelected(){
   const G = STATE.groupCount[actualLv] || OFFICIAL_GROUPS[actualLv];
   if(grpNum < 1 || grpNum > G){ alert('⚠️ خارج النطاق'); return; }
   if(!confirm(`📌 تثبيت ${selStudents.length} في ${LEVEL_SHORT[actualLv]}${grpNum}?`)) return;
-  selStudents.forEach(s => {
-    STATE.locks.set(s.id, {level: actualLv, group: grpNum});
-  });
+  selStudents.forEach(s => { STATE.locks.set(s.id, {level: actualLv, group: grpNum}); });
   STATE.selection.clear();
   forceRedistribute();
 }
@@ -1515,12 +1358,10 @@ function transferSelected(){
   const G = STATE.groupCount[actualLv] || OFFICIAL_GROUPS[actualLv];
   if(grpNum < 1 || grpNum > G){ alert('⚠️ خارج النطاق'); return; }
   if(!confirm(`🔀 نقل ${selStudents.length} إلى ${LEVEL_SHORT[actualLv]}${grpNum}?`)) return;
-  
   const r = STATE.results[actualLv];
   if(!r) return;
   const targetG = r.groups.find(g => g.num === grpNum);
   if(!targetG) return;
-  
   selStudents.forEach(s => {
     for(const g of r.groups){
       const found = g.list.find(x => x.id === s.id);
@@ -1529,7 +1370,6 @@ function transferSelected(){
     addTo(targetG, s);
     STATE.locks.set(s.id, {level: actualLv, group: grpNum});
   });
-  
   r.groups.forEach(g => g.list.sort((a,b)=>a.name.localeCompare(b.name,'ar')));
   STATE.selection.clear();
   forceRedistribute();
@@ -1543,13 +1383,11 @@ function transferSelectedForce(){
   const levels = [...new Set(selStudents.map(s => s.level))];
   if(levels.length > 1){ alert('⚠️ من مستويات مختلفة'); return; }
   const actualLv = levels[0];
-  if(!confirm(`⚡ نقل قسري لـ ${selStudents.length} إلى ${LEVEL_SHORT[actualLv]}${grpNum}?\n\nسيتم كسر مسارهم.`)) return;
-  
+  if(!confirm(`⚡ نقل قسري لـ ${selStudents.length}؟\n\nسيتم كسر مسارهم.`)) return;
   const r = STATE.results[actualLv];
   if(!r) return;
   const targetG = r.groups.find(g => g.num === grpNum);
   if(!targetG) return;
-  
   selStudents.forEach(s => {
     for(const g of r.groups){
       const found = g.list.find(x => x.id === s.id);
@@ -1561,7 +1399,6 @@ function transferSelectedForce(){
     addTo(targetG, s);
     STATE.locks.set(s.id, {level: actualLv, group: grpNum});
   });
-  
   r.groups.forEach(g => g.list.sort((a,b)=>a.name.localeCompare(b.name,'ar')));
   STATE.selection.clear();
   forceRedistribute();
@@ -1601,7 +1438,6 @@ function moveWholeGroupDialog(fromLv, fromGrp){
   const lv = fromLv || STATE.activeLevel;
   const r = STATE.results[lv];
   if(!r) return;
-  
   const div = document.createElement('div');
   div.className = 'modal-bg';
   div.innerHTML = `
@@ -1618,7 +1454,6 @@ function moveWholeGroupDialog(fromLv, fromGrp){
       </div>
     </div>`;
   document.body.appendChild(div);
-  
   function populateFrom(){
     const srcLv = $('mwLevel').value;
     const r2 = STATE.results[srcLv];
@@ -1643,7 +1478,6 @@ function applyMoveWhole(btn){
   const srcGrp = parseInt($('mwFrom').value);
   const dstGrp = parseInt($('mwTo').value);
   if(srcGrp === dstGrp){ alert('⚠️ متطابقان'); return; }
-  
   const r = STATE.results[srcLv];
   if(!r) return;
   const src = r.groups.find(g => g.num === srcGrp);
@@ -1651,22 +1485,17 @@ function applyMoveWhole(btn){
   if(!src || !dst) return;
   if(src.list.length === 0){ alert('⚠️ المصدر فارغ'); return; }
   if(!confirm(`📦 نقل ${src.list.length} تلميذ من ${LEVEL_SHORT[srcLv]}${srcGrp} إلى ${LEVEL_SHORT[srcLv]}${dstGrp}?`)) return;
-  
   const students = [...src.list];
   students.forEach(s => {
     removeFrom(src, s);
     addTo(dst, s);
     STATE.locks.set(s.id, {level: srcLv, group: dstGrp});
   });
-  
   r.groups.forEach(g => g.list.sort((a,b)=>a.name.localeCompare(b.name,'ar')));
   btn.closest('.modal-bg').remove();
   forceRedistribute();
 }
 
-/* =====================================================================
-   STUDENT ACTIONS
-   ===================================================================== */
 function toggleLock(id, level, group){
   if(STATE.locks.has(id)) STATE.locks.delete(id);
   else STATE.locks.set(id, {level, group});
@@ -1695,7 +1524,6 @@ function moveStudent(id){
   }
   const opts = [];
   for(let i=1;i<=G;i++) opts.push(`<option value="${i}" ${i === curGrp ? 'selected' : ''}>${LEVEL_SHORT[lv]}${i}</option>`);
-  
   const div = document.createElement('div');
   div.className = 'modal-bg';
   div.innerHTML = `
@@ -1720,7 +1548,6 @@ function applyMove(id, btn){
   if(!st) return;
   const r = STATE.results[st.level];
   if(!r) return;
-  
   for(const g of r.groups){
     const found = g.list.find(x => x.id === id);
     if(found){ removeFrom(g, found); break; }
@@ -1748,15 +1575,11 @@ function deleteStudent(id){
   forceRedistribute();
 }
 
-/* =====================================================================
-   FORCE REDISTRIBUTE DIALOG
-   ===================================================================== */
+/* ============ قسري كلي ============ */
 function openForceRedistributeDialog(){
   if(!STATE.cur.length){ alert('⚠️ حمّل الملفات'); return; }
-  
   const preview = [];
   let totalMoved = 0;
-  
   LEVELS.forEach(lv => {
     const r = STATE.results[lv];
     if(!r) return;
@@ -1772,12 +1595,11 @@ function openForceRedistributeDialog(){
       totalMoved += moves;
     }
   });
-  
   const div = document.createElement('div');
   div.className = 'modal-bg';
   div.innerHTML = `
     <div class="modal-box" style="max-width:640px">
-      <h3 style="color:#dc2626">🔀 إعادة توزيع قسرية</h3>
+      <h3 style="color:#dc2626">🔀 إعادة توزيع قسرية — كل المستويات</h3>
       <p style="font-size:13.5px;color:#475569;line-height:1.7">
         سيتم:
         <br>• ❌ حذف كل التثبيتات (${STATE.locks.size})
@@ -1816,7 +1638,6 @@ function applyForceRedistribute(btn){
     radio.checked = (radio.value === 'force');
     radio.closest('.mode-option').classList.toggle('selected', radio.checked);
   });
-  
   const opts = {balanceSystem: $('optSystem').checked, mode: 'force'};
   STATE.results = {};
   LEVELS.forEach(lv => {
@@ -1825,8 +1646,6 @@ function applyForceRedistribute(btn){
     const G = STATE.groupCount[lv] || OFFICIAL_GROUPS[lv];
     STATE.results[lv] = distribute(list, G, opts);
   });
-  
-  // علّم المكسورين
   LEVELS.forEach(lv => {
     const r = STATE.results[lv];
     if(!r) return;
@@ -1836,6 +1655,106 @@ function applyForceRedistribute(btn){
           s.brokenTrack = true;
         }
       });
+    });
+  });
+  STATE.audit = runAudit();
+  STATE.validation = validateDistribution();
+  renderSettings();
+  renderAudit();
+  renderLockedPanel();
+  renderResults();
+  updateTopBarStats();
+  autoSaveLocal();
+  btn.closest('.modal-bg').remove();
+  setSyncStatus('ok', 'تم التوزيع القسري');
+  alert('✅ تم التوزيع القسري على كل المستويات');
+}
+
+/* ============ ⭐ قسري مستوى واحد ============ */
+function openForceRedistributeLevelDialog(){
+  if(!STATE.cur.length){ alert('⚠️ حمّل الملفات أولاً'); return; }
+  const lv = STATE.activeLevel;
+  if(!lv){ alert('⚠️ اختر مستوى'); return; }
+  const r = STATE.results[lv];
+  if(!r){ alert('⚠️ لا يوجد توزيع لهذا المستوى'); return; }
+  
+  const G = r.stats.G;
+  const total = r.stats.total;
+  const before = r.groups.map(g => g.list.length);
+  const target = Math.floor(total / G);
+  const rem = total % G;
+  const after = Array(G).fill(target).map((v, i) => i < rem ? v + 1 : v);
+  let moves = 0;
+  before.forEach((b, i) => { if(b > after[i]) moves += b - after[i]; });
+  
+  let protectedCount = 0;
+  r.groups.forEach(g => {
+    g.list.forEach(s => {
+      if(STATE.locks.has(s.id)) protectedCount++;
+      else if(s.origin === 'promoted' && s.trackGroup) protectedCount++;
+      else if(s.origin === 'repeater' && s.trackGroup) protectedCount++;
+    });
+  });
+  
+  const div = document.createElement('div');
+  div.className = 'modal-bg';
+  div.innerHTML = `
+    <div class="modal-box" style="max-width:640px">
+      <h3 style="color:#dc2626">📊 توزيع قسري — ${LEVEL_LABEL[lv]}</h3>
+      <p style="font-size:13.5px;color:#475569;line-height:1.7">
+        <b>مستوى واحد فقط</b> — باقي المستويات لن تتأثر.
+      </p>
+      <div class="preview-box">
+        <div style="font-weight:800;margin-bottom:8px;color:#1e293b">📊 قبل → بعد (${G} أفواج، ${total} تلميذ)</div>
+        ${before.map((b, i) => `
+          <div class="row">
+            <span>${LEVEL_SHORT[lv]}${i+1}</span>
+            <span>
+              <span class="before">${b}</span>
+              <span class="arrow">→</span>
+              <span class="after">${after[i]}</span>
+            </span>
+          </div>
+        `).join('')}
+        <div style="margin-top:10px;padding-top:10px;border-top:2px solid #e2e8f0;color:#dc2626;font-weight:800">
+          سيُنقل: ${moves} تلميذ · محمي: ${protectedCount}
+        </div>
+      </div>
+      <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:10px 14px;font-size:12.5px;color:#991b1b;margin-top:12px">
+        ⚠️ سيتم <b>حذف التثبيتات وكسر المسارات</b> في <b>${LEVEL_LABEL[lv]} فقط</b>.
+        <br>✅ باقي المستويات تبقى كما هي.
+      </div>
+      <div class="modal-actions">
+        <button onclick="this.closest('.modal-bg').remove()">إلغاء</button>
+        <button class="danger" onclick="applyForceRedistributeLevel('${lv}', this)">✓ تأكيد</button>
+      </div>
+    </div>`;
+  document.body.appendChild(div);
+}
+
+function applyForceRedistributeLevel(lv, btn){
+  // احذف تثبيتات هذا المستوى فقط
+  const toDelete = [];
+  STATE.locks.forEach((lock, id) => {
+    if(lock.level === lv) toDelete.push(id);
+  });
+  toDelete.forEach(id => STATE.locks.delete(id));
+  
+  // أعد توزيع المستوى فقط
+  const list = STATE.cur.filter(s => s.level === lv);
+  const G = STATE.groupCount[lv] || OFFICIAL_GROUPS[lv];
+  STATE.results[lv] = distribute(list, G, {
+    balanceSystem: $('optSystem').checked,
+    mode: 'force'
+  });
+  
+  // علّم المكسورين في هذا المستوى
+  const r = STATE.results[lv];
+  r.groups.forEach(g => {
+    g.list.forEach(s => {
+      if((s.origin === 'promoted' || s.origin === 'repeater') && s.trackGroup && g.num !== s.trackGroup){
+        s.brokenTrack = true;
+      }
     });
   });
   
@@ -1849,20 +1768,171 @@ function applyForceRedistribute(btn){
   autoSaveLocal();
   
   btn.closest('.modal-bg').remove();
-  setSyncStatus('ok', 'تم التوزيع القسري');
-  alert('✅ تم التوزيع القسري');
+  setSyncStatus('ok', `تم التوزيع القسري — ${LEVEL_LABEL[lv]}`);
+  alert(`✅ تم التوزيع القسري لـ ${LEVEL_LABEL[lv]} فقط.\n\nباقي المستويات لم تتأثر.`);
 }
 
-/* =====================================================================
-   FULLSCREEN
-   ===================================================================== */
+/* ============ ⭐ قسري فوج واحد ============ */
+function openForceRedistributeGroupDialog(lv, groupNum){
+  const r = STATE.results[lv];
+  if(!r) return;
+  const G = r.stats.G;
+  const total = r.stats.total;
+  const target = Math.floor(total / G);
+  const rem = total % G;
+  const currentSize = r.groups.find(g => g.num === groupNum).list.length;
+  const desiredSize = groupNum <= rem ? target + 1 : target;
+  const diff = desiredSize - currentSize;
+  
+  let message = '', action = '';
+  if(diff === 0){
+    message = `✅ الفوج ${LEVEL_SHORT[lv]}${groupNum} في الحجم المثالي (${currentSize} تلميذ)`;
+    action = 'لا حاجة لعملية';
+  } else if(diff > 0){
+    message = `📥 الفوج ${LEVEL_SHORT[lv]}${groupNum} يحتاج <b>${diff} تلميذ</b> (${currentSize} → ${desiredSize})`;
+    action = `سيتم نقل ${diff} تلميذ من الأفواج المجاورة`;
+  } else {
+    message = `📤 الفوج ${LEVEL_SHORT[lv]}${groupNum} به فائض <b>${Math.abs(diff)} تلميذ</b> (${currentSize} → ${desiredSize})`;
+    action = `سيتم نقل ${Math.abs(diff)} تلميذ إلى الأفواج المجاورة`;
+  }
+  
+  const div = document.createElement('div');
+  div.className = 'modal-bg';
+  div.innerHTML = `
+    <div class="modal-box" style="max-width:600px">
+      <h3 style="color:#dc2626">🔓 توزيع قسري — ${LEVEL_SHORT[lv]}${groupNum}</h3>
+      <p style="font-size:13.5px;color:#475569;line-height:1.7">
+        <b>فوج واحد فقط</b> من ${LEVEL_LABEL[lv]} — باقي الأفواج والمستويات لن تتأثر.
+      </p>
+      <div class="preview-box">
+        <div style="font-weight:800;margin-bottom:8px;color:#1e293b">🎯 الوضع الحالي:</div>
+        <div class="row">
+          <span>حجم الفوج الحالي</span>
+          <span class="before">${currentSize} تلميذ</span>
+        </div>
+        <div class="row">
+          <span>الحجم المستهدف (معدل)</span>
+          <span class="after">${desiredSize} تلميذ</span>
+        </div>
+        <div class="row">
+          <span>الفرق</span>
+          <span style="font-weight:800;color:${diff === 0 ? '#059669' : '#dc2626'}">
+            ${diff > 0 ? '+' : ''}${diff}
+          </span>
+        </div>
+      </div>
+      <div style="background:${diff === 0 ? '#ecfdf5' : '#fef2f2'};border:1px solid ${diff === 0 ? '#a7f3d0' : '#fecaca'};border-radius:8px;padding:12px 14px;font-size:13px;color:${diff === 0 ? '#065f46' : '#991b1b'};margin-top:12px">
+        <b>${message}</b>
+        <br><span style="font-size:12px;opacity:.85">${action}</span>
+      </div>
+      ${diff !== 0 ? `
+        <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:10px 14px;font-size:12.5px;color:#92400e;margin-top:10px">
+          ⚠️ سيتم كسر مسارات التلاميذ المنقولين من وإلى هذا الفوج فقط.
+        </div>
+      ` : ''}
+      <div class="modal-actions">
+        <button onclick="this.closest('.modal-bg').remove()">إلغاء</button>
+        ${diff !== 0 ? `<button class="danger" onclick="applyForceRedistributeGroup('${lv}',${groupNum}, this)">✓ تأكيد</button>` : ''}
+      </div>
+    </div>`;
+  document.body.appendChild(div);
+}
+
+function applyForceRedistributeGroup(lv, groupNum, btn){
+  const r = STATE.results[lv];
+  if(!r) return;
+  const G = r.stats.G;
+  const total = r.stats.total;
+  const target = Math.floor(total / G);
+  const rem = total % G;
+  const desiredSize = groupNum <= rem ? target + 1 : target;
+  const targetG = r.groups.find(g => g.num === groupNum);
+  if(!targetG) return;
+  const diff = desiredSize - targetG.list.length;
+  
+  if(diff > 0){
+    // نقل تلاميذ إلى هذا الفوج من الأفواج التي بها فائض
+    const candidates = [];
+    r.groups.forEach(g => {
+      if(g.num === groupNum) return;
+      const gDesired = g.num <= rem ? target + 1 : target;
+      const surplus = g.list.length - gDesired;
+      if(surplus > 0){
+        g.list.filter(s => {
+          if(STATE.locks.has(s.id)) return false;
+          if(s.origin === 'promoted' && s.trackGroup && !s.brokenTrack) return false;
+          if(s.origin === 'repeater' && s.trackGroup && !s.brokenTrack) return false;
+          return true;
+        })
+        .sort((a,b) => a.name.localeCompare(b.name, 'ar'))
+        .forEach(s => candidates.push({ student: s, fromGroup: g }));
+      }
+    });
+    
+    candidates.slice(0, diff).forEach(({student, fromGroup}) => {
+      removeFrom(fromGroup, student);
+      addTo(targetG, student);
+    });
+  } else if(diff < 0){
+    // إخراج تلاميذ من هذا الفوج
+    const toRemove = Math.abs(diff);
+    const candidates = targetG.list
+      .filter(s => {
+        if(STATE.locks.has(s.id)) return false;
+        if(s.origin === 'promoted' && s.trackGroup && !s.brokenTrack) return false;
+        if(s.origin === 'repeater' && s.trackGroup && !s.brokenTrack) return false;
+        return true;
+      })
+      .sort((a,b) => a.name.localeCompare(b.name, 'ar'))
+      .slice(0, toRemove);
+    
+    candidates.forEach(student => {
+      let bestG = null, minSize = Infinity;
+      r.groups.forEach(g => {
+        if(g.num === groupNum) return;
+        const gDesired = g.num <= rem ? target + 1 : target;
+        const deficit = gDesired - g.list.length;
+        if(deficit > 0 && g.list.length < minSize){
+          minSize = g.list.length;
+          bestG = g;
+        }
+      });
+      if(bestG){
+        removeFrom(targetG, student);
+        if((student.origin === 'promoted' || student.origin === 'repeater') && student.trackGroup && !student.brokenTrack){
+          student.brokenTrack = true;
+        }
+        addTo(bestG, student);
+      }
+    });
+  }
+  
+  r.groups.forEach(g => g.list.sort((a,b) => a.name.localeCompare(b.name, 'ar')));
+  r.stats.min = Math.min(...r.groups.map(g => g.list.length));
+  r.stats.max = Math.max(...r.groups.map(g => g.list.length));
+  r.stats.avg = (r.stats.total / r.stats.G).toFixed(1);
+  
+  STATE.audit = runAudit();
+  STATE.validation = validateDistribution();
+  renderSettings();
+  renderAudit();
+  renderLockedPanel();
+  renderResults();
+  updateTopBarStats();
+  autoSaveLocal();
+  
+  btn.closest('.modal-bg').remove();
+  setSyncStatus('ok', `تم تعديل الفوج ${LEVEL_SHORT[lv]}${groupNum}`);
+  alert(`✅ تم تعديل الفوج ${LEVEL_SHORT[lv]}${groupNum}.\n\nباقي الأفواج لم تتأثر.`);
+}
+
+/* ============ Fullscreen ============ */
 function openFullscreen(lv, groupNum){
   const r = STATE.results[lv];
   if(!r) return;
   const g = r.groups.find(x => x.num === groupNum);
   if(!g) return;
   const G = r.stats.G;
-  
   let rowsHtml = '';
   g.list.forEach((s, i) => {
     const gTxt = s.gender === 'M' ? 'ذكر' : (s.gender === 'F' ? 'أنثى' : '—');
@@ -1884,7 +1954,6 @@ function openFullscreen(lv, groupNum){
       <td style="font-size:11.5px;color:#64748b">${esc(status)}</td>
     </tr>`;
   });
-  
   const div = document.createElement('div');
   div.id = 'fullscreen';
   div.innerHTML = `
@@ -1930,7 +1999,6 @@ function printFullscreen(){
   const info = fs.querySelector('.fs-head .info').innerHTML;
   const now = new Date();
   const dateStr = `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
-  
   let tbl = `<table class="pr-tbl"><thead><tr>
     <th style="width:34px">ر.ت</th><th style="width:140px">رقم التعريف</th>
     <th>اللقب والاسم</th><th style="width:80px">تاريخ الميلاد</th>
@@ -1949,7 +2017,6 @@ function printFullscreen(){
     </tr>`;
   });
   tbl += '</tbody></table>';
-  
   $('printContainer').innerHTML = `
     <div class="pr-doc">
       <div class="pr-head">
@@ -1967,9 +2034,6 @@ function printFullscreen(){
   setTimeout(() => window.print(), 100);
 }
 
-/* =====================================================================
-   PRINT
-   ===================================================================== */
 function buildPrintHTML(levels){
   const now = new Date();
   const dateStr = `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
@@ -2041,9 +2105,6 @@ function printAll(){
   setTimeout(() => window.print(), 80);
 }
 
-/* =====================================================================
-   EXCEL EXPORT
-   ===================================================================== */
 function exportLevel(lv){
   const r = STATE.results[lv];
   if(!r) return;
@@ -2061,8 +2122,8 @@ function exportLevel(lv){
         'النظام': s.system, 'رقم التسجيل': s.reg,
         'الحالة': s.origin === 'promoted' ? 'مُرقّى' : (s.origin === 'repeater' ? 'معيد' : (s.origin === 'manual' ? 'مُضاف' : 'جديد')),
         'المسار': s.trackGroup ? `${s.oldLevel||''} ${s.trackGroup}` : '—',
-        '📌 مُثبَّت': STATE.locks.has(s.id) ? 'نعم' : '—',
-        '🔓 مكسور': s.brokenTrack ? 'نعم' : '—'
+        '📌': STATE.locks.has(s.id) ? 'نعم' : '—',
+        '🔓': s.brokenTrack ? 'نعم' : '—'
       });
     });
     rows.push({});
@@ -2083,7 +2144,7 @@ function exportAll(){
         'المستوى': LEVEL_LABEL[lv], 'الفوج': `${LEVEL_SHORT[lv]}${g.num}`,
         'العدد': g.list.length, 'ذكور': g.m, 'إناث': g.f,
         'معيدون': g.reps, 'مُرقّون': g.prom,
-        '📌 مُثبَّتون': g.locked || 0
+        '📌': g.locked || 0
       });
     });
   });
@@ -2116,12 +2177,9 @@ function exportAll(){
   XLSX.writeFile(wb, 'توزيع_الأفواج_2027.xlsx');
 }
 
-/* =====================================================================
-   BACKUP
-   ===================================================================== */
 function serializeState(){
   return {
-    version: '5.0', app: 'DONIA-CLASSE', school: SCHOOL,
+    version: '5.1', app: 'DONIA-CLASSE', school: SCHOOL,
     exportedAt: new Date().toISOString(),
     groupCount: STATE.groupCount, overrides: STATE.overrides,
     distMode: STATE.distMode,
@@ -2155,7 +2213,6 @@ function deserializeState(data){
   STATE.selection = new Set();
   STATE.loadedCur = STATE.cur.length > 0;
   STATE.loadedOld = Object.keys(STATE.oldMap).length > 0;
-  
   document.querySelectorAll('input[name="distMode"]').forEach(radio => {
     radio.checked = (radio.value === STATE.distMode);
     radio.closest('.mode-option').classList.toggle('selected', radio.checked);
@@ -2168,7 +2225,7 @@ function exportBackupJSON(){
   const a = document.createElement('a');
   const ts = new Date().toISOString().replace(/[:.]/g,'-').slice(0,19);
   a.href = url;
-  a.download = `DONIA-CLASSE_v5_backup_${ts}.json`;
+  a.download = `DONIA-CLASSE_v5.1_backup_${ts}.json`;
   a.click();
   URL.revokeObjectURL(url);
   $('statLastSave').textContent = '💾 ' + new Date().toLocaleTimeString('ar');
@@ -2232,10 +2289,7 @@ $('backupInput').addEventListener('change', async e => {
   e.target.value = '';
 });
 
-/* =====================================================================
-   AUTO SAVE
-   ===================================================================== */
-const LS_KEY = 'DONIA-CLASSE-state-v50';
+const LS_KEY = 'DONIA-CLASSE-state-v51';
 let autoSaveTimer = null;
 function autoSaveLocal(){
   if(!STATE.loadedCur) return;
@@ -2267,9 +2321,6 @@ function loadGHCreds(){
 }
 function saveGHCreds(c){ try { localStorage.setItem(GH_LS_KEY, JSON.stringify(c)); } catch(e){} }
 
-/* =====================================================================
-   GITHUB SYNC
-   ===================================================================== */
 function openSyncDialog(){
   const old = $('syncDialog'); if(old) old.remove();
   const creds = loadGHCreds();
@@ -2280,7 +2331,7 @@ function openSyncDialog(){
     <div class="modal-box">
       <h3>☁️ مزامنة GitHub</h3>
       <div style="background:#eff6ff;border-inline-start:4px solid #1e5aa8;padding:12px;border-radius:8px;font-size:12.5px;color:#1e40af;margin-bottom:14px;line-height:1.7">
-        استخدم <b>Personal Access Token (Classic)</b> مع صلاحية <code>repo</code>:<br>
+        استخدم <b>PAT (Classic)</b> مع صلاحية <code>repo</code>:<br>
         <code>https://github.com/settings/tokens</code>
       </div>
       <div class="form-grid">
@@ -2318,9 +2369,7 @@ async function ghTest(){
   saveGHCreds(c);
   try {
     setSyncStatus('load', 'جارٍ...');
-    const res = await fetch(`https://api.github.com/repos/${c.repo}`, {
-      headers: {'Authorization': `token ${c.token}`}
-    });
+    const res = await fetch(`https://api.github.com/repos/${c.repo}`, {headers: {'Authorization': `token ${c.token}`}});
     if(!res.ok) throw new Error('HTTP ' + res.status);
     setSyncStatus('ok', 'ناجح ✅');
     alert('✅ الاتصال ناجح');
@@ -2337,13 +2386,11 @@ async function ghSave(){
     setSyncStatus('load', 'جارٍ...');
     let sha = null;
     try {
-      const r = await fetch(`https://api.github.com/repos/${c.repo}/contents/${encodeURIComponent(c.path)}?ref=${encodeURIComponent(c.branch)}`, {
-        headers: {'Authorization': `token ${c.token}`}
-      });
+      const r = await fetch(`https://api.github.com/repos/${c.repo}/contents/${encodeURIComponent(c.path)}?ref=${encodeURIComponent(c.branch)}`, {headers: {'Authorization': `token ${c.token}`}});
       if(r.ok){ const j = await r.json(); sha = j.sha; }
     } catch(e){}
     const content = btoa(unescape(encodeURIComponent(JSON.stringify(serializeState(), null, 2))));
-    const body = {message: `DONIA-CLASSE v5 — ${new Date().toISOString()}`, content, branch: c.branch};
+    const body = {message: `DONIA-CLASSE v5.1 — ${new Date().toISOString()}`, content, branch: c.branch};
     if(sha) body.sha = sha;
     const res = await fetch(`https://api.github.com/repos/${c.repo}/contents/${encodeURIComponent(c.path)}`, {
       method: 'PUT',
@@ -2366,9 +2413,7 @@ async function ghLoad(){
   saveGHCreds(c);
   try {
     setSyncStatus('load', 'جارٍ...');
-    const res = await fetch(`https://api.github.com/repos/${c.repo}/contents/${encodeURIComponent(c.path)}?ref=${encodeURIComponent(c.branch)}`, {
-      headers: {'Authorization': `token ${c.token}`}
-    });
+    const res = await fetch(`https://api.github.com/repos/${c.repo}/contents/${encodeURIComponent(c.path)}?ref=${encodeURIComponent(c.branch)}`, {headers: {'Authorization': `token ${c.token}`}});
     if(!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
     const content = decodeURIComponent(escape(atob(data.content.replace(/\s/g,''))));
@@ -2384,36 +2429,28 @@ async function ghLoad(){
   }
 }
 
-/* =====================================================================
-   DIAGNOSTICS
-   ===================================================================== */
 function runDiagnostics(){
   const bar = $('bulkBar');
   const checks = [
-    ['DOM: bulkBar موجود', !!bar],
-    ['DOM: bulkCount موجود', !!$('bulkCount')],
-    ['DOM: bulkTargetLevel موجود', !!$('bulkTargetLevel')],
-    ['STATE.cur محمّل', STATE.cur.length > 0],
-    ['STATE.results محمّل', Object.keys(STATE.results).length > 0],
+    ['DOM: bulkBar', !!bar],
     ['دالة updateBulkBar', typeof updateBulkBar === 'function'],
     ['دالة forceRedistribute', typeof forceRedistribute === 'function'],
-    ['عدد الأزرار المربوطة', ['btnLockSel','btnTransferSel','btnTransferForce','btnMoveWhole','btnUnlockSel','btnDeleteSel','btnClearSel'].filter(id => $(id)).length + '/7'],
-    ['عدد التلاميذ', STATE.cur.length],
-    ['عدد المحددين', STATE.selection.size],
+    ['دالة openForceRedistributeLevelDialog', typeof openForceRedistributeLevelDialog === 'function'],
+    ['دالة openForceRedistributeGroupDialog', typeof openForceRedistributeGroupDialog === 'function'],
+    ['التلاميذ', STATE.cur.length],
+    ['المحددون', STATE.selection.size],
+    ['الأفواج (مستوى نشط)', STATE.activeLevel && STATE.results[STATE.activeLevel] ? STATE.results[STATE.activeLevel].stats.G : 0],
     ['حالة الشريط', bar ? (bar.classList.contains('on') ? 'مرئي' : 'مخفي') : 'غير موجود']
   ];
-  
-  let html = '<div class="modal-box"><h3>🔧 تشخيص النظام</h3><div style="font-size:13px;line-height:2">';
+  let html = '<div class="modal-box"><h3>🔧 تشخيص النظام v5.1</h3><div style="font-size:13px;line-height:2">';
   checks.forEach(([name, val]) => {
-    const isOk = val === true || (typeof val === 'string' && val.includes('/') && !val.startsWith('0/'));
     const icon = typeof val === 'boolean' ? (val ? '✅' : '❌') : '📋';
     html += `<div>${icon} <b>${name}:</b> ${val}</div>`;
   });
   html += '</div><div style="margin-top:14px;text-align:center">';
-  html += '<button class="pri" onclick="testBulkBar()">🧪 اختبار الشريط السفلي</button> ';
+  html += '<button class="pri" onclick="testBulkBar()">🧪 اختبار الشريط</button> ';
   html += '<button onclick="this.closest(\'.modal-bg\').remove()">إغلاق</button>';
   html += '</div></div>';
-  
   const div = document.createElement('div');
   div.className = 'modal-bg';
   div.innerHTML = html;
@@ -2423,13 +2460,9 @@ function testBulkBar(){
   if(!STATE.cur.length){ alert('لا توجد بيانات'); return; }
   STATE.selection.add(STATE.cur[0].id);
   updateBulkBar();
-  console.log('🧪 اختبار: تم إضافة أول تلميذ وتحديث الشريط');
-  alert('تم إضافة أول تلميذ — يجب أن يظهر الشريط السفلي');
+  alert('تم إضافة أول تلميذ');
 }
 
-/* =====================================================================
-   MODE SELECTOR
-   ===================================================================== */
 function bindModeSelector(){
   document.querySelectorAll('input[name="distMode"]').forEach(radio => {
     radio.addEventListener('change', function(){
@@ -2441,12 +2474,8 @@ function bindModeSelector(){
   });
 }
 
-/* =====================================================================
-   UPLOAD
-   ===================================================================== */
 function bindUploads(){
   const setMsg = (id, txt, cls) => { $(id).innerHTML = txt ? `<div class="msg ${cls}">${txt}</div>` : ''; };
-  
   $('fileCur').addEventListener('change', async e => {
     const f = e.target.files[0];
     if(!f) return;
@@ -2465,7 +2494,6 @@ function bindUploads(){
       setMsg('msgCur', '✖ ' + err.message, 'err');
     }
   });
-  
   $('fileOld').addEventListener('change', async e => {
     const f = e.target.files[0];
     if(!f) return;
@@ -2486,9 +2514,6 @@ function bindUploads(){
   });
 }
 
-/* =====================================================================
-   ADD STUDENT
-   ===================================================================== */
 function openAddStudentDialog(){
   const div = document.createElement('div');
   div.className = 'modal-bg';
@@ -2523,22 +2548,15 @@ function applyAddStudent(btn){
   if(!name){ $('addError').textContent = '❌ الاسم مطلوب'; return; }
   if(STATE.cur.find(x => x.id === id)){ $('addError').textContent = '❌ موجود مسبقاً'; return; }
   STATE.cur.push({
-    id, name,
-    birth: $('addBirth').value,
-    level: $('addLevel').value,
-    fileGroup: 0,
-    system: $('addSystem').value,
-    reg: $('addReg').value.trim(),
-    gender: $('addGender').value,
-    origin: 'manual', trackGroup: null, moved: false, manual: true, brokenTrack: false
+    id, name, birth: $('addBirth').value, level: $('addLevel').value,
+    fileGroup: 0, system: $('addSystem').value, reg: $('addReg').value.trim(),
+    gender: $('addGender').value, origin: 'manual', trackGroup: null,
+    moved: false, manual: true, brokenTrack: false
   });
   btn.closest('.modal-bg').remove();
   forceRedistribute();
 }
 
-/* =====================================================================
-   INIT
-   ===================================================================== */
 window.addEventListener('xlsx-ready', initApp);
 window.addEventListener('xlsx-failed', function(){
   const bar = $('libStatus');
@@ -2553,28 +2571,18 @@ function initApp(){
   $('fileCur').disabled = false;
   $('fileOld').disabled = false;
   setTimeout(() => $('libStatus').style.display = 'none', 1500);
-  
-  // Bind all
   bindUploads();
   bindModeSelector();
   bindBulkBarButtons();
-  
-  // Button bindings
   $('brandLogo').addEventListener('click', openLogoViewer);
   $('btnAddStudent').onclick = openAddStudentDialog;
   $('btnRun').onclick = forceRedistribute;
   $('optSystem').onchange = forceRedistribute;
-  
-  // Load saved state
   if(loadLocalIfExists()){
-    setTimeout(() => {
-      forceRedistribute();
-      setSyncStatus('ok', 'تم استرجاع الحالة');
-    }, 300);
+    setTimeout(() => { forceRedistribute(); setSyncStatus('ok', 'تم استرجاع الحالة'); }, 300);
   }
-  
-  console.log('✅ DONIA-CLASSE v5.0 جاهز');
-  console.log('💡 استخدم زر 🔧 تشخيص للتحقق من النظام');
+  console.log('✅ DONIA-CLASSE v5.1 جاهز');
+  console.log('💡 استخدم زر 🔧 تشخيص للتحقق');
 }
 
 function openLogoViewer(){
