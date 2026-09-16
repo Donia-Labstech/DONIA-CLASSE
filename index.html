@@ -55,7 +55,6 @@
   --lock:#7c3aed;
   --brand-gold:#d4a017;
   --brand-gold2:#f5c518;
-  --brand-blue:#0066ff;
   --sh:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
   --sh2:0 4px 12px rgba(0,0,0,.08);
 }
@@ -79,7 +78,6 @@ input[type=text],input[type=number],input[type=date],input[type=password],select
 input:focus,select:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(30,90,168,.1)}
 .hidden{display:none!important}
 
-/* ============ الشريط الأفقي العلوي ============ */
 .top-bar{
   position:sticky;top:0;z-index:9000;
   background:linear-gradient(135deg,#0a1f44 0%,#0f2a5f 40%,#051530 100%);
@@ -172,7 +170,7 @@ input:focus,select:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(30,90
 
 header.app-header{
   background:linear-gradient(135deg,#1e3a8a,#1e5aa8 40%,#2e7dd1);
-  color:#fff;padding:16px 24px;box-shadow:var(--sh2);position:relative;overflow:hidden;
+  color:#fff;padding:16px 24px;box-shadow:var(--sh2);
 }
 header.app-header h1{margin:0;font-size:19px;font-weight:800}
 header.app-header p{margin:4px 0 0;font-size:13px;opacity:.92}
@@ -311,6 +309,7 @@ body.lib-ready #libStatus{transform:translateY(-200%)}
 .issue-list{margin-top:14px;background:#fff;border-radius:8px;padding:10px 14px;font-size:12.5px;max-height:280px;overflow-y:auto}
 .issue-list .issue{padding:8px 10px;border-bottom:1px solid #fecaca;color:#7f1d1d;border-radius:6px;margin-bottom:4px;background:#fef2f2}
 .issue-list .issue.warn{padding:8px 10px;border-bottom:1px solid #fde68a;color:#92400e;border-radius:6px;margin-bottom:4px;background:#fffbeb}
+.issue-list .issue.valid{padding:6px 10px;background:#eef2ff;border-radius:6px;margin-bottom:4px;color:#3730a3;font-size:12.5px}
 .issue-list .issue:last-child{border-bottom:none;margin-bottom:0}
 .issue-list .issue .badge-tag{display:inline-block;padding:1px 8px;border-radius:10px;font-size:10.5px;font-weight:800;margin-inline-end:6px}
 .issue-list .issue .badge-tag.err{background:#fee2e2;color:#991b1b}
@@ -373,10 +372,6 @@ body.lib-ready #libStatus{transform:translateY(-200%)}
 #fullscreen table.fs-tbl tr:nth-child(even) td{background:#fafcff}
 #fullscreen table.fs-tbl tr:hover td{background:#eff6ff}
 #fullscreen .fs-footer{padding:12px 22px;background:#fff;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--muted)}
-
-.admin-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:12px 16px;background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:1px solid #ddd6fe;border-radius:10px;margin-bottom:14px}
-.admin-bar .title{font-weight:800;color:#6d28d9;font-size:13.5px;display:flex;align-items:center;gap:6px}
-.admin-bar .spacer{flex:1}
 
 #printContainer{display:none}
 @media print{
@@ -502,7 +497,7 @@ body.lib-ready #libStatus{transform:translateY(-200%)}
     <span>🔀 نقل جماعي</span>
     <span>💾 نسخ احتياطي</span>
     <span>☁️ مزامنة GitHub</span>
-    <span>✅ تحقق آلي v5.0</span>
+    <span>✅ توزيع صارم v6.0</span>
   </div>
 </header>
 
@@ -779,7 +774,7 @@ function enrich(){
 }
 
 /* =====================================================================
-   القسم 8: الخوارزمية الحتمية v5.0
+   القسم 8: الخوارزمية الحتمية v6.0 — توزيع صارم بالتساوي
    ===================================================================== */
 function addTo(g,s){
   g.list.push(s);
@@ -819,12 +814,6 @@ function deterministicSort(arr){
   });
 }
 
-/* =====================================================================
-   دالة التوزيع الحتمية v5.0 — إصلاح انتهاكات المسار والتفاوت
-   ✅ حفظ المسار بأولوية مطلقة (Track Preservation Priority)
-   ✅ موازنة صارمة (فرق ≤ 1 بين الأفواج)
-   ✅ حماية المُثبّتين والمُرقّين من إعادة التوزيع
-   ===================================================================== */
 function distribute(students, G, opts){
   // (1) تهيئة الأفواج
   const groups = [];
@@ -866,25 +855,25 @@ function distribute(students, G, opts){
       return;
     }
 
-    // (1) مُرقّى بمسار صالح → يُثبَّت في فوجه السابق
+    // (1) مُرقّى بمسار صالح
     if(s.origin === 'promoted' && s.trackGroup >= 1 && s.trackGroup <= G){
       promotedList.push(s);
       return;
     }
 
-    // (2) معيد بمسار صالح → يُثبَّت في فوجه السابق
+    // (2) معيد بمسار صالح
     if(s.origin === 'repeater' && s.trackGroup >= 1 && s.trackGroup <= G){
       repeaterList.push(s);
       return;
     }
 
-    // (3) مُضاف يدوياً (بدون مسار)
+    // (3) مُضاف يدوياً
     if(s.origin === 'manual'){
       manualList.push(s);
       return;
     }
 
-    // (4) جديد أو مُرقّى/معيد فقد مساره (تجاوز الحد)
+    // (4) جديد أو فقد مساره
     freeList.push(s);
   });
 
@@ -934,6 +923,7 @@ function distribute(students, G, opts){
   });
 
   // ============ المرحلة 3: الموازنة الصارمة النهائية ============
+  // ✅ تعمل دائماً لضمان فرق ≤ 1 بين أكبر وأصغر فوج
   const isProtected = (s) => {
     if(STATE.locks.has(s.id)) return true;
     if(s.origin === 'promoted' && s.trackGroup) return true;
@@ -942,7 +932,7 @@ function distribute(students, G, opts){
   };
 
   let guard = 0;
-  const maxIter = G * total * 2;
+  const maxIter = G * total * 3;
   while(guard++ < maxIter){
     let mxG = groups[0], mnG = groups[0];
     for(const g of groups){
@@ -963,6 +953,36 @@ function distribute(students, G, opts){
     removeFrom(mxG, s);
     s.moved = true;
     addTo(mnG, s);
+  }
+
+  // ============ المرحلة 4: علاج الأفواج الفارغة (حل أخير) ============
+  // إذا كان عدد التلاميذ ≥ عدد الأفواج، فيجب ألا يبقى فوج فارغ
+  if(total >= G){
+    let guard2 = 0;
+    while(guard2++ < 500){
+      const emptyGroups = groups.filter(g => g.list.length === 0);
+      if(emptyGroups.length === 0) break;
+
+      const targetEmpty = emptyGroups[0];
+      // ابحث عن أكبر فوج فيه مرشح قابل للنقل
+      const sortedBySize = [...groups].sort((a,b)=>b.list.length - a.list.length);
+      let moved = false;
+      for(const bigG of sortedBySize){
+        if(bigG === targetEmpty) continue;
+        if(bigG.list.length <= 1) continue;
+        const candidate = bigG.list
+          .filter(s => !isProtected(s))
+          .sort((a,b)=>a.name.localeCompare(b.name,'ar'))[0];
+        if(candidate){
+          removeFrom(bigG, candidate);
+          candidate.moved = true;
+          addTo(targetEmpty, candidate);
+          moved = true;
+          break;
+        }
+      }
+      if(!moved) break;
+    }
   }
 
   // ============ الترتيب النهائي ============
@@ -1070,10 +1090,7 @@ function runAudit(){
 }
 
 /* =====================================================================
-   القسم 10: طبقة التحقق الآلي v5.0
-   تكشف فقط الانتهاكات الحقيقية، وتتجاهل الحالات المشروعة:
-   - تلميذ مُرقّى من فوج تجاوز نطاق الخريطة (Valid Overflow)
-   - تلميذ نقله المستخدم يدوياً (Locked by user)
+   القسم 10: طبقة التحقق الآلي v6.0
    ===================================================================== */
 function validateDistribution(){
   const report = { passed:true, issues:[], warnings:[], validOverflows:[] };
@@ -1113,10 +1130,8 @@ function validateDistribution(){
     r.groups.forEach(g => {
       g.list.forEach(s => {
 
-        // ═══ حالة 1: مُرقّى بمسار ═══
+        // حالة 1: مُرقّى بمسار
         if(s.origin === 'promoted' && s.trackGroup){
-
-          // ✅ استثناء 1: المسار تجاوز نطاق الخريطة (Valid Overflow)
           if(s.trackGroup > G){
             report.validOverflows.push({
               student: s.name, id: s.id,
@@ -1125,14 +1140,9 @@ function validateDistribution(){
             });
             return;
           }
-
-          // ✅ استثناء 2: التثبيت اليدوي
           const lock = STATE.locks.get(s.id);
-          if(lock && lock.level === lv && lock.group === g.num){
-            return;
-          }
+          if(lock && lock.level === lv && lock.group === g.num) return;
 
-          // ❌ انتهاك حقيقي
           if(g.num !== s.trackGroup){
             report.passed = false;
             report.issues.push({
@@ -1147,7 +1157,7 @@ function validateDistribution(){
           }
         }
 
-        // ═══ حالة 2: معيد بمسار ═══
+        // حالة 2: معيد بمسار
         if(s.origin === 'repeater' && s.trackGroup){
           if(s.trackGroup > G){
             report.validOverflows.push({
@@ -1173,7 +1183,7 @@ function validateDistribution(){
           }
         }
 
-        // ═══ حالة 3: تثبيت يدوي ═══
+        // حالة 3: تثبيت يدوي
         const lock = STATE.locks.get(s.id);
         if(lock && lock.level === lv){
           if(g.num !== lock.group){
@@ -1203,9 +1213,10 @@ function tryRun(){
   if(!STATE.loadedCur)return;
   renderSettings();
   enrich();
-  runDistribution();
+  forceRedistribute();
 }
-function runDistribution(){
+function forceRedistribute(){
+  if(!STATE.cur.length) return;
   const opts={
     strict:$('optStrict').checked,
     balanceSystem:$('optSystem').checked
@@ -1219,6 +1230,7 @@ function runDistribution(){
   });
   STATE.audit = runAudit();
   STATE.validation = validateDistribution();
+  renderSettings();
   renderAudit();
   renderLockedPanel();
   renderResults();
@@ -1410,9 +1422,9 @@ async function ghLoadFromDialog(){
     const parsed = JSON.parse(content);
     deserializeState(parsed);
     if(!confirm(`تم قراءة النسخة:\n• التلاميذ: ${STATE.cur.length}\n• التثبيتات: ${STATE.locks.size}\n\nاستبدال الحالة الحالية؟`))return;
-    tryRun();
-    setSyncStatus('ok','تم الاسترجاع ✅');
-    alert('✅ تم استرجاع النسخة من GitHub.');
+    forceRedistribute();
+    setSyncStatus('ok','تم الاسترجاع وإعادة التوزيع ✅');
+    alert('✅ تم استرجاع النسخة من GitHub وإعادة التوزيع.');
     document.getElementById('syncDialog').remove();
   }catch(e){
     setSyncStatus('err','فشل الاسترجاع');
@@ -1466,12 +1478,12 @@ function renderLockedPanel(){
 }
 function unlockOne(id){
   STATE.locks.delete(id);
-  runDistribution();
+  forceRedistribute();
 }
 function unlockAll(){
   if(!confirm('هل تريد فك تثبيت جميع التلاميذ ('+STATE.locks.size+')؟'))return;
   STATE.locks.clear();
-  runDistribution();
+  forceRedistribute();
 }
 function exportLocks(){
   if(!STATE.locks.size){alert('لا توجد تثبيتات لتصديرها');return;}
@@ -1497,7 +1509,7 @@ function exportLocks(){
 }
 
 /* =====================================================================
-   القسم 16: لوحة التدقيق v5.0 (مع الإحالات المشروعة)
+   القسم 16: لوحة التدقيق
    ===================================================================== */
 function renderAudit(){
   $('auditCard').classList.remove('hidden');
@@ -1630,7 +1642,7 @@ function renderAudit(){
       <h4 style="margin:0 0 8px;color:#3730a3;font-size:14px">✅ إحالات مشروعة (${v.validOverflows.length}) — تجاوز نطاق الخريطة</h4>
       <div class="issue-list" style="max-height:240px">`;
     v.validOverflows.forEach(it=>{
-      html+=`<div style="padding:6px 10px;background:#eef2ff;border-radius:6px;margin-bottom:4px;font-size:12.5px;color:#3730a3">
+      html+=`<div class="issue valid">
         <b>${esc(it.student)}</b> — كان في ${esc(it.oldLevel)} ${it.oldGroup} → وُجّه إلى الفوج ${it.newGroup}
       </div>`;
     });
@@ -1700,7 +1712,7 @@ function renderSettings(){
     inp.addEventListener('change',e=>{
       const v=Math.max(1,parseInt(e.target.value)||1);
       STATE.groupCount[e.target.dataset.lvl]=v;
-      tryRun();
+      forceRedistribute();
     });
   });
 }
@@ -1760,7 +1772,7 @@ function renderLevelView(lv){
     const total=g.list.length;
     let cardClass = 'section-card';
     if(total === 0 && r.stats.total >= r.stats.G) cardClass += ' empty';
-    else if(total > r.stats.avg * 1.2) cardClass += ' unbalanced';
+    else if(r.stats.max - r.stats.min > 1 && total === r.stats.max) cardClass += ' unbalanced';
     const groupSelected = g.list.filter(s=>STATE.selection.has(s.id)).length;
 
     cards+=`
@@ -1937,7 +1949,7 @@ function clearSelection(){
 function toggleLock(id, level, group){
   if(STATE.locks.has(id)) STATE.locks.delete(id);
   else STATE.locks.set(id, { level, group });
-  runDistribution();
+  forceRedistribute();
 }
 function lockSelected(){
   if(STATE.selection.size===0)return;
@@ -1954,7 +1966,7 @@ function lockSelected(){
     STATE.locks.set(s.id, { level: actualLv, group: grpNum });
   });
   STATE.selection.clear();
-  runDistribution();
+  forceRedistribute();
 }
 function unlockSelected(){
   if(STATE.selection.size===0)return;
@@ -1964,7 +1976,7 @@ function unlockSelected(){
   });
   if(unlocked===0){ alert('لا يوجد تلاميذ مُثبَّتون ضمن المحددين.'); return; }
   STATE.selection.clear();
-  runDistribution();
+  forceRedistribute();
 }
 
 /* =====================================================================
@@ -2033,7 +2045,7 @@ function toggleGender(id){
   const st=STATE.cur.find(x=>x.id===id); if(!st)return;
   const nxt=st.gender==='M'?'F':(st.gender==='F'?'U':'M');
   STATE.overrides[id]=nxt;
-  runDistribution();
+  forceRedistribute();
 }
 function moveStudent(id){
   const st=STATE.cur.find(x=>x.id===id); if(!st)return;
@@ -2522,7 +2534,7 @@ function exportAll(){
    ===================================================================== */
 function serializeState(){
   return {
-    version: '5.0',
+    version: '6.0',
     app: 'DONIA-CLASSE',
     brand: BRAND,
     school: SCHOOL,
@@ -2585,10 +2597,10 @@ $('backupInput').addEventListener('change', async e=>{
       const txt = await f.text();
       const data = JSON.parse(txt);
       deserializeState(data);
-      if(!confirm(`تم قراءة النسخة الاحتياطية:\n• التلاميذ: ${STATE.cur.length}\n• التثبيتات: ${STATE.locks.size}\n\nسيتم استبدال الحالة الحالية. متابعة؟`))return;
-      tryRun();
-      setSyncStatus('ok','تم استرجاع النسخة');
-      alert('✅ تم استرجاع النسخة الاحتياطية بنجاح.');
+      if(!confirm(`تم قراءة النسخة الاحتياطية:\n• التلاميذ: ${STATE.cur.length}\n• التثبيتات: ${STATE.locks.size}\n\nسيتم استبدال الحالة الحالية وإعادة التوزيع. متابعة؟`))return;
+      forceRedistribute();
+      setSyncStatus('ok','تم استرجاع النسخة وإعادة التوزيع');
+      alert('✅ تم استرجاع النسخة الاحتياطية وإعادة التوزيع بنجاح.');
     } else {
       const wb = await readWorkbook(f);
       if(!wb.SheetNames.includes('التلاميذ')){
@@ -2643,9 +2655,9 @@ $('backupInput').addEventListener('change', async e=>{
 
       STATE.loadedCur = STATE.cur.length>0;
       STATE.loadedOld = false;
-      tryRun();
-      setSyncStatus('ok','تم استرجاع Excel');
-      alert('✅ تم استرجاع النسخة (Excel) بنجاح.');
+      forceRedistribute();
+      setSyncStatus('ok','تم استرجاع Excel وإعادة التوزيع');
+      alert('✅ تم استرجاع النسخة (Excel) وإعادة التوزيع بنجاح.');
     }
   }catch(err){
     alert('❌ فشل استرجاع النسخة: '+err.message);
@@ -2656,7 +2668,7 @@ $('backupInput').addEventListener('change', async e=>{
 /* =====================================================================
    القسم 28: الحفظ التلقائي المحلي
    ===================================================================== */
-const LS_KEY = 'DONIA-CLASSE-state-v5';
+const LS_KEY = 'DONIA-CLASSE-state-v6';
 let autoSaveTimer = null;
 function autoSaveLocal(){
   if(!STATE.loadedCur)return;
@@ -2715,10 +2727,15 @@ function initApp(){
   setTimeout(()=>bar.style.display='none',1500);
   bindUploads();
   bindLogoClick();
+  
+  // ✅ استرجاع الحالة المحلية + إعادة التوزيع الإجبارية
   if(loadLocalIfExists()){
     setTimeout(()=>{
-      tryRun();
-      setSyncStatus('ok','تم استرجاع الحالة المحلية');
+      console.log('📦 تم استرجاع الحالة المحلية:', STATE.cur.length, 'تلميذ');
+      console.log('📌 التثبيتات:', STATE.locks.size);
+      console.log('🔄 إعادة التوزيع الإجبارية...');
+      forceRedistribute();
+      setSyncStatus('ok', 'تم إعادة التوزيع');
     }, 400);
   }
 }
@@ -2759,9 +2776,9 @@ function bindUploads(){
     }catch(err){setMsg('msgOld','✖ خطأ: '+err.message,'err');}
   });
 
-  $('btnRun').onclick=()=>runDistribution();
-  $('optStrict').onchange=()=>runDistribution();
-  $('optSystem').onchange=()=>runDistribution();
+  $('btnRun').onclick=()=>forceRedistribute();
+  $('optStrict').onchange=()=>forceRedistribute();
+  $('optSystem').onchange=()=>forceRedistribute();
 }
 
 function showHelpModal(){
