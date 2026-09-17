@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DONIA-CLASSE v5.1 — نظام توزيع التلاميذ</title>
+<title>DONIA-CLASSE v5.2 — نظام توزيع التلاميذ</title>
 <meta name="author" content="DONIALABSTECH">
 <script>
 (function(){
@@ -56,7 +56,6 @@ input[type=text],input[type=number],input[type=date],input[type=password],select
 input:focus,select:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(30,90,168,.1)}
 .hidden{display:none!important}
 
-/* ============ الشريط العلوي ============ */
 .top-bar{
   position:sticky;top:0;z-index:9000;
   background:linear-gradient(135deg,#0a1f44 0%,#0f2a5f 40%,#051530 100%);
@@ -371,7 +370,7 @@ main{max-width:1600px;margin:16px auto;padding:0 16px}
 </div>
 
 <header class="app-header">
-  <h1>📚 DONIA-CLASSE v5.1 — نظام توزيع التلاميذ 2027</h1>
+  <h1>📚 DONIA-CLASSE v5.2 — نظام توزيع التلاميذ 2027</h1>
   <p>متوسطة بوضريسة محمد الأمين — المسيلة · السنة الدراسية 2026 / 2027</p>
   <div class="badges">
     <span>🏫 أولى 12 · ثانية 8 · ثالثة 5 · رابعة 6</span>
@@ -380,6 +379,7 @@ main{max-width:1600px;margin:16px auto;padding:0 16px}
     <span>🔀 نقل جماعي</span>
     <span>📊 قسري مستوى</span>
     <span>🔓 قسري فوج</span>
+    <span>⚖️ موازنة معيدين</span>
   </div>
 </header>
 
@@ -419,7 +419,7 @@ main{max-width:1600px;margin:16px auto;padding:0 16px}
       </label>
       <label class="mode-option" data-mode="force">
         <input type="radio" name="distMode" value="force">
-        <div class="label"><b>🔓 قسري</b><small>توزيع متساوٍ تام</small></div>
+        <div class="label"><b>🔓 قسري</b><small>توزيع متساوٍ تام (معيدون + جنس + حجم)</small></div>
       </label>
     </div>
   </div>
@@ -687,6 +687,9 @@ function deterministicSort(arr){
   });
 }
 
+/* =====================================================================
+   ⭐ CORE: DISTRIBUTE v5.2 — مع موازنة المعيدين في القسري
+   ===================================================================== */
 function distribute(students, G, opts){
   const groups = [];
   for(let i = 0; i < G; i++){
@@ -701,14 +704,19 @@ function distribute(students, G, opts){
   const sysTot = {};
   sysKeys.forEach(k => sysTot[k] = students.filter(s=>s.system === k).length);
   
+  // ⭐⭐ استخرج الوضع أولاً
+  const mode = opts.mode || 'flexible';
+  const isForce = mode === 'force';
+  
+  // ⭐⭐ وزن المعيدين: 15 في القسري (لضمان التوازن الصارم)، 1.5 في المرن/الصارم
+  const wRep = isForce ? 15 : 1.5;
+  
   const ctx = {
     tc: total/G, tm: totM/G, tf: totF/G, tr: totRep/G,
-    sysTarget: {}, wCount: 1, wGender: 2, wRep: 1.5,
+    sysTarget: {}, wCount: 1, wGender: 2, wRep: wRep,
     wSystem: opts.balanceSystem ? 0.6 : 0
   };
   sysKeys.forEach(k => ctx.sysTarget[k] = sysTot[k]/G);
-  
-  const mode = opts.mode || 'flexible';
   
   const lockedList = [];
   const promotedList = [];
@@ -751,30 +759,84 @@ function distribute(students, G, opts){
   deterministicSort(freeList.filter(s=>s.origin === 'new' || !s.origin)).forEach(s=>freePool.push(s));
   deterministicSort(manualList).forEach(s=>freePool.push(s));
   
+  // ⭐⭐ في الوضع القسري: ابدأ بالمعيدين أولاً لضمان توزيعهم بالتساوي
+  if(isForce){
+    // رتّب القائمة: المعيدون أولاً، ثم الباقي
+    const reps = freePool.filter(s => s.origin === 'repeater');
+    const others = freePool.filter(s => s.origin !== 'repeater');
+    freePool.length = 0;
+    freePool.push(...reps, ...others);
+  }
+  
   const mArr = [], fArr = [], uArr = [];
   freePool.forEach(s => {
     if(s.gender === 'M') mArr.push(s);
     else if(s.gender === 'F') fArr.push(s);
     else uArr.push(s);
   });
-  const interleaved = [];
-  const mx = Math.max(mArr.length, fArr.length, uArr.length);
-  for(let i=0;i<mx;i++){
-    if(mArr[i]) interleaved.push(mArr[i]);
-    if(fArr[i]) interleaved.push(fArr[i]);
-    if(uArr[i]) interleaved.push(uArr[i]);
-  }
   
-  interleaved.forEach(s => {
-    let best = null, bs = Infinity;
-    for(const g of groups){
-      const sc = scoreGroup(g, s, ctx);
-      if(sc < bs || (sc === bs && (!best || g.num < best.num))){
-        bs = sc; best = g;
+  // ⭐⭐ في الوضع القسري: توزيع المعيدين بالتساوي أولاً
+  if(isForce){
+    const reps = freePool.filter(s => s.origin === 'repeater');
+    const others = freePool.filter(s => s.origin !== 'repeater');
+    
+    // وزّع المعيدين على الأفواج الأقل عدداً منهم (بالتساوي)
+    const repsSorted = deterministicSort(reps);
+    repsSorted.forEach(s => {
+      let best = null, minReps = Infinity, minSize = Infinity;
+      for(const g of groups){
+        const r = g.reps;
+        const sz = g.list.length;
+        if(r < minReps || (r === minReps && sz < minSize)){
+          minReps = r; minSize = sz; best = g;
+        }
       }
+      addTo(best, s);
+    });
+    
+    // ثم وزّع الباقي بآلية scoreGroup
+    const interleaved = [];
+    const mArr2 = others.filter(s=>s.gender==='M');
+    const fArr2 = others.filter(s=>s.gender==='F');
+    const uArr2 = others.filter(s=>s.gender!=='M' && s.gender!=='F');
+    const mx = Math.max(mArr2.length, fArr2.length, uArr2.length);
+    for(let i=0;i<mx;i++){
+      if(mArr2[i]) interleaved.push(mArr2[i]);
+      if(fArr2[i]) interleaved.push(fArr2[i]);
+      if(uArr2[i]) interleaved.push(uArr2[i]);
     }
-    addTo(best, s);
-  });
+    
+    interleaved.forEach(s => {
+      let best = null, bs = Infinity;
+      for(const g of groups){
+        const sc = scoreGroup(g, s, ctx);
+        if(sc < bs || (sc === bs && (!best || g.num < best.num))){
+          bs = sc; best = g;
+        }
+      }
+      addTo(best, s);
+    });
+  } else {
+    // الوضع العادي: scoreGroup
+    const interleaved = [];
+    const mx = Math.max(mArr.length, fArr.length, uArr.length);
+    for(let i=0;i<mx;i++){
+      if(mArr[i]) interleaved.push(mArr[i]);
+      if(fArr[i]) interleaved.push(fArr[i]);
+      if(uArr[i]) interleaved.push(uArr[i]);
+    }
+    
+    interleaved.forEach(s => {
+      let best = null, bs = Infinity;
+      for(const g of groups){
+        const sc = scoreGroup(g, s, ctx);
+        if(sc < bs || (sc === bs && (!best || g.num < best.num))){
+          bs = sc; best = g;
+        }
+      }
+      addTo(best, s);
+    });
+  }
   
   const isProtected = (s) => {
     if(STATE.locks.has(s.id)) return true;
@@ -806,6 +868,32 @@ function distribute(students, G, opts){
         s.brokenTrack = true;
       }
       addTo(mnG, s);
+    }
+    
+    // ⭐⭐ موازنة المعيدين في الوضع القسري (بعد الموازنة العامة)
+    if(isForce){
+      let guardRep = 0;
+      const maxIterRep = G * total * 2;
+      while(guardRep++ < maxIterRep){
+        // إيجاد الفوج الأكثر معيدين والأقل معيدين
+        let mxRepG = groups[0], mnRepG = groups[0];
+        for(const g of groups){
+          if(g.reps > mxRepG.reps) mxRepG = g;
+          if(g.reps < mnRepG.reps) mnRepG = g;
+        }
+        if(mxRepG.reps - mnRepG.reps <= 1) break;
+        
+        // ابحث عن معيد غير محمي
+        const candidate = mxRepG.list
+          .filter(s => s.origin === 'repeater' && !STATE.locks.has(s.id))
+          .sort((a,b)=>a.name.localeCompare(b.name,'ar'))[0];
+        
+        if(!candidate) break;
+        
+        // انقله
+        removeFrom(mxRepG, candidate);
+        addTo(mnRepG, candidate);
+      }
     }
   }
   
@@ -847,6 +935,8 @@ function distribute(students, G, opts){
     locked: lockedList.length,
     min: Math.min(...groups.map(g=>g.list.length)),
     max: Math.max(...groups.map(g=>g.list.length)),
+    minRep: Math.min(...groups.map(g=>g.reps)),
+    maxRep: Math.max(...groups.map(g=>g.reps)),
     mode
   };
   
@@ -910,6 +1000,11 @@ function validateDistribution(){
     if(mode !== 'strict' && r.stats.max - r.stats.min > 1){
       report.passed = false;
       report.issues.push({type: 'IMBALANCE', message: `${LEVEL_LABEL[lv]}: ${r.stats.min} → ${r.stats.max}`});
+    }
+    // ⭐ كشف عدم توازن المعيدين
+    if(mode === 'force' && r.stats.maxRep - r.stats.minRep > 1){
+      report.passed = false;
+      report.issues.push({type: 'REP_IMBALANCE', message: `${LEVEL_LABEL[lv]}: المعيدون ${r.stats.minRep} → ${r.stats.maxRep}`});
     }
     r.groups.forEach(g => {
       g.list.forEach(s => {
@@ -989,7 +1084,12 @@ function renderSettings(){
     let status = '—';
     if(r){
       const diff = r.stats.max - r.stats.min;
-      status = diff === 0 ? '✅ مثالي' : diff === 1 ? '✅ متوازن' : `⚠️ فرق ${diff}`;
+      const repDiff = r.stats.maxRep - r.stats.minRep;
+      if(r.stats.mode === 'force'){
+        status = (diff <= 1 && repDiff <= 1) ? '✅ متوازن' : `⚠️ حجم ${diff} / معيد ${repDiff}`;
+      } else {
+        status = diff === 0 ? '✅ مثالي' : diff === 1 ? '✅ متوازن' : `⚠️ فرق ${diff}`;
+      }
     }
     html += `<tr>
       <td><b>${lv}</b></td>
@@ -1107,7 +1207,7 @@ function renderLevelView(lv){
       <div class="kpi"><div class="v">${r.stats.avg}</div><div class="l">المعدل/فوج</div></div>
       <div class="kpi p-m"><div class="v">${r.stats.m}</div><div class="l">ذكور</div></div>
       <div class="kpi p-f"><div class="v">${r.stats.f}</div><div class="l">إناث</div></div>
-      <div class="kpi p-r"><div class="v">${r.stats.rep}</div><div class="l">معيدون</div></div>
+      <div class="kpi p-r"><div class="v">${r.stats.rep}</div><div class="l">معيدون (${r.stats.minRep}-${r.stats.maxRep})</div></div>
       ${r.stats.locked > 0 ? `<div class="kpi p-lock"><div class="v">${r.stats.locked}</div><div class="l">📌 مُثبَّتون</div></div>` : ''}
       <div class="kpi p-ok"><div class="v">${r.stats.min}–${r.stats.max}</div><div class="l">الأدنى/الأعلى</div></div>
     </div>`;
@@ -1605,6 +1705,7 @@ function openForceRedistributeDialog(){
         <br>• ❌ حذف كل التثبيتات (${STATE.locks.size})
         <br>• 🔓 كسر مسارات المُرقّين عند الحاجة
         <br>• ⚖️ توزيع متساوٍ (فرق ≤ 1)
+        <br>• 🎯 <b>موازنة المعيدين بالتساوي</b> (جديد v5.2)
       </p>
       ${preview.length > 0 ? `
         <div class="preview-box">
@@ -1681,11 +1782,18 @@ function openForceRedistributeLevelDialog(){
   const G = r.stats.G;
   const total = r.stats.total;
   const before = r.groups.map(g => g.list.length);
+  const beforeReps = r.groups.map(g => g.reps);
   const target = Math.floor(total / G);
   const rem = total % G;
   const after = Array(G).fill(target).map((v, i) => i < rem ? v + 1 : v);
   let moves = 0;
   before.forEach((b, i) => { if(b > after[i]) moves += b - after[i]; });
+  
+  // ⭐ توزيع متوقع للمعيدين
+  const totalReps = r.stats.rep;
+  const targetRep = Math.floor(totalReps / G);
+  const remRep = totalReps % G;
+  const afterReps = Array(G).fill(targetRep).map((v, i) => i < remRep ? v + 1 : v);
   
   let protectedCount = 0;
   r.groups.forEach(g => {
@@ -1699,13 +1807,13 @@ function openForceRedistributeLevelDialog(){
   const div = document.createElement('div');
   div.className = 'modal-bg';
   div.innerHTML = `
-    <div class="modal-box" style="max-width:640px">
+    <div class="modal-box" style="max-width:680px">
       <h3 style="color:#dc2626">📊 توزيع قسري — ${LEVEL_LABEL[lv]}</h3>
       <p style="font-size:13.5px;color:#475569;line-height:1.7">
         <b>مستوى واحد فقط</b> — باقي المستويات لن تتأثر.
       </p>
       <div class="preview-box">
-        <div style="font-weight:800;margin-bottom:8px;color:#1e293b">📊 قبل → بعد (${G} أفواج، ${total} تلميذ)</div>
+        <div style="font-weight:800;margin-bottom:8px;color:#1e293b">📊 الأحجام (قبل → بعد) — ${G} أفواج، ${total} تلميذ</div>
         ${before.map((b, i) => `
           <div class="row">
             <span>${LEVEL_SHORT[lv]}${i+1}</span>
@@ -1716,10 +1824,28 @@ function openForceRedistributeLevelDialog(){
             </span>
           </div>
         `).join('')}
-        <div style="margin-top:10px;padding-top:10px;border-top:2px solid #e2e8f0;color:#dc2626;font-weight:800">
+        <div style="margin-top:10px;padding-top:10px;border-top:2px solid #e2e8f0;font-weight:800;color:#dc2626">
           سيُنقل: ${moves} تلميذ · محمي: ${protectedCount}
         </div>
       </div>
+      
+      <div class="preview-box" style="background:#fef3c7;border-color:#fde68a">
+        <div style="font-weight:800;margin-bottom:8px;color:#92400e">⚖️ توزيع المعيدين (قبل → بعد)</div>
+        ${beforeReps.map((b, i) => `
+          <div class="row">
+            <span>${LEVEL_SHORT[lv]}${i+1}</span>
+            <span>
+              <span class="before">${b}</span>
+              <span class="arrow">→</span>
+              <span class="after">${afterReps[i]}</span>
+            </span>
+          </div>
+        `).join('')}
+        <div style="margin-top:10px;padding-top:10px;border-top:2px solid #fde68a;font-weight:800;color:#92400e">
+          إجمالي المعيدين: ${totalReps}
+        </div>
+      </div>
+      
       <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:10px 14px;font-size:12.5px;color:#991b1b;margin-top:12px">
         ⚠️ سيتم <b>حذف التثبيتات وكسر المسارات</b> في <b>${LEVEL_LABEL[lv]} فقط</b>.
         <br>✅ باقي المستويات تبقى كما هي.
@@ -1733,14 +1859,12 @@ function openForceRedistributeLevelDialog(){
 }
 
 function applyForceRedistributeLevel(lv, btn){
-  // احذف تثبيتات هذا المستوى فقط
   const toDelete = [];
   STATE.locks.forEach((lock, id) => {
     if(lock.level === lv) toDelete.push(id);
   });
   toDelete.forEach(id => STATE.locks.delete(id));
   
-  // أعد توزيع المستوى فقط
   const list = STATE.cur.filter(s => s.level === lv);
   const G = STATE.groupCount[lv] || OFFICIAL_GROUPS[lv];
   STATE.results[lv] = distribute(list, G, {
@@ -1748,7 +1872,6 @@ function applyForceRedistributeLevel(lv, btn){
     mode: 'force'
   });
   
-  // علّم المكسورين في هذا المستوى
   const r = STATE.results[lv];
   r.groups.forEach(g => {
     g.list.forEach(s => {
@@ -1851,7 +1974,6 @@ function applyForceRedistributeGroup(lv, groupNum, btn){
   const diff = desiredSize - targetG.list.length;
   
   if(diff > 0){
-    // نقل تلاميذ إلى هذا الفوج من الأفواج التي بها فائض
     const candidates = [];
     r.groups.forEach(g => {
       if(g.num === groupNum) return;
@@ -1868,13 +1990,11 @@ function applyForceRedistributeGroup(lv, groupNum, btn){
         .forEach(s => candidates.push({ student: s, fromGroup: g }));
       }
     });
-    
     candidates.slice(0, diff).forEach(({student, fromGroup}) => {
       removeFrom(fromGroup, student);
       addTo(targetG, student);
     });
   } else if(diff < 0){
-    // إخراج تلاميذ من هذا الفوج
     const toRemove = Math.abs(diff);
     const candidates = targetG.list
       .filter(s => {
@@ -1885,7 +2005,6 @@ function applyForceRedistributeGroup(lv, groupNum, btn){
       })
       .sort((a,b) => a.name.localeCompare(b.name, 'ar'))
       .slice(0, toRemove);
-    
     candidates.forEach(student => {
       let bestG = null, minSize = Infinity;
       r.groups.forEach(g => {
@@ -1911,6 +2030,8 @@ function applyForceRedistributeGroup(lv, groupNum, btn){
   r.stats.min = Math.min(...r.groups.map(g => g.list.length));
   r.stats.max = Math.max(...r.groups.map(g => g.list.length));
   r.stats.avg = (r.stats.total / r.stats.G).toFixed(1);
+  r.stats.minRep = Math.min(...r.groups.map(g => g.reps));
+  r.stats.maxRep = Math.max(...r.groups.map(g => g.reps));
   
   STATE.audit = runAudit();
   STATE.validation = validateDistribution();
@@ -2179,7 +2300,7 @@ function exportAll(){
 
 function serializeState(){
   return {
-    version: '5.1', app: 'DONIA-CLASSE', school: SCHOOL,
+    version: '5.2', app: 'DONIA-CLASSE', school: SCHOOL,
     exportedAt: new Date().toISOString(),
     groupCount: STATE.groupCount, overrides: STATE.overrides,
     distMode: STATE.distMode,
@@ -2225,7 +2346,7 @@ function exportBackupJSON(){
   const a = document.createElement('a');
   const ts = new Date().toISOString().replace(/[:.]/g,'-').slice(0,19);
   a.href = url;
-  a.download = `DONIA-CLASSE_v5.1_backup_${ts}.json`;
+  a.download = `DONIA-CLASSE_v5.2_backup_${ts}.json`;
   a.click();
   URL.revokeObjectURL(url);
   $('statLastSave').textContent = '💾 ' + new Date().toLocaleTimeString('ar');
@@ -2289,7 +2410,7 @@ $('backupInput').addEventListener('change', async e => {
   e.target.value = '';
 });
 
-const LS_KEY = 'DONIA-CLASSE-state-v51';
+const LS_KEY = 'DONIA-CLASSE-state-v52';
 let autoSaveTimer = null;
 function autoSaveLocal(){
   if(!STATE.loadedCur) return;
@@ -2390,7 +2511,7 @@ async function ghSave(){
       if(r.ok){ const j = await r.json(); sha = j.sha; }
     } catch(e){}
     const content = btoa(unescape(encodeURIComponent(JSON.stringify(serializeState(), null, 2))));
-    const body = {message: `DONIA-CLASSE v5.1 — ${new Date().toISOString()}`, content, branch: c.branch};
+    const body = {message: `DONIA-CLASSE v5.2 — ${new Date().toISOString()}`, content, branch: c.branch};
     if(sha) body.sha = sha;
     const res = await fetch(`https://api.github.com/repos/${c.repo}/contents/${encodeURIComponent(c.path)}`, {
       method: 'PUT',
@@ -2442,7 +2563,7 @@ function runDiagnostics(){
     ['الأفواج (مستوى نشط)', STATE.activeLevel && STATE.results[STATE.activeLevel] ? STATE.results[STATE.activeLevel].stats.G : 0],
     ['حالة الشريط', bar ? (bar.classList.contains('on') ? 'مرئي' : 'مخفي') : 'غير موجود']
   ];
-  let html = '<div class="modal-box"><h3>🔧 تشخيص النظام v5.1</h3><div style="font-size:13px;line-height:2">';
+  let html = '<div class="modal-box"><h3>🔧 تشخيص النظام v5.2</h3><div style="font-size:13px;line-height:2">';
   checks.forEach(([name, val]) => {
     const icon = typeof val === 'boolean' ? (val ? '✅' : '❌') : '📋';
     html += `<div>${icon} <b>${name}:</b> ${val}</div>`;
@@ -2581,8 +2702,7 @@ function initApp(){
   if(loadLocalIfExists()){
     setTimeout(() => { forceRedistribute(); setSyncStatus('ok', 'تم استرجاع الحالة'); }, 300);
   }
-  console.log('✅ DONIA-CLASSE v5.1 جاهز');
-  console.log('💡 استخدم زر 🔧 تشخيص للتحقق');
+  console.log('✅ DONIA-CLASSE v5.2 جاهز — مع موازنة المعيدين');
 }
 
 function openLogoViewer(){
